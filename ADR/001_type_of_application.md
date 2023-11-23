@@ -3,8 +3,8 @@
 
 ## Context
 The application should let:
-1) the primary users, coaches, easily find which students are absent today, and who have a history of being late or not showing up.
-2) the data entry people - the teachers, enter which students are present or absent.
+1) the primary users, coaches: help them easily find which students are absent today, and who have a history of being late or not showing up.
+2) the data entry people - the teachers: help them register which students are present or absent.
 
 This suggests a shared database, so not a desktop app (though I suppose one could make a desktop frontend with a database backend). Still, installing and upgrading software versions on a desktop app is relatively laborious (people _will_ forget to do it or won't have time), so a web app seems best.
 

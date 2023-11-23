@@ -8,7 +8,7 @@ Often, you can buy a product, but as there are likely very few if any companies 
 
 The second 'line of development' would be low-code/no-code solutions. While they could work, they tend to cost money and are not very flexible; we would also likely not be able to maintain it cheaply.
 
-The third line would be enterprise programming languages with their frameworks. From the Redmonk languages, the (many) dynamic languages are less attractive due to a higher occurrence of bugs, and even if languages are (somewhat) statically typed, like TypeScript, they may lack a rich enterprise ecosystem. Looking at the Redmonk index of January 2023, we see 
+The third line would be enterprise programming languages with their frameworks. Looking at the Redmonk index of January 2023, we see 
 1 JavaScript
 2 Python
 3 Java
@@ -30,11 +30,11 @@ The third line would be enterprise programming languages with their frameworks. 
 19 Rust
 19 Dart
 
-Shell, CSS and PowerShell and R are not capable of creating complex programs due to not being regular programming languages, Objective-C is deprecated, TypeScript, C++, C, Rust, Go and Scala don't have many libraries for enterprise development (okay, in theory Scala could use all Java libraries, in practice, Scala is not good at it); JavaScript, Python, PHP and Ruby are dynamic, Swift is just for OSX, Dart just for mobile.
+From the Redmonk languages, the (many) dynamic languages are less attractive due to a higher occurrence of bugs, and even if languages are (somewhat) statically typed, like TypeScript, they may lack a rich enterprise ecosystem. Shell, CSS and PowerShell and R are not capable of creating complex programs due to not being regular programming languages, Objective-C is deprecated, TypeScript, C++, C, Rust, Go and Scala don't have many libraries for enterprise development (okay, in theory Scala could use all Java libraries, in practice, Scala is not good at it); JavaScript, Python, PHP and Ruby are dynamic, Swift is just for OSX, Dart just for mobile.
 
 Which means only Java, C# and Kotlin remain as candidates.
 
-Most important is the availability of libraries. The Java ecosystem (Java+Kotlin) has many more, more popular, more advanced, and generally free libraries. With C# you can also make lots of stuff, but if something is not available in the Microsoft ecosystem, you're in trouble, as I saw in several commercial projects in the past (no SOAP libraries for ASP.NET Core, no good mobile framework for C#, problems linking users who did not have an Azure account). Java is possibly therefore much more popular with successful software companies than C#/the .NET ecosystem (https://appdevelopermagazine.com/The-top-programming-languages-used-by-us-unicorn-companies/)
+Most important is the availability of libraries. The Java ecosystem (Java+Kotlin) has (many) more libraries than the .NET ecosystem, often they are also more advanced and even free. With C# you can also make lots of stuff, but if something is not available in the Microsoft ecosystem, you're in trouble, as I saw in several commercial projects in the past (no SOAP libraries for ASP.NET Core, no good mobile framework for C#, problems linking users who did not have an Azure account). This may be one of the reasons why Java seems much more popular with successful software companies than C#/the .NET ecosystem (https://appdevelopermagazine.com/The-top-programming-languages-used-by-us-unicorn-companies/)
   
 Also, our current batch of students is learning Java, so finding people to help maintain the app should be easier.
 
@@ -46,7 +46,7 @@ In fact one would not have to choose between Java and Kotlin, as you can mix the
 
 - Speed of feature production/maintenance: I would say that Kotlin has an edge here; Kotlin code is more concise, needing less lines (Meta measured about an 11% reduction) and generally also fewer characters; also, null-safety is built into the languages, leading to fewer bugs; as does Kotlin's more functional programming style and better support for constants.
 
-Maintainability is however also affected by the programming languages one knows. So since this project may be maintained by Java developers and created by at least one person with C# experience (and, while Kotlin is also inspired by C#, Java looks more like C# than Kotlin does). For resume purposes (relevant for something done in one's free time) Java is also likely better at the moment. And if that calculus one day changes: with the tools of Jetbrains it is easy to convert Java code to Kotlin code.
+Maintainability is however also affected by the programming languages one knows. This project may be maintained by Java developers and created by at least one person with C# experience (and, while Kotlin is also inspired by C#, Java looks more like C# than Kotlin does). For resume purposes (relevant for something done in one's free time) Java is also likely better at the moment. And if that calculus one day changes: with the tools of Jetbrains it is easy to convert Java code to Kotlin code.
 
 
 ## Decision
@@ -64,5 +64,5 @@ Proposed
 - Execution speed and memory usage won't be optimal (but that won't be required)
 - We'll have access to LOTS of documentation
 - Coding may be a bit longer and produce more boilerplate than in C# or Kotlin, but we can likely live with those consequences.
-- We can at least always convert to Kotlin when desired (there are no tools I know of that convert Kotlin to Java :/)
+- We can at least always convert to Kotlin when desired (there are no tools I know of that convert Kotlin to Java :/ )
 - The code will be able to run with few if any modifications for years, as Java prizes backwards compatibility higher than C# or Kotlin.
