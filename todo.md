@@ -8,3 +8,4 @@
 8) Ubiquitous Language?
 9) Create Scrumboard (Git? Trello?)
 10) Possibly ERDs and/or DDD-like class diagrams
+11) Create/add simple frontend
