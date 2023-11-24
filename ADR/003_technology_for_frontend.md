@@ -48,7 +48,7 @@ React vs Next.js
 
 If I search the internet, the advice seems to be that Next.js is especially useful when you want to work with SEO and want to statically render many pages, and React is more convenient for other cases. Here, we are not making a WebApp for the world but for internal use, so SEO is not relevant here. So the bigger advantage here would be in React's quantity of Stack Overflow answers and its wide variety of libraries.
 
-If we choose React, a related question is how to create the apps with it. The original way, 'create-react-app,' has had security issues for years. Nowadays, you might use Vite or Next.js, possibly Bun. Vite seems very popular at the moment, and we already have experience with it in Java. It also builds very quickly, so it also saves development time. Competitors like Webpack are slower, Gulp is much less popular - Vite seems like a good choice for now.
+If we choose React, a related question is how to create the apps with it. The original way, 'create-react-app,' has had security issues for years. Nowadays, you might use Vite or Next.js, possibly Bun. Vite seems very popular at the moment, and we already have experience with it in the Java groups. It also builds very quickly (using the SWC option), so it also saves development time. Competitors like Webpack are slower, Gulp is much less popular - Vite seems like a good choice for now.
 
 I prefer to postpone the choice of CSS frameworks and the like until we have a working 'tracer bullet.'
 
@@ -64,7 +64,7 @@ On the other hand, users generally seem enthusiastic about TypeScript, at least 
 
 A spike/experiment of a few hours of React with JS vs React with TS might be the best here.
 
-A third way would be to try JavaScript, and if it turns out that the lack of types causes problems, use the same solution as the Svelte team: JSDoc (https://www.prisma.io/blog/type-safe-js-with-jsdoc-typeSaf3js / https://dev.to/t7yang/type-safety-in-javascript-with-jsdoc-and-vscode-1a28). Now, JSDoc also provides extra types (possibly more than with TypeScript), but it has the advantage that you can also use regular JavaScript code.
+A third way would be to try JavaScript, and if it turns out that the lack of types causes problems, use the same solution as the Svelte team: JSDoc (https://www.prisma.io/blog/type-safe-js-with-jsdoc-typeSaf3js / https://dev.to/t7yang/type-safety-in-javascript-with-jsdoc-and-vscode-1a28). JSDoc also provides types, but it has the advantage that you can also use regular JavaScript code.
 
 Finally, there would also be the option to start with JavaScript for quick initial code development, but migrating/converting to TypeScript when functionality stabilizes.
 
@@ -76,6 +76,9 @@ So, to investigate:
 
 
 ## Decision
+- React 
+- Vite with SWC
+- ?TypeScript or JavaScript
 
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
