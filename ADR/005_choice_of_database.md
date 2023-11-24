@@ -4,7 +4,7 @@
 ## Context
 Tracking attendance requires a database.
 
-Generally, for smallish projects with traditional data, traditional SQL databases are good enough; we should not need document database, graph databases, column databases, key-value stores or whatever exotic techniques there are.
+Generally, for smallish projects with traditional data, traditional SQL databases are good enough; we should not need document databases, graph databases, column databases, key-value stores or whatever exotic techniques there are.
 
 Of course, using tried and tested techniques also helps greatly when troubleshooting using Stack Overflow.
 
