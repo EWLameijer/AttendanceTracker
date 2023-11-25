@@ -12,7 +12,6 @@
 
 Programmatically:
 
-- handle unknown status student (not filled in yet)
 - add personnel class as well as AttendanceRegistration
 - change status (coach view) (default coach: Juan?)
 - filling in students (teacher view)

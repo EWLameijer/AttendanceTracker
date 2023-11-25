@@ -49,7 +49,6 @@ public class ScheduledDateController {
                         readableAttendances.stream()
                                 .filter(a -> a.name().equals(studentName))
                                 .findFirst().orElse(new AttendanceDto(studentName, "NOT REGISTERED YET")));
-
             }
             groupDtos.add(new GroupDto(groupName, groupAttendances));
         }
