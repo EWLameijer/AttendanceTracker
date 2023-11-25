@@ -1,6 +1,6 @@
 1) Scenarios and personas would be helpful
 2) Wireframes would help
-3) Coding conventions may be useful, including hor/vert slicing,
+3) Coding conventions may be useful, including hor/vert slicing, KISS/YAGNI etc.
 4) plugins IntelliJ
 5) plugins VS Code
 6) IntelliJ: actions on save & other settings
