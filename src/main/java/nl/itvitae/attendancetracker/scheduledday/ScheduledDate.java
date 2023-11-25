@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import nl.itvitae.attendancetracker.group.Group;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -31,5 +32,9 @@ public class ScheduledDate {
 
     public void addGroup(Group group) {
         presentGroups.add(group);
+    }
+
+    public void addGroups(Collection<Group> group) {
+        presentGroups.addAll(group);
     }
 }

@@ -1,20 +1,35 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { Group } from './Group';
+import GroupElement from './GroupElement';
 
-interface Attendance {
-    name: string,
-    status: string
-}
+
+const capitalize = (text: string) => text[0].toUpperCase() + text.substring(1)
 
 const Dates = () => {
-    const [attendances, setAttendances] = useState<Attendance[]>([])
+    const [groups, setGroups] = useState<Group[]>([])
+    const [date, setDate] = useState<Date | undefined>()
+
     useEffect(() => {
-        axios.get("http://localhost:8080/days/2023-11-27").then(response => {
-            setAttendances(response.data.attendances);
+        axios.get('http://localhost:8080/days/2023-11-27').then(response => {
+            setDate(new Date(response.data.date))
+            setGroups(response.data.groups);
         });
     }, []);
 
-    return <ol>{attendances.map(attendance => <li key={attendance.name}>{attendance.name}: {attendance.status} </li>)}</ol>
+    const options: Intl.DateTimeFormatOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    }
+
+    return date ?
+        <>
+            < h2 > {capitalize(date.toLocaleDateString("nl-NL", options))}</h2 >
+            <ol>{groups.map(group => <li key={group.name}><GroupElement group={group} /></li>)}</ol>
+        </>
+        : <p>Loading...</p>
 }
 
 export default Dates;

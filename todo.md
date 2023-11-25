@@ -12,10 +12,11 @@
 
 Programmatically:
 
-- frontend showing students
-- day can be today (or hardcoded to 2023-11-27)
-- for now: List of student name and status. Fancy graphics for later
-
-// Will likely need attendanceReports
-(Wubbo reported presence on date/time)
-But skip that for now.
+- handle unknown status student (not filled in yet)
+- add personnel class as well as AttendanceRegistration
+- change status (coach view) (default coach: Juan?)
+- filling in students (teacher view)
+- Fancy graphics for showing student status
+  // Will likely need attendanceReports
+  (Wubbo reported presence on date/time)
+  But skip that for now.
