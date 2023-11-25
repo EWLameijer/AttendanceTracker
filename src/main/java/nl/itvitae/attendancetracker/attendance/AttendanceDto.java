@@ -1,11 +1,18 @@
 package nl.itvitae.attendancetracker.attendance;
 
-public record AttendanceDto(String name, String status) {
-    public static AttendanceDto from(Object rawAttendance) {
-        if (rawAttendance instanceof LateAttendance lateAttendance) {
-            return new AttendanceDto(lateAttendance.getStudent().getName(), lateAttendance.getArrival().toString());
-        } else if (rawAttendance instanceof TypeOfAttendance typeOfAttendance) {
-            return new AttendanceDto(typeOfAttendance.getStudent().getName(), typeOfAttendance.getStatus().name());
-        } else throw new IllegalArgumentException("Attendance object incorrect!");
+import java.time.LocalDateTime;
+
+public record AttendanceDto(String name, String status, String by, LocalDateTime timeOfRegistration) {
+    public static AttendanceDto from(AttendanceRegistration attendanceRegistration) {
+        var by = attendanceRegistration.getPersonnel().getName();
+        var registrationTime = attendanceRegistration.getDateTime();
+        var studentName = attendanceRegistration.getAttendance().getStudent().getName();
+        var attendance = attendanceRegistration.getAttendance();
+        var status = switch (attendance) {
+            case LateAttendance lateAttendance -> lateAttendance.getArrival().toString();
+            case TypeOfAttendance typeOfAttendance -> typeOfAttendance.getStatus().toString();
+            default -> throw new IllegalArgumentException("Attendance type missing!");
+        };
+        return new AttendanceDto(studentName, status, by, registrationTime);
     }
 }

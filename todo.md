@@ -12,10 +12,7 @@
 
 Programmatically:
 
-- add personnel class as well as AttendanceRegistration
 - change status (coach view) (default coach: Juan?)
+- allow coach to change status
 - filling in students (teacher view)
 - Fancy graphics for showing student status
-  // Will likely need attendanceReports
-  (Wubbo reported presence on date/time)
-  But skip that for now.

@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker.scheduledday;
+package nl.itvitae.attendancetracker.scheduleddate;
 
 import nl.itvitae.attendancetracker.group.GroupDto;
 

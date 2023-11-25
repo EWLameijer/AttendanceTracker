@@ -3,7 +3,7 @@ package nl.itvitae.attendancetracker.attendance;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nl.itvitae.attendancetracker.scheduledday.ScheduledDate;
+import nl.itvitae.attendancetracker.scheduleddate.ScheduledDate;
 import nl.itvitae.attendancetracker.student.Student;
 
 import java.util.UUID;

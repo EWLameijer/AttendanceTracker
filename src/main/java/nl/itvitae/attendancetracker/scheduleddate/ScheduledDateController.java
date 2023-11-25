@@ -1,10 +1,9 @@
-package nl.itvitae.attendancetracker.scheduledday;
+package nl.itvitae.attendancetracker.scheduleddate;
 
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.attendance.Attendance;
 import nl.itvitae.attendancetracker.attendance.AttendanceDto;
-import nl.itvitae.attendancetracker.attendance.AttendanceRepository;
+import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationRepository;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupDto;
 import nl.itvitae.attendancetracker.student.Student;
@@ -16,13 +15,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 @RestController
-@RequestMapping("days")
+@RequestMapping("dates")
 @RequiredArgsConstructor
 @CrossOrigin("http://localhost:5173")
 public class ScheduledDateController {
     private final ScheduledDateRepository scheduledDateRepository;
 
-    private final AttendanceRepository<Attendance> attendanceRepository;
+    private final AttendanceRegistrationRepository attendanceRegistrationRepository;
 
     @GetMapping
     public Iterable<ScheduledDate> getAll() {
@@ -35,7 +34,7 @@ public class ScheduledDateController {
         var possibleDate = scheduledDateRepository.findByDate(date);
         if (possibleDate.isEmpty()) return null; // not found
         var scheduledDate = possibleDate.get();
-        var attendances = attendanceRepository.findByDate(scheduledDate);
+        var attendances = attendanceRegistrationRepository.findByAttendanceDate(scheduledDate);
         var groups = scheduledDate.getPresentGroups().stream().sorted(Comparator.comparing(Group::getName)).toList();
         var readableAttendances = attendances.stream().map(AttendanceDto::from).toList();
 
@@ -48,7 +47,8 @@ public class ScheduledDateController {
                 groupAttendances.add(
                         readableAttendances.stream()
                                 .filter(a -> a.name().equals(studentName))
-                                .findFirst().orElse(new AttendanceDto(studentName, "NOT REGISTERED YET")));
+                                .max(Comparator.comparing(AttendanceDto::timeOfRegistration))
+                                .orElse(new AttendanceDto(studentName, "NOT REGISTERED YET", null, null)));
             }
             groupDtos.add(new GroupDto(groupName, groupAttendances));
         }
