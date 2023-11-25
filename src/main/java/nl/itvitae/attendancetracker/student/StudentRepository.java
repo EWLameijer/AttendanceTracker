@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker;
+package nl.itvitae.attendancetracker.student;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

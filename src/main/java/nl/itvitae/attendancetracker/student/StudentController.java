@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker;
+package nl.itvitae.attendancetracker.student;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
