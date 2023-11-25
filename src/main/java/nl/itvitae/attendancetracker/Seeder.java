@@ -37,11 +37,12 @@ public class Seeder implements CommandLineRunner {
             var arie = new Student("Arie", java);
             var bas = new Student("Bas", java);
             var celia = new Student("Celine", cyber);
+            var xerxes = new Student("Xerxes", cyber);
             var david = new Student("David", data);
             var eduard = new Student("Eduard", data);
             var filippa = new Student("Filippa", data);
             studentRepository.saveAll(List.of(
-                    arie, bas, celia, david, eduard, filippa
+                    arie, bas, celia, david, eduard, filippa, xerxes
             ));
 
             var scheduledDay = new ScheduledDate(LocalDate.of(2023, 11, 27));

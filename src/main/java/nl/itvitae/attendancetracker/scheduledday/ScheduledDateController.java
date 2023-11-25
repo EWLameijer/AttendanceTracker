@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 @RestController
@@ -35,13 +36,23 @@ public class ScheduledDateController {
         if (possibleDate.isEmpty()) return null; // not found
         var scheduledDate = possibleDate.get();
         var attendances = attendanceRepository.findByDate(scheduledDate);
-        var groups = scheduledDate.getPresentGroups().stream().sorted(Comparator.comparing(Group::getName));
+        var groups = scheduledDate.getPresentGroups().stream().sorted(Comparator.comparing(Group::getName)).toList();
         var readableAttendances = attendances.stream().map(AttendanceDto::from).toList();
-        var groupDtos = groups.map(group ->
-                new GroupDto(group.getName(),
-                        readableAttendances.stream().filter(
-                                        attendance -> group.getMembers().stream().map(Student::getName).toList().contains(attendance.name()))
-                                .toList())).toList();
+
+        var groupDtos = new ArrayList<GroupDto>();
+        for (Group group : groups) {
+            var groupName = group.getName();
+            var groupAttendances = new ArrayList<AttendanceDto>();
+            for (Student student : group.getMembers()) {
+                var studentName = student.getName();
+                groupAttendances.add(
+                        readableAttendances.stream()
+                                .filter(a -> a.name().equals(studentName))
+                                .findFirst().orElse(new AttendanceDto(studentName, "NOT REGISTERED YET")));
+
+            }
+            groupDtos.add(new GroupDto(groupName, groupAttendances));
+        }
         return new ScheduledDateDto(date, groupDtos);
     }
 }
