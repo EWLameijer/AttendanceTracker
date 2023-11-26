@@ -10,6 +10,8 @@ import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
 import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
+import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
+import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.scheduleddate.ScheduledDate;
 import nl.itvitae.attendancetracker.scheduleddate.ScheduledDateRepository;
 import nl.itvitae.attendancetracker.student.Student;
@@ -33,6 +35,8 @@ public class Seeder implements CommandLineRunner {
     private final AttendanceRegistrationService attendanceRegistrationService;
 
     private final PersonnelRepository personnelRepository;
+
+    private final ScheduledClassRepository scheduledClassRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -59,7 +63,11 @@ public class Seeder implements CommandLineRunner {
             personnelRepository.saveAll(List.of(wubbo, niels, dan, juan));
 
             var scheduledDay = new ScheduledDate(LocalDate.of(2023, 11, 27));
-            scheduledDay.addGroups(List.of(java, cyber, data));
+            var javaClass = new ScheduledClass(java, wubbo);
+            var cyberClass = new ScheduledClass(cyber, niels);
+            var dataClass = new ScheduledClass(data, dan);
+            scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
+            scheduledDay.addClasses(List.of(javaClass, cyberClass, dataClass));
             scheduledDayRepository.save(scheduledDay);
             var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDay, juan, AttendanceStatus.SICK);
             var basAttendance = new LateAttendanceRegistration(bas, scheduledDay, wubbo, LocalTime.of(10, 30));

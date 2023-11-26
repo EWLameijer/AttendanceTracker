@@ -18,8 +18,9 @@ export const displayAttendance = (attendance: Attendance) =>
     `${attendance.studentName}: ${translateAttendanceStatus(attendance.status)}` +
     (attendance.personnelName ? ` - ${attendance.personnelName} (${formatTime(attendance.timeOfRegistration)})` : "");
 
-export interface Group {
-    name: string,
+export interface Class {
+    groupName: string,
+    teacherName: string,
     attendances: Attendance[]
 }
 function formatTime(timeOfRegistration: string) {

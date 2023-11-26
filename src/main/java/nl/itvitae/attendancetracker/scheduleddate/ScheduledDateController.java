@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationRepository;
-import nl.itvitae.attendancetracker.group.Group;
-import nl.itvitae.attendancetracker.group.GroupDto;
+import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
+import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
 import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +36,12 @@ public class ScheduledDateController {
         if (possibleDate.isEmpty()) return null; // not found
         var scheduledDate = possibleDate.get();
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(scheduledDate);
-        var groups = scheduledDate.getPresentGroups();
+        var classes = scheduledDate.getClasses();
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
-        var groupDtos = new ArrayList<GroupDto>();
-        for (Group group : groups) {
+        var classDtos = new ArrayList<ScheduledClassDto>();
+        for (ScheduledClass scheduledClass : classes) {
+            var group = scheduledClass.getGroup();
             var groupName = group.getName();
             var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
             for (Student student : group.getMembers()) {
@@ -51,8 +52,8 @@ public class ScheduledDateController {
                                 .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
                                 .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null)));
             }
-            groupDtos.add(new GroupDto(groupName, groupAttendances));
+            classDtos.add(new ScheduledClassDto(groupName, scheduledClass.getTeacher().getName(), groupAttendances));
         }
-        return new ScheduledDateDto(date, groupDtos);
+        return new ScheduledDateDto(date, classDtos);
     }
 }

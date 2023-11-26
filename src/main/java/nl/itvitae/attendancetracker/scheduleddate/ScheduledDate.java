@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nl.itvitae.attendancetracker.group.Group;
+import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -24,17 +24,17 @@ public class ScheduledDate {
 
     @ManyToMany
     @JsonManagedReference
-    Set<Group> presentGroups = new HashSet<>();
+    Set<ScheduledClass> classes = new HashSet<>();
 
     public ScheduledDate(LocalDate date) {
         this.date = date;
     }
 
-    public void addGroup(Group group) {
-        presentGroups.add(group);
+    public void addClass(ScheduledClass scheduledClass) {
+        classes.add(scheduledClass);
     }
 
-    public void addGroups(Collection<Group> group) {
-        presentGroups.addAll(group);
+    public void addClasses(Collection<ScheduledClass> scheduledClasses) {
+        classes.addAll(scheduledClasses);
     }
 }

@@ -1,19 +1,19 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Group } from './Group';
+import { Class } from './Class';
 import GroupElement from './GroupElement';
 
 
 const capitalize = (text: string) => text[0].toUpperCase() + text.substring(1)
 
 const Dates = () => {
-    const [groups, setGroups] = useState<Group[]>([])
+    const [classes, setClasses] = useState<Class[]>([])
     const [date, setDate] = useState<Date | undefined>()
 
     useEffect(() => {
         axios.get('http://localhost:8080/dates/2023-11-27').then(response => {
             setDate(new Date(response.data.date))
-            setGroups(response.data.groups);
+            setClasses(response.data.classes);
         });
     }, []);
 
@@ -28,7 +28,8 @@ const Dates = () => {
         <>
             <h2>Hallo Juan!</h2>
             <h3>{capitalize(date.toLocaleDateString("nl-NL", options))}</h3 >
-            <ol>{groups.sort((a,b) => a.name.localeCompare(b.name)).map(group => <li key={group.name}><GroupElement group={group} /></li>)}</ol>
+            <ol>{classes.sort((a, b) => a.groupName.localeCompare(b.groupName)).map(currentClass =>
+                <li key={currentClass.groupName}><GroupElement currentClass={currentClass} /></li>)}</ol>
         </>
         : <p>Loading...</p>
 }

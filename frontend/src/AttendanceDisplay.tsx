@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Attendance, displayAttendance } from './Group.ts';
+import { Attendance, displayAttendance } from './Class.ts';
 import axios from 'axios';
 
 const statusToAbbreviation = new Map<string, string>([
