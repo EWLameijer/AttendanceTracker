@@ -26,8 +26,9 @@ const Dates = () => {
 
     return date ?
         <>
-            <h2>{capitalize(date.toLocaleDateString("nl-NL", options))}</h2 >
-            <ol>{groups.map(group => <li key={group.name}><GroupElement group={group} /></li>)}</ol>
+            <h2>Hallo Juan!</h2>
+            <h3>{capitalize(date.toLocaleDateString("nl-NL", options))}</h3 >
+            <ol>{groups.sort((a,b) => a.name.localeCompare(b.name)).map(group => <li key={group.name}><GroupElement group={group} /></li>)}</ol>
         </>
         : <p>Loading...</p>
 }

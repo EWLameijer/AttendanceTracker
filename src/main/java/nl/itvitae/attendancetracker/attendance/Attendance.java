@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
-public abstract class Attendance {
+public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

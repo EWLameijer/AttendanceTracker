@@ -1,9 +1,10 @@
 package nl.itvitae.attendancetracker;
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationService;
 import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
+import nl.itvitae.attendancetracker.attendance.LateAttendanceRegistration;
+import nl.itvitae.attendancetracker.attendance.TypeOfAttendanceRegistration;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
@@ -60,12 +61,12 @@ public class Seeder implements CommandLineRunner {
             var scheduledDay = new ScheduledDate(LocalDate.of(2023, 11, 27));
             scheduledDay.addGroups(List.of(java, cyber, data));
             scheduledDayRepository.save(scheduledDay);
-            var ariesAttendance = new AttendanceRegistration(juan, arie, scheduledDay, AttendanceStatus.SICK);
-            var basAttendance = new AttendanceRegistration(wubbo, bas, scheduledDay, LocalTime.of(10, 30));
-            var celiasAttendance = new AttendanceRegistration(niels, celia, scheduledDay, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
-            var davidsAttendance = new AttendanceRegistration(dan, david, scheduledDay, AttendanceStatus.PRESENT);
-            var eduardsAttendance = new AttendanceRegistration(juan, eduard, scheduledDay, AttendanceStatus.ABSENT_WITH_NOTICE);
-            var filippasAttendance = new AttendanceRegistration(juan, filippa, scheduledDay, AttendanceStatus.WORKING_FROM_HOME);
+            var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDay, juan, AttendanceStatus.SICK);
+            var basAttendance = new LateAttendanceRegistration(bas, scheduledDay, wubbo, LocalTime.of(10, 30));
+            var celiasAttendance = new TypeOfAttendanceRegistration(celia, scheduledDay, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+            var davidsAttendance = new TypeOfAttendanceRegistration(david, scheduledDay, dan, AttendanceStatus.PRESENT);
+            var eduardsAttendance = new TypeOfAttendanceRegistration(eduard, scheduledDay, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
+            var filippasAttendance = new TypeOfAttendanceRegistration(filippa, scheduledDay, juan, AttendanceStatus.WORKING_FROM_HOME);
             attendanceRegistrationService.saveAll(List.of(ariesAttendance, basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
             System.out.println("Students seeded!");
         }

@@ -9,13 +9,12 @@ import nl.itvitae.attendancetracker.scheduleddate.ScheduledDate;
 import nl.itvitae.attendancetracker.student.Student;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
 @Getter
-public class AttendanceRegistration {
+public abstract class AttendanceRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -35,12 +34,7 @@ public class AttendanceRegistration {
         this.attendance = attendance;
     }
 
-    public AttendanceRegistration(Personnel personnel, Student student, ScheduledDate date, LocalTime lateAttendance) {
-        this(personnel, new LateAttendance(student, date, lateAttendance));
+    public AttendanceRegistration(Student student, ScheduledDate date, Personnel personnel) {
+        this(personnel, new Attendance(student, date));
     }
-
-    public AttendanceRegistration(Personnel personnel, Student student, ScheduledDate date, AttendanceStatus status) {
-        this(personnel, new TypeOfAttendance(student, date, status));
-    }
-
 }

@@ -3,6 +3,7 @@ package nl.itvitae.attendancetracker.scheduleddate;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.AttendanceDto;
+import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationRepository;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupDto;
@@ -21,7 +22,7 @@ import java.util.Comparator;
 public class ScheduledDateController {
     private final ScheduledDateRepository scheduledDateRepository;
 
-    private final AttendanceRegistrationRepository attendanceRegistrationRepository;
+    private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
 
     @GetMapping
     public Iterable<ScheduledDate> getAll() {
@@ -34,9 +35,9 @@ public class ScheduledDateController {
         var possibleDate = scheduledDateRepository.findByDate(date);
         if (possibleDate.isEmpty()) return null; // not found
         var scheduledDate = possibleDate.get();
-        var attendances = attendanceRegistrationRepository.findByAttendanceDate(scheduledDate);
-        var groups = scheduledDate.getPresentGroups().stream().sorted(Comparator.comparing(Group::getName)).toList();
-        var readableAttendances = attendances.stream().map(AttendanceDto::from).toList();
+        var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(scheduledDate);
+        var groups = scheduledDate.getPresentGroups();
+        var readableAttendances = attendanceRegistrations.stream().map(AttendanceDto::from).toList();
 
         var groupDtos = new ArrayList<GroupDto>();
         for (Group group : groups) {

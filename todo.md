@@ -12,7 +12,7 @@
 
 Programmatically:
 
-- change status (coach view) (default coach: Juan?)
+- check submitted status (case-insensitive) on proper value
 - allow coach to change status
 - filling in students (teacher view)
 - Fancy graphics for showing student status

@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-interface AttendanceRepository<T extends Attendance> extends CrudRepository<T, UUID> {
+interface AttendanceRepository extends CrudRepository<Attendance, UUID> {
     Optional<Attendance> findByStudentAndDate(Student student, ScheduledDate date);
 }

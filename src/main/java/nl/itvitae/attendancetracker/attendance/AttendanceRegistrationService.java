@@ -9,9 +9,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AttendanceRegistrationService {
 
-    private final AttendanceRepository<Attendance> attendanceRepository;
+    private final AttendanceRepository attendanceRepository;
 
-    private final AttendanceRegistrationRepository attendanceRegistrationRepository;
+    private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
 
     public void saveAll(List<AttendanceRegistration> attendanceRegistrations) {
         for (AttendanceRegistration attendanceRegistration : attendanceRegistrations) {

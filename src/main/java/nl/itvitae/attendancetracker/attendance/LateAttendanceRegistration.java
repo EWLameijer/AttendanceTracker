@@ -3,6 +3,7 @@ package nl.itvitae.attendancetracker.attendance;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.scheduleddate.ScheduledDate;
 import nl.itvitae.attendancetracker.student.Student;
 
@@ -11,11 +12,11 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor
-class LateAttendance extends Attendance {
+public class LateAttendanceRegistration extends AttendanceRegistration {
     private LocalTime arrival;
 
-    public LateAttendance(Student student, ScheduledDate date, LocalTime arrival) {
-        super(student, date);
+    public LateAttendanceRegistration(Student student, ScheduledDate date, Personnel personnel, LocalTime arrival) {
+        super(student, date, personnel);
         this.arrival = arrival;
     }
 }
