@@ -2,9 +2,10 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Class } from './Class';
 import GroupElement from './GroupElement';
+import { capitalize, dateOptions } from './utils';
 
 
-const capitalize = (text: string) => text[0].toUpperCase() + text.substring(1)
+
 
 const Dates = () => {
     const [classes, setClasses] = useState<Class[]>([])
@@ -17,17 +18,12 @@ const Dates = () => {
         });
     }, []);
 
-    const options: Intl.DateTimeFormatOptions = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    }
+
 
     return date ?
         <>
             <h2>Hallo Juan!</h2>
-            <h3>{capitalize(date.toLocaleDateString("nl-NL", options))}</h3 >
+            <h3>{capitalize(date.toLocaleDateString("nl-NL", dateOptions))}</h3 >
             <ol>{classes.sort((a, b) => a.groupName.localeCompare(b.groupName)).map(currentClass =>
                 <li key={currentClass.groupName}><GroupElement currentClass={currentClass} personnelName='Juan' /></li>)}</ol>
         </>
