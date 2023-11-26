@@ -12,7 +12,8 @@
 
 Programmatically:
 
-- check submitted status (case-insensitive) on proper value
-- allow coach to change status
+- factor out frontend attendance element. Possibly put it all
+  in the StatusChanger, calling it Attendance?
+- let status be updated automatically when submitting(to parent!)
 - filling in students (teacher view)
 - Fancy graphics for showing student status

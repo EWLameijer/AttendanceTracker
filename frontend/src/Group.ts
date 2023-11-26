@@ -14,8 +14,8 @@ const translateAttendanceStatus = (status: string) => ({
     "WORKING_FROM_HOME": "werkt thuis"
 }[status] ?? "TE LAAT - " + status)
 
-export const displayAttendance = (attendance: Attendance) => 
-    `${attendance.name}: ${translateAttendanceStatus(attendance.status)}` + (attendance.by ? ` - ${attendance.by} (${formatTime(attendance.timeOfRegistration)})` : ""); 
+export const displayAttendance = (attendance: Attendance) =>
+    `${attendance.name}: ${translateAttendanceStatus(attendance.status)}` + (attendance.by ? ` - ${attendance.by} (${formatTime(attendance.timeOfRegistration)})` : "");
 
 export interface Group {
     name: string,

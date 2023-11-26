@@ -15,13 +15,17 @@ public class AttendanceRegistrationService {
 
     public void saveAll(List<AttendanceRegistration> attendanceRegistrations) {
         for (AttendanceRegistration attendanceRegistration : attendanceRegistrations) {
-            var attendance = attendanceRegistration.getAttendance();
-            var student = attendance.getStudent();
-            var date = attendance.getDate();
-            var possibleAttendance = attendanceRepository.findByStudentAndDate(student, date);
-            var savedAttendance = possibleAttendance.orElseGet(() -> attendanceRepository.save(attendance));
-            attendanceRegistration.setAttendance(savedAttendance);
-            attendanceRegistrationRepository.save(attendanceRegistration);
+            save(attendanceRegistration);
         }
+    }
+
+    public void save(AttendanceRegistration attendanceRegistration) {
+        var attendance = attendanceRegistration.getAttendance();
+        var student = attendance.getStudent();
+        var date = attendance.getDate();
+        var possibleAttendance = attendanceRepository.findByStudentAndDate(student, date);
+        var savedAttendance = possibleAttendance.orElseGet(() -> attendanceRepository.save(attendance));
+        attendanceRegistration.setAttendance(savedAttendance);
+        attendanceRegistrationRepository.save(attendanceRegistration);
     }
 }
