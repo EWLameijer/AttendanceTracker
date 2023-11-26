@@ -30,7 +30,7 @@ public class AttendanceController {
     private final PersonnelRepository personnelRepository;
 
     @PostMapping
-    public ResponseEntity<AttendanceRegistrationOutputDto> register(
+    public ResponseEntity<AttendanceRegistrationDto> register(
             @RequestBody AttendanceRegistrationDto attendanceRegistrationDto,
             UriComponentsBuilder ucb
     ) {
@@ -57,11 +57,13 @@ public class AttendanceController {
                 .path("attendances/{id}")
                 .buildAndExpand(attendanceRegistration.getId())
                 .toUri();
-        return ResponseEntity.created(locationOfNewReview).body(new AttendanceRegistrationOutputDto(
+        return ResponseEntity.created(locationOfNewReview).body(new AttendanceRegistrationDto(
                 attendanceRegistration.getId(),
                 attendanceRegistrationDto.studentName(),
                 attendanceRegistrationDto.date(),
-                attendanceRegistrationDto.status()
+                attendanceRegistrationDto.status(),
+                attendanceRegistrationDto.personnelName(),
+                attendanceRegistration.getDateTime().toString()
         ));
     }
 

@@ -2,8 +2,8 @@ package nl.itvitae.attendancetracker.scheduleddate;
 
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.attendance.AttendanceDto;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
+import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationRepository;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupDto;
@@ -37,19 +37,19 @@ public class ScheduledDateController {
         var scheduledDate = possibleDate.get();
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(scheduledDate);
         var groups = scheduledDate.getPresentGroups();
-        var readableAttendances = attendanceRegistrations.stream().map(AttendanceDto::from).toList();
+        var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var groupDtos = new ArrayList<GroupDto>();
         for (Group group : groups) {
             var groupName = group.getName();
-            var groupAttendances = new ArrayList<AttendanceDto>();
+            var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
             for (Student student : group.getMembers()) {
                 var studentName = student.getName();
                 groupAttendances.add(
                         readableAttendances.stream()
-                                .filter(a -> a.name().equals(studentName))
-                                .max(Comparator.comparing(AttendanceDto::timeOfRegistration))
-                                .orElse(new AttendanceDto(studentName, "NOT REGISTERED YET", null, null)));
+                                .filter(a -> a.studentName().equals(studentName))
+                                .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
+                                .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null)));
             }
             groupDtos.add(new GroupDto(groupName, groupAttendances));
         }

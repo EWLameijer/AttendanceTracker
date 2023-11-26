@@ -12,8 +12,5 @@
 
 Programmatically:
 
-- factor out frontend attendance element. Possibly put it all
-  in the StatusChanger, calling it Attendance?
-- let status be updated automatically when submitting(to parent!)
 - filling in students (teacher view)
 - Fancy graphics for showing student status

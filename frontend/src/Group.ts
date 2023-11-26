@@ -1,7 +1,7 @@
 export interface Attendance {
-    name: string,
+    studentName: string,
     status: string,
-    by: string,
+    personnelName: string,
     timeOfRegistration: string
 }
 
@@ -15,7 +15,8 @@ const translateAttendanceStatus = (status: string) => ({
 }[status] ?? "TE LAAT - " + status)
 
 export const displayAttendance = (attendance: Attendance) =>
-    `${attendance.name}: ${translateAttendanceStatus(attendance.status)}` + (attendance.by ? ` - ${attendance.by} (${formatTime(attendance.timeOfRegistration)})` : "");
+    `${attendance.studentName}: ${translateAttendanceStatus(attendance.status)}` +
+    (attendance.personnelName ? ` - ${attendance.personnelName} (${formatTime(attendance.timeOfRegistration)})` : "");
 
 export interface Group {
     name: string,

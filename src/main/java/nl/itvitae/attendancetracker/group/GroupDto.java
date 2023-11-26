@@ -1,8 +1,8 @@
 package nl.itvitae.attendancetracker.group;
 
-import nl.itvitae.attendancetracker.attendance.AttendanceDto;
+import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
 
 import java.util.List;
 
-public record GroupDto(String name, List<AttendanceDto> attendances) {
+public record GroupDto(String name, List<AttendanceRegistrationDto> attendances) {
 }

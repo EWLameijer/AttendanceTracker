@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Attendance } from './Group.ts';
+import { Attendance, displayAttendance } from './Group.ts';
 import axios from 'axios';
 
 const statusToAbbreviation = new Map<string, string>([
@@ -16,49 +16,54 @@ const toStatusAbbreviation = (statusText: string) => statusToAbbreviation.get(st
 const isValidAbbreviation = (abbreviation: string) => {
     const statusAbbreviations = statusToAbbreviation.values();
     if ([...statusAbbreviations].includes(abbreviation.toLocaleLowerCase())) return true;
-    const digits = abbreviation.split("").filter(a => a >= '0' && a <= '9')
+    const digits = extractDigits(abbreviation);
     return digits.length == 4 && digits[0] == '1' && digits[1] <= '5' && digits[2] <= '5';
 }
 
+const extractDigits = (text: string) => text.split("").filter(a => a >= '0' && a <= '9');
+
 const format = (abbreviation: string) => {
-    const digits = abbreviation.split("").filter(a => a >= '0' && a <= '9');
+    const digits = extractDigits(abbreviation);
     if (digits.length == 4) {
-        digits.splice(2, 0, ":")
+        digits.splice(2, 0, ":") // as of 20231126, toSpliced not available in current TypeScript version
         return digits.join("");
     }
-    const fulltext = [...statusToAbbreviation.entries()].find(entry => entry[1] == abbreviation);
-    return fulltext![0];
+    return ([...statusToAbbreviation.entries()].find(entry => entry[1] == abbreviation))![0];
 }
 
-const StatusChanger = (props: { attendance: Attendance }) => {
+const AttendanceDisplay = (props: { attendance: Attendance }) => {
     const [statusAbbreviation, setStatusAbbreviation] = useState<string>(toStatusAbbreviation(props.attendance.status))
+    const [attendance, setAttendance] = useState<Attendance>(props.attendance);
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!statusAbbreviation) return;
         if (!isValidAbbreviation(statusAbbreviation)) {
             alert(`Afkorting '${statusAbbreviation}' is onbekend.`)
+            return
         }
 
         const formattedStatus = format(statusAbbreviation)
         axios.post('http://localhost:8080/attendances', {
-            studentName: props.attendance.name,
+            studentName: attendance.studentName,
             status: formattedStatus,
             personnelName: "Juan",
             date: "2023-11-27"
         }).then(response => {
             setStatusAbbreviation(toStatusAbbreviation(response.data.status));
+            setAttendance(response.data)
         });
     }
 
     const change = (event: React.FormEvent<HTMLInputElement>) => setStatusAbbreviation(event.currentTarget.value)
 
-    return <>
+    return <li>
+        {displayAttendance(attendance)}
         <form onSubmit={submit}>
             <input type="text" value={statusAbbreviation} onChange={change} />
             <input type="submit"></input>
         </form>
-    </>
+    </li>
 }
 
-export default StatusChanger;
+export default AttendanceDisplay;
