@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.personnel.Personnel;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -22,8 +23,11 @@ public class ScheduledClass {
     @ManyToOne
     private Personnel teacher;
 
-    public ScheduledClass(Group group, Personnel teacher) {
+    private LocalDate date;
+
+    public ScheduledClass(Group group, Personnel teacher, LocalDate date) {
         this.group = group;
         this.teacher = teacher;
+        this.date = date;
     }
 }

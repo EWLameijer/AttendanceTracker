@@ -25,6 +25,6 @@ export interface Class {
 }
 function formatTime(timeOfRegistration: string) {
     const date = new Date(timeOfRegistration);
-    return `${date.getDate()}/${date.getMonth()} om ${date.getHours()}:${date.getMinutes()}`
+    return `${date.getDate()}/${date.getMonth()} om ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 

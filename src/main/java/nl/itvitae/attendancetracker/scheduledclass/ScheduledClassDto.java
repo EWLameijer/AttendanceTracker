@@ -4,5 +4,9 @@ import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
 
 import java.util.List;
 
-public record ScheduledClassDto(String groupName, String teacherName, List<AttendanceRegistrationDto> attendances) {
+public record ScheduledClassDto(
+        String groupName,
+        String teacherName,
+        String dateAsString,
+        List<AttendanceRegistrationDto> attendances) {
 }

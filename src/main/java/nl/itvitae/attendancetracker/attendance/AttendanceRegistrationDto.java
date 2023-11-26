@@ -21,7 +21,7 @@ public record AttendanceRegistrationDto(
         return new AttendanceRegistrationDto(
                 attendanceRegistration.getId(),
                 studentName,
-                attendanceRegistration.getAttendance().getDate().getDate().toString(),
+                attendanceRegistration.getAttendance().getDate().toString(),
                 status,
                 by,
                 registrationTime.toString()

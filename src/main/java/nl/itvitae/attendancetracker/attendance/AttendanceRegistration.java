@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.itvitae.attendancetracker.personnel.Personnel;
-import nl.itvitae.attendancetracker.scheduleddate.ScheduledDate;
 import nl.itvitae.attendancetracker.student.Student;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -34,7 +34,7 @@ public abstract class AttendanceRegistration {
         this.attendance = attendance;
     }
 
-    public AttendanceRegistration(Student student, ScheduledDate date, Personnel personnel) {
+    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel) {
         this(personnel, new Attendance(student, date));
     }
 }

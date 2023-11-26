@@ -3,9 +3,9 @@ package nl.itvitae.attendancetracker.attendance;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nl.itvitae.attendancetracker.scheduleddate.ScheduledDate;
 import nl.itvitae.attendancetracker.student.Student;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 
@@ -20,10 +20,9 @@ public class Attendance {
     @ManyToOne
     private Student student;
 
-    @ManyToOne
-    private ScheduledDate date;
+    private LocalDate date;
 
-    public Attendance(Student student, ScheduledDate date) {
+    public Attendance(Student student, LocalDate date) {
         this.student = student;
         this.date = date;
     }

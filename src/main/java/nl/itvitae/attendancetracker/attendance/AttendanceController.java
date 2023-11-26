@@ -3,7 +3,6 @@ package nl.itvitae.attendancetracker.attendance;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
-import nl.itvitae.attendancetracker.scheduleddate.ScheduledDateRepository;
 import nl.itvitae.attendancetracker.student.StudentRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +24,6 @@ public class AttendanceController {
 
     private final StudentRepository studentRepository;
 
-    private final ScheduledDateRepository scheduledDateRepository;
-
     private final PersonnelRepository personnelRepository;
 
     @PostMapping
@@ -39,10 +36,6 @@ public class AttendanceController {
         var student = possibleStudent.get();
 
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(attendanceRegistrationDto.date()));
-        var possibleScheduledDate = scheduledDateRepository.findByDate(date);
-        if (possibleScheduledDate.isEmpty()) // try work with UUIDs instead?
-            throw new IllegalArgumentException("No scheduled date found"); // ProblemDetails?
-        var scheduledDate = possibleScheduledDate.get();
 
         var possiblePersonnel = personnelRepository.findByName(attendanceRegistrationDto.personnelName());
         if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
@@ -50,8 +43,8 @@ public class AttendanceController {
 
         var status = attendanceRegistrationDto.status();
         var attendanceRegistration = status.contains(":") ?
-                new LateAttendanceRegistration(student, scheduledDate, personnel, toLocalTime(status)) :
-                new TypeOfAttendanceRegistration(student, scheduledDate, personnel, toStatus(status));
+                new LateAttendanceRegistration(student, date, personnel, toLocalTime(status)) :
+                new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status));
         attendanceRegistrationService.save(attendanceRegistration);
         URI locationOfNewReview = ucb
                 .path("attendances/{id}")

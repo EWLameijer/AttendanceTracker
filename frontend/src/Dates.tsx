@@ -12,8 +12,8 @@ const Dates = () => {
 
     useEffect(() => {
         axios.get('http://localhost:8080/dates/2023-11-27').then(response => {
-            setDate(new Date(response.data.date))
-            setClasses(response.data.classes);
+            setDate(new Date(response.data[0].dateAsString))
+            setClasses(response.data);
         });
     }, []);
 
