@@ -6,5 +6,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PersonnelRepository extends CrudRepository<Personnel, UUID> {
-    Optional<Personnel> findByName(String name);
+    Optional<Personnel> findByNameIgnoringCase(String name);
 }

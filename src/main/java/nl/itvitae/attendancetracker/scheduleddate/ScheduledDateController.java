@@ -54,39 +54,29 @@ public class ScheduledDateController {
         return classDtos;
     }
 
-//    @GetMapping("{dateAsString}/teachers/{nameOfTeacher}")
-//    public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
-//        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-//        var possibleDate = scheduledDateRepository.findByDate(date);
-//        if (possibleDate.isEmpty()) return null; // not found
-//        var scheduledDate = possibleDate.get();
-//
-//        var possibleTeacher = personnelRepository.findByName(nameOfTeacher);
-//        if (possibleTeacher.isEmpty()) return null; // change to not found
-//        var teacher = possibleTeacher.get();
-//
-//        var group = scheduledDate.getClasses().stream().filter(currentClass -> currentClass.getTeacher().getName().equals(nameOfTeacher)).findFirst().orElseThrow();
-//
-//
-//        var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(scheduledDate);
-//        var classes = scheduledDate.getClasses();
-//        var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
-//
-//        var classDtos = new ArrayList<ScheduledClassDto>();
-//        for (ScheduledClass scheduledClass : classes) {
-//            var group = scheduledClass.getGroup();
-//            var groupName = group.getName();
-//            var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
-//            for (Student student : group.getMembers()) {
-//                var studentName = student.getName();
-//                groupAttendances.add(
-//                        readableAttendances.stream()
-//                                .filter(a -> a.studentName().equals(studentName))
-//                                .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
-//                                .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null)));
-//            }
-//            classDtos.add(new ScheduledClassDto(groupName, scheduledClass.getTeacher().getName(), groupAttendances));
-//        }
-//        return new ScheduledDateDto(date, classDtos);
-//    }
+    @GetMapping("{dateAsString}/teachers/{nameOfTeacher}")
+    public ScheduledClassDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
+        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
+        var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);
+        var possibleTeacher = personnelRepository.findByNameIgnoringCase(nameOfTeacher);
+        if (possibleTeacher.isEmpty()) return null;
+        var teacher = possibleTeacher.get();
+        var possibleClass = scheduledClassRepository.findByDateAndTeacher(date, teacher);
+        if (possibleClass.isEmpty()) return null;
+        var chosenClass = possibleClass.get();
+        var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
+
+        var group = chosenClass.getGroup();
+        var groupName = group.getName();
+        var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
+        for (Student student : group.getMembers()) {
+            var studentName = student.getName();
+            groupAttendances.add(
+                    readableAttendances.stream()
+                            .filter(a -> a.studentName().equals(studentName))
+                            .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
+                            .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null)));
+        }
+        return new ScheduledClassDto(groupName, chosenClass.getTeacher().getName(), date.toString(), groupAttendances);
+    }
 }

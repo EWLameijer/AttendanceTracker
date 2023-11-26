@@ -12,5 +12,4 @@
 
 Programmatically:
 
-- filling in students (teacher view)
 - Fancy graphics for showing student status

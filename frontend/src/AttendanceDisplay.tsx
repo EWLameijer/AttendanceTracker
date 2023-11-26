@@ -31,7 +31,7 @@ const format = (abbreviation: string) => {
     return ([...statusToAbbreviation.entries()].find(entry => entry[1] == abbreviation))![0];
 }
 
-const AttendanceDisplay = (props: { attendance: Attendance }) => {
+const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string }) => {
     const [statusAbbreviation, setStatusAbbreviation] = useState<string>(toStatusAbbreviation(props.attendance.status))
     const [attendance, setAttendance] = useState<Attendance>(props.attendance);
 
@@ -47,7 +47,7 @@ const AttendanceDisplay = (props: { attendance: Attendance }) => {
         axios.post('http://localhost:8080/attendances', {
             studentName: attendance.studentName,
             status: formattedStatus,
-            personnelName: "Juan",
+            personnelName: props.personnelName,
             date: "2023-11-27"
         }).then(response => {
             setStatusAbbreviation(toStatusAbbreviation(response.data.status));

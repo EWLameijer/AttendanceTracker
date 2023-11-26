@@ -37,7 +37,7 @@ public class AttendanceController {
 
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(attendanceRegistrationDto.date()));
 
-        var possiblePersonnel = personnelRepository.findByName(attendanceRegistrationDto.personnelName());
+        var possiblePersonnel = personnelRepository.findByNameIgnoringCase(attendanceRegistrationDto.personnelName());
         if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
         var personnel = possiblePersonnel.get();
 
