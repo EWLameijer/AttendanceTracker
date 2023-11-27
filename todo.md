@@ -12,4 +12,6 @@
 
 Programmatically:
 
+Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-websocket/
+
 - Fancy graphics for showing student status
