@@ -4,21 +4,16 @@ import { Class } from './Class';
 import GroupElement from './GroupElement';
 import { capitalize, dateOptions } from './utils';
 
-
-
-
-const Dates = () => {
+const CoachView = () => {
     const [classes, setClasses] = useState<Class[]>([])
     const [date, setDate] = useState<Date | undefined>()
 
     useEffect(() => {
-        axios.get('http://localhost:8080/dates/2023-11-27').then(response => {
+        axios.get('http://localhost:8080/coach-view/juan/dates/2023-11-27').then(response => {
             setDate(new Date(response.data[0].dateAsString))
             setClasses(response.data);
         });
     }, []);
-
-
 
     return date ?
         <>
@@ -30,4 +25,4 @@ const Dates = () => {
         : <p>Loading...</p>
 }
 
-export default Dates;
+export default CoachView;

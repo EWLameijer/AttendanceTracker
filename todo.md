@@ -11,7 +11,9 @@
 11) Create/add simple frontend
 
 Programmatically:
-Update front-end to use coach-view and teacher-view instead!
+-frontend: haal students-endpoint weg => of transformeer het in
+groups-endpoint
+-? heb ik nog een main page nodig .. misschien voor testen
 
 - fundamentally: basic is view:
     - coach-view/juan/dates/... later remove name for login
@@ -25,4 +27,27 @@ Update front-end to use coach-view and teacher-view instead!
 - window to add dates per group
     - add date and teacher
 
+
 - Fancy graphics for showing student status
+
+## What should likely still be done:
+
+1) The things Juan and the other coaches can think of/need!
+2) ERD
+3) UUID vs Long: research, make ADR
+4) Ubiquitous language (document)
+5) Coding standards (document)
+6) Documents to write down feedback from (potential) users
+7) Wireframes (possibly?)
+8) group administration endpoint and front-end
+9) lesson administration endpoint and front-end
+10) enabling registerer to undo mistaken input
+11) enabling websockets (automatic updating)
+12) allowing viewing historical data of a student
+13) allowing students to be transferred to another group
+14) nicer graphics (this can take a lot of time and effort!)
+15) proper security (JWT)
+16) possibly: adding notes or TODOs for students
+17) deployment on ITvitae-infrastructure
+18) possibly coupling to ITvitae's (Azure?) Active Directory
+19) Finding a way to put historical data (Excel) into the database 

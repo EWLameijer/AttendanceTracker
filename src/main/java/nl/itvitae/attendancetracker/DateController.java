@@ -31,8 +31,8 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("coach-view/{nameOfCoach}/date/{dateAsString}")
-    public List<ScheduledClassDto> getByDate(@PathVariable String dateAsString) {
+    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
+    public List<ScheduledClassDto> getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);
         var classes = scheduledClassRepository.findAllByDate(date);
@@ -56,7 +56,7 @@ public class DateController {
         return classDtos;
     }
 
-    @GetMapping("teacher-view/{nameOfTeacher}/date/{dateAsString}")
+    @GetMapping("teacher-view/{nameOfTeacher}/dates/{dateAsString}")
     public ScheduledClassDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);

@@ -9,7 +9,7 @@ const TeacherView = () => {
     const [date, setDate] = useState<Date | undefined>()
 
     useEffect(() => {
-        axios.get('http://localhost:8080/dates/2023-11-27/teachers/wubbo').then(response => {
+        axios.get('http://localhost:8080/teacher-view/wubbo/dates/2023-11-27').then(response => {
             setChosenClass(response.data);
             setDate(new Date(response.data.dateAsString))
         });
