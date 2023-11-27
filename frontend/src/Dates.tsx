@@ -4,9 +4,6 @@ import { Class } from './Class';
 import GroupElement from './GroupElement';
 import { capitalize, dateOptions } from './utils';
 
-
-
-
 const Dates = () => {
     const [classes, setClasses] = useState<Class[]>([])
     const [date, setDate] = useState<Date | undefined>()
@@ -17,8 +14,6 @@ const Dates = () => {
             setClasses(response.data);
         });
     }, []);
-
-
 
     return date ?
         <>
