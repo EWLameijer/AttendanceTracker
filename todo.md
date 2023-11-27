@@ -18,8 +18,8 @@ groups-endpoint
 - fundamentally: basic is view:
     - coach-view/juan/dates/... later remove name for login
     - teacher-view/wubbo/dates/...
-    - group-admin-view/chantal/groups/...
-    - schedule-admin-view/chantal/groups/...
+    - admin-view/chantal/groups // all
+    - admin-view/chantal/schedules
 - window to edit groups
     - add / remove groups
     - add/remove students from group
@@ -27,8 +27,23 @@ groups-endpoint
 - window to add dates per group
     - add date and teacher
 
-
 - Fancy graphics for showing student status
+
+## Current Branch
+
+// how to handle a student remove?
+// data of the student should still exist
+// is not a POST, skip PUT, not a delete, PATCH?
+Make ProblemDetail by using that Aspect with
+IllegalArgumentException
+
+1) make the remove button remove the member (after confirmation)
+2) add to each group a remove button
+3) make the remove button remove the group (after confirmation)
+4) add below each group one 'add member'-button
+5) make the add button add the member, and then resort the group
+6) start the form with a text field and add group button
+7) make that add group button create a new group
 
 ## What should likely still be done:
 
@@ -50,4 +65,5 @@ groups-endpoint
 16) possibly: adding notes or TODOs for students
 17) deployment on ITvitae-infrastructure
 18) possibly coupling to ITvitae's (Azure?) Active Directory
-19) Finding a way to put historical data (Excel) into the database 
+19) Finding a way to put historical data (Excel) into the database
+20) Exporting certain data to Excel or Word or PDF format?

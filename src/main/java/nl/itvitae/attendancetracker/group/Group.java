@@ -22,7 +22,7 @@ public class Group {
 
     @OneToMany(mappedBy = "currentGroup")
     @JsonManagedReference
-    private Set<Student> members = new HashSet<>();
+    private final Set<Student> members = new HashSet<>();
 
     public Group(String name) {
         this.name = name;
