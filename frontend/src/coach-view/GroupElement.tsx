@@ -1,6 +1,5 @@
-import { Class } from './Class.ts'
+import { Class } from '../Class.ts'
 import AttendanceDisplay from './AttendanceDisplay.tsx';
-
 
 const GroupElement = (props: { currentClass: Class, personnelName: string }) => <>
     <h3>{props.currentClass.groupName}{props.currentClass.teacherName != props.personnelName ? ` (${props.currentClass.teacherName})` : ''}</h3>

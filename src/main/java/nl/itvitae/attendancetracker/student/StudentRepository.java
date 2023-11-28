@@ -6,5 +6,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StudentRepository extends JpaRepository<Student, UUID> {
-    Optional<Student> findByName(String name);
+    Optional<Student> findByNameIgnoringCase(String name);
 }

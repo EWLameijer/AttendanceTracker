@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker.scheduleddate;
+package nl.itvitae.attendancetracker;
 
 
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,10 @@ import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,18 +22,17 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping("dates")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:5173")
-public class ScheduledDateController {
+@CrossOrigin("${at.cors}")
+public class DateController {
     private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
 
     private final ScheduledClassRepository scheduledClassRepository;
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("{dateAsString}")
-    public List<ScheduledClassDto> getByDate(@PathVariable String dateAsString) {
+    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
+    public List<ScheduledClassDto> getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);
         var classes = scheduledClassRepository.findAllByDate(date);
@@ -54,7 +56,7 @@ public class ScheduledDateController {
         return classDtos;
     }
 
-    @GetMapping("{dateAsString}/teachers/{nameOfTeacher}")
+    @GetMapping("teacher-view/{nameOfTeacher}/dates/{dateAsString}")
     public ScheduledClassDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);

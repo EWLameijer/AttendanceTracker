@@ -58,7 +58,7 @@ public class Seeder implements CommandLineRunner {
             var dan = new Personnel("Dan", ATRole.TEACHER);
             personnelRepository.saveAll(List.of(wubbo, niels, dan, juan));
 
-            var scheduledDate = LocalDate.of(2023, 11, 27);
+            var scheduledDate = LocalDate.now();
             var javaClass = new ScheduledClass(java, wubbo, scheduledDate);
             var cyberClass = new ScheduledClass(cyber, niels, scheduledDate);
             var dataClass = new ScheduledClass(data, dan, scheduledDate);

@@ -6,3 +6,5 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
     month: 'long',
     day: 'numeric',
 }
+
+export const BASE_URL = 'http://localhost:8080';

@@ -18,14 +18,19 @@ public class Student {
 
     @ManyToOne
     @JsonBackReference
-    private Group currentGroup;
+    private Group group;
 
     Student() {
     }
 
     public Student(String name, Group currentGroup) {
         this.name = name;
-        this.currentGroup = currentGroup;
+        this.group = currentGroup;
         currentGroup.addMember(this);
+    }
+
+    public void removeFromGroup() {
+        group.removeMemberById(id);
+        group = null;
     }
 }
