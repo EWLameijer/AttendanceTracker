@@ -35,6 +35,7 @@ const format = (abbreviation: string) => {
 const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string }) => {
     const [statusAbbreviation, setStatusAbbreviation] = useState<string>(toStatusAbbreviation(props.attendance.status))
     const [attendance, setAttendance] = useState<Attendance>(props.attendance);
+    const originalStatusAbbreviation = toStatusAbbreviation(props.attendance.status);
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -62,7 +63,7 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
         {displayAttendance(attendance)}
         <form onSubmit={submit}>
             <input type="text" value={statusAbbreviation} onChange={change} />
-            <input type="submit" disabled={!statusAbbreviation.trim()}></input>
+            <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == originalStatusAbbreviation}></input>
         </form>
     </li>
 }
