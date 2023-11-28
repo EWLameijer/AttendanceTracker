@@ -3,6 +3,7 @@ import { Attendance, displayAttendance } from '../Class.ts';
 import axios from 'axios';
 import { BASE_URL, toYYYYMMDD } from '../utils.ts';
 import { useNavigate } from 'react-router-dom';
+import "../styles.css"
 
 const statusToAbbreviation = new Map<string, string>([
     ["ABSENT_WITH_NOTICE", "am"],
@@ -67,11 +68,13 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
 
     return <li>
         {displayAttendance(attendance)}
-        <form onSubmit={submit}>
-            <input type="text" value={statusAbbreviation} onChange={change} />
-            <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == savedStatusAbbreviation}></input>
-        </form>
-        {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
+        <div className='left-box'>
+            <form onSubmit={submit}>
+                <input type="text" value={statusAbbreviation} onChange={change} />
+                <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == savedStatusAbbreviation}></input>
+            </form>
+            {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
+        </div>
     </li>
 }
 
