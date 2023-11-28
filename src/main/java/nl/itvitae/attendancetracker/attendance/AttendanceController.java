@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 @RestController
 @RequestMapping("attendances")
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin("${at.cors}")
 @RequiredArgsConstructor
 public class AttendanceController {
 

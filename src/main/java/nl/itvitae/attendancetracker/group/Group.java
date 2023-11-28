@@ -20,7 +20,7 @@ public class Group {
 
     private String name;
 
-    @OneToMany(mappedBy = "currentGroup")
+    @OneToMany(mappedBy = "group")
     @JsonManagedReference
     private final Set<Student> members = new HashSet<>();
 
@@ -30,5 +30,9 @@ public class Group {
 
     public void addMember(Student newMember) {
         members.add(newMember);
+    }
+
+    public void removeMemberById(UUID id) {
+        members.removeIf(member -> member.getId() == id);
     }
 }

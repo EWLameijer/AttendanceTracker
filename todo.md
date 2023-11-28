@@ -31,19 +31,12 @@ groups-endpoint
 
 ## Current Branch
 
-// how to handle a student remove?
-// data of the student should still exist
-// is not a POST, skip PUT, not a delete, PATCH?
-Make ProblemDetail by using that Aspect with
-IllegalArgumentException
-
-1) make the remove button remove the member (after confirmation)
-2) add to each group a remove button
-3) make the remove button remove the group (after confirmation)
-4) add below each group one 'add member'-button
-5) make the add button add the member, and then resort the group
-6) start the form with a text field and add group button
-7) make that add group button create a new group
+1) add to each group a remove button
+2) make the remove button remove the group (after confirmation)
+3) add below each group one 'add member'-button
+4) make the add button add the member, and then resort the group
+5) start the form with a text field and add group button
+6) make that add group button create a new group
 
 ## What should likely still be done:
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin("${at.cors}")
 public class DateController {
     private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
 
