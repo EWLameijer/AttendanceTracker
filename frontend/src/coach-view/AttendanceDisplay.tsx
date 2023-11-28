@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Attendance, displayAttendance } from '../Class.ts';
 import axios from 'axios';
-import { BASE_URL } from '../utils.ts';
+import { BASE_URL, toYYYYMMDD } from '../utils.ts';
+import { useNavigate } from 'react-router-dom';
 
 const statusToAbbreviation = new Map<string, string>([
     ["ABSENT_WITH_NOTICE", "am"],
@@ -32,10 +33,11 @@ const format = (abbreviation: string) => {
     return ([...statusToAbbreviation.entries()].find(entry => entry[1] == abbreviation))![0];
 }
 
-const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string }) => {
+const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string, isCoach: boolean }) => {
     const [statusAbbreviation, setStatusAbbreviation] = useState<string>(toStatusAbbreviation(props.attendance.status))
     const [attendance, setAttendance] = useState<Attendance>(props.attendance);
-    const originalStatusAbbreviation = toStatusAbbreviation(props.attendance.status);
+    const [savedStatusAbbreviation, setSavedStatusAbbreviation] = useState(toStatusAbbreviation(props.attendance.status));
+    const navigate = useNavigate();
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -50,12 +52,16 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
             studentName: attendance.studentName,
             status: formattedStatus,
             personnelName: props.personnelName,
-            date: "2023-11-27"
+            date: toYYYYMMDD(new Date())
         }).then(response => {
-            setStatusAbbreviation(toStatusAbbreviation(response.data.status));
+            const newAbbreviation = toStatusAbbreviation(response.data.status);
+            setStatusAbbreviation(newAbbreviation);
+            setSavedStatusAbbreviation(newAbbreviation)
             setAttendance(response.data)
         });
     }
+
+    const showHistory = () => navigate(`/students/${props.attendance.studentName}`);
 
     const change = (event: React.FormEvent<HTMLInputElement>) => setStatusAbbreviation(event.currentTarget.value)
 
@@ -63,8 +69,9 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
         {displayAttendance(attendance)}
         <form onSubmit={submit}>
             <input type="text" value={statusAbbreviation} onChange={change} />
-            <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == originalStatusAbbreviation}></input>
+            <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == savedStatusAbbreviation}></input>
         </form>
+        {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
     </li>
 }
 

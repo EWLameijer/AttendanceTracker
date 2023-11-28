@@ -12,7 +12,7 @@ const GroupEditComponent = (props: { group: Group }) => {
     const remove = (studentId: string) => setStudents(students.filter(student => student.id != studentId));
 
     const submit = () => {
-        var trimmedName = newStudentName.trim();
+        const trimmedName = newStudentName.trim();
         axios.post(`${BASE_URL}/students`, {
             name: trimmedName,
             groupId: props.group.id

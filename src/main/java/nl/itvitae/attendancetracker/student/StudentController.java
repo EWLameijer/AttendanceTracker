@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("students")
@@ -22,6 +22,11 @@ public class StudentController {
     @GetMapping
     public Iterable<Student> getAll() {
         return studentRepository.findAll();
+    }
+
+    @GetMapping("{name}")
+    public Optional<StudentDto> getByName(@PathVariable String name) {
+        return studentRepository.findByNameIgnoringCase(name).map(StudentDto::from);
     }
 
     @PatchMapping

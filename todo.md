@@ -30,22 +30,25 @@ groups-endpoint
 Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-websocket/
 
 - Fancy graphics for showing student status
-  https://www.baeldung.com/java-performance-mapping-frameworks 
-API standards:
-POST: Created <= REsponseeNTITY, body, no location is fine
-GET/PATCH: ok, body
-DELETED: noContent <= REsponseeNTITY
-PUT: skip
+  https://www.baeldung.com/java-performance-mapping-frameworks
+  API standards:
+  POST: Created <= REsponseeNTITY, body, no location is fine
+  GET/PATCH: ok, body
+  DELETED: noContent <= REsponseeNTITY
+  PUT: skip
 
 ## Current Branch
+
 // adding and removing groups only makes sense when one can schedule...
+
 3) start the form with a text field and add group button
 4) make that add group button create a new group
 1) add to each group a remove button
 2) make the remove button remove the group (after confirmation)
 
-
 ## What should likely still be done:
+
+1) move front-end to parallel folder, else text search is awful!
 
 1) The things Juan and the other coaches can think of/need!
 2) ERD

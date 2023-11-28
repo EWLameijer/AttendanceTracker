@@ -12,21 +12,34 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.*;
 
 @RestController
-@RequestMapping("attendances")
 @CrossOrigin("${at.cors}")
 @RequiredArgsConstructor
 public class AttendanceController {
 
     private final AttendanceRegistrationService attendanceRegistrationService;
 
+    private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
+
     private final StudentRepository studentRepository;
 
     private final PersonnelRepository personnelRepository;
 
-    @PostMapping
+    @GetMapping("coach-view/{nameOfCoach}/students/{studentId}")
+    public List<AttendanceRegistrationDto> getByStudent(@PathVariable String nameOfCoach, @PathVariable UUID studentId) {
+        System.out.println("Get by student called! " + studentId);
+        var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceStudentId(studentId);
+        var attendances = attendanceRegistrations.stream().map(AttendanceRegistration::getAttendance).distinct();
+        return attendances.map(
+                        attendance -> attendanceRegistrations.stream()
+                                .filter(attendanceRegistration -> attendanceRegistration.getAttendance() == attendance)
+                                .max(Comparator.comparing(AttendanceRegistration::getDateTime)))
+                .flatMap(Optional::stream).map(AttendanceRegistrationDto::from).toList();
+    }
+
+    @PostMapping("attendances")
     public ResponseEntity<AttendanceRegistrationDto> register(
             @RequestBody AttendanceRegistrationDto attendanceRegistrationDto,
             UriComponentsBuilder ucb

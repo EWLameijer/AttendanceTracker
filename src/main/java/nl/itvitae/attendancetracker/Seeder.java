@@ -1,10 +1,7 @@
 package nl.itvitae.attendancetracker;
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationService;
-import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
-import nl.itvitae.attendancetracker.attendance.LateAttendanceRegistration;
-import nl.itvitae.attendancetracker.attendance.TypeOfAttendanceRegistration;
+import nl.itvitae.attendancetracker.attendance.*;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
@@ -17,9 +14,11 @@ import nl.itvitae.attendancetracker.student.StudentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -71,7 +70,55 @@ public class Seeder implements CommandLineRunner {
             var eduardsAttendance = new TypeOfAttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
             var filippasAttendance = new TypeOfAttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
             attendanceRegistrationService.saveAll(List.of(ariesAttendance, basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
+
+            for (Student student : java.getMembers()) createHistory(student, 90, juan);
+            for (Student student : cyber.getMembers()) createHistory(student, 180, juan);
+            for (Student student : data.getMembers()) createHistory(student, 270, juan);
             System.out.println("Students seeded!");
         }
+    }
+
+    private void createHistory(Student student, int days, Personnel registrar) {
+        var today = LocalDate.now();
+        AttendanceRegistration currentAttendance = new TypeOfAttendanceRegistration(student, today, registrar, AttendanceStatus.PRESENT);
+        for (int day = 1; day < days; day++) {
+            var dateToAssess = today.minusDays(day);
+            if (isStudyDay(dateToAssess.getDayOfWeek())) {
+                currentAttendance = getNewAttendance(student, dateToAssess, registrar, currentAttendance);
+                attendanceRegistrationService.save(currentAttendance);
+            }
+        }
+    }
+
+    private Random rand = new Random();
+
+    private AttendanceRegistration getNewAttendance(
+            Student student,
+            LocalDate dateToAssess,
+            Personnel registrar,
+            AttendanceRegistration currentAttendanceRegistration) {
+        if (rand.nextInt(100) < 70) {
+            if (currentAttendanceRegistration instanceof TypeOfAttendanceRegistration typeOfAttendanceRegistration) {
+                return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, typeOfAttendanceRegistration.getStatus());
+            } else {
+                return new LateAttendanceRegistration(student, dateToAssess, registrar, LocalTime.of(10, 30));
+            }
+        }
+        var nextRand = rand.nextInt(100);
+        if (nextRand < 20)
+            return new LateAttendanceRegistration(student, dateToAssess, registrar, LocalTime.of(10, 15));
+        else if (nextRand < 23)
+            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.WORKING_FROM_HOME);
+        else if (nextRand < 27)
+            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITH_NOTICE);
+        else if (nextRand < 30)
+            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+        else if (nextRand < 90)
+            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.PRESENT);
+        else return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.SICK);
+    }
+
+    private boolean isStudyDay(DayOfWeek dayOfWeek) {
+        return dayOfWeek == DayOfWeek.MONDAY || dayOfWeek == DayOfWeek.TUESDAY || dayOfWeek == DayOfWeek.THURSDAY;
     }
 }

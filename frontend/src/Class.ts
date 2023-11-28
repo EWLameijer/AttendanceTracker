@@ -1,11 +1,12 @@
 export interface Attendance {
     studentName: string,
     status: string,
+    date: string,
     personnelName: string,
     timeOfRegistration: string
 }
 
-const translateAttendanceStatus = (status: string) => ({
+export const translateAttendanceStatus = (status: string) => ({
     "ABSENT_WITH_NOTICE": "afwezig met bericht",
     "ABSENT_WITHOUT_NOTICE": "AFWEZIG ZONDER BERICHT",
     "NOT REGISTERED YET": "NOG NIET GEREGISTREERD",
