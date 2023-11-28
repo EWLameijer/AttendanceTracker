@@ -36,6 +36,7 @@ DELETED: noContent <= REsponseeNTITY
 PUT: skip
 
 ## Current Branch
+// adding and removing groups only makes sense when one can schedule...
 3) start the form with a text field and add group button
 4) make that add group button create a new group
 1) add to each group a remove button
