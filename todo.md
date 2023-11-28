@@ -30,7 +30,7 @@ groups-endpoint
 Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-websocket/
 
 - Fancy graphics for showing student status
-
+  https://www.baeldung.com/java-performance-mapping-frameworks 
 API standards:
 POST: Created <= REsponseeNTITY, body, no location is fine
 GET/PATCH: ok, body
