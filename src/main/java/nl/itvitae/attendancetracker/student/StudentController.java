@@ -19,7 +19,7 @@ public class StudentController {
     }
 
     @PatchMapping
-    public ResponseEntity<StudentDto> patchStudent(@RequestBody StudentDto studentDto) {
+    public StudentDto patchStudent(@RequestBody StudentDto studentDto) {
         var possibleStudent = studentRepository.findById(studentDto.id());
         if (possibleStudent.isEmpty()) throw new BadRequestException("Student unknown!");
         if (studentDto.groupId() == null) {
@@ -27,8 +27,11 @@ public class StudentController {
             var student = possibleStudent.get();
             student.removeFromGroup();
             studentRepository.save(student);
-            return ResponseEntity.ok(StudentDto.from(student));
+            return StudentDto.from(student);
         }
-        return ResponseEntity.ok(studentDto);
+        return studentDto;
     }
+
+    @PostMapping
+    public ResponseEntity // inner API, so won't bother with Location
 }

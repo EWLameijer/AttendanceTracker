@@ -12,7 +12,7 @@ const MemberEditComponent = (props: { member: Student, remove: (id: string) => v
         }
     }
 
-    return <li>{props.member.name}<button onClick={remove}>Remove</button></li>
+    return <li>{props.member.name}<button onClick={remove}>Verwijder</button></li>
 }
 
 export default MemberEditComponent;
