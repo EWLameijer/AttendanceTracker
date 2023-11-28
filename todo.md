@@ -49,19 +49,17 @@ Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-we
 ## What should likely still be done:
 
 1) move front-end to parallel folder, else text search is awful!
-
-1) The things Juan and the other coaches can think of/need!
-2) ERD
-3) UUID vs Long: research, make ADR
-4) Ubiquitous language (document)
-5) Coding standards (document)
-6) Documents to write down feedback from (potential) users
-7) Wireframes (possibly?)
-8) group administration endpoint and front-end
-9) lesson administration endpoint and front-end
-10) enabling registerer to undo mistaken input
-11) enabling websockets (automatic updating)
-12) allowing viewing historical data of a student
+2) The things Juan and the other coaches can think of/need!
+3) ERD
+4) UUID vs Long: research, make ADR
+5) Ubiquitous language (document)
+6) Coding standards (document)
+7) Documents to write down feedback from (potential) users
+8) Wireframes (possibly?)
+9) group administration endpoint and front-end
+10) lesson administration endpoint and front-end
+11) enabling registerer to undo mistaken input
+12) enabling websockets (automatic updating)
 13) allowing students to be transferred to another group
 14) nicer graphics (this can take a lot of time and effort!)
 15) proper security (JWT)
