@@ -36,13 +36,11 @@ DELETED: noContent <= REsponseeNTITY
 PUT: skip
 
 ## Current Branch
-
-4) make the add button add the member, and then resort the group
+3) start the form with a text field and add group button
+4) make that add group button create a new group
 1) add to each group a remove button
 2) make the remove button remove the group (after confirmation)
 
-5) start the form with a text field and add group button
-6) make that add group button create a new group
 
 ## What should likely still be done:
 

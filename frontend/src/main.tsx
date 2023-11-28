@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AdminView from './admin-view/AdminView.tsx'
 
 import './index.css'
-import CoachView from './CoachView.tsx'
+import CoachView from './coach-view/CoachView.tsx'
 import TeacherView from './TeacherView.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

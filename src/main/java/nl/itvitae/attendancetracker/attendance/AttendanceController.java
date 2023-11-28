@@ -31,7 +31,7 @@ public class AttendanceController {
             @RequestBody AttendanceRegistrationDto attendanceRegistrationDto,
             UriComponentsBuilder ucb
     ) {
-        var possibleStudent = studentRepository.findByName(attendanceRegistrationDto.studentName());
+        var possibleStudent = studentRepository.findByNameIgnoringCase(attendanceRegistrationDto.studentName());
         if (possibleStudent.isEmpty()) throw new IllegalArgumentException("No student with that name found!");
         var student = possibleStudent.get();
 

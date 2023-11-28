@@ -2,11 +2,12 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import GroupEditComponent from './GroupEditComponent';
 import { Group } from './Group';
+import { BASE_URL } from '../utils';
 
 const AdminView = () => {
     const [groups, setGroups] = useState<Group[]>([])
     useEffect(() => {
-        axios.get("http://localhost:8080/admin-view/chantal/groups").then(response => {
+        axios.get(`${BASE_URL}/admin-view/chantal/groups`).then(response => {
             setGroups(response.data);
         });
     }, []);

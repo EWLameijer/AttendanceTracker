@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Attendance, displayAttendance } from './Class.ts';
+import { Attendance, displayAttendance } from '../Class.ts';
 import axios from 'axios';
+import { BASE_URL } from '../utils.ts';
 
 const statusToAbbreviation = new Map<string, string>([
     ["ABSENT_WITH_NOTICE", "am"],
@@ -44,7 +45,7 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
         }
 
         const formattedStatus = format(statusAbbreviation)
-        axios.post('http://localhost:8080/attendances', {
+        axios.post(`${BASE_URL}/attendances`, {
             studentName: attendance.studentName,
             status: formattedStatus,
             personnelName: props.personnelName,
@@ -61,7 +62,7 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
         {displayAttendance(attendance)}
         <form onSubmit={submit}>
             <input type="text" value={statusAbbreviation} onChange={change} />
-            <input type="submit"></input>
+            <input type="submit" disabled={!statusAbbreviation.trim()}></input>
         </form>
     </li>
 }
