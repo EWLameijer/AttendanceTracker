@@ -2,14 +2,14 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Class } from '../Class';
 import GroupElement from './GroupElement';
-import { BASE_URL, capitalize, dateOptions } from '../utils';
+import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from '../utils';
 
 const CoachView = () => {
     const [classes, setClasses] = useState<Class[]>([])
     const [date, setDate] = useState<Date | undefined>()
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/coach-view/juan/dates/2023-11-28`).then(response => {
+        axios.get(`${BASE_URL}/coach-view/juan/dates/${toYYYYMMDD(new Date())}`).then(response => {
             setDate(new Date(response.data[0].dateAsString))
             setClasses(response.data);
         });
