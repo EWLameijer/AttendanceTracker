@@ -37,18 +37,14 @@ const format = (abbreviation: string) => {
 }
 
 const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string, isCoach: boolean }) => {
-    const [statusAbbreviation, setStatusAbbreviation] = useState<string>(toStatusAbbreviation(props.attendance.status))
-    const [note, setNote] = useState<string>(props.attendance.note ?? "")
-
     const [attendance, setAttendance] = useState<Attendance>(props.attendance);
-    const [savedStatusAbbreviation, setSavedStatusAbbreviation] = useState(toStatusAbbreviation(props.attendance.status));
-    const [savedNote, setSavedNote] = useState(props.attendance.note ?? "");
     const navigate = useNavigate();
     useEffect(() => setAttendance(props.attendance), [props.attendance])
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!statusAbbreviation) return;
+        const statusAbbreviation = attendance.currentStatusAbbreviation ?? "";
+        if (!attendance.currentStatusAbbreviation) return;
         if (!isValidAbbreviation(statusAbbreviation)) {
             alert(`Afkorting '${statusAbbreviation}' is onbekend.`)
             return
@@ -61,32 +57,28 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
             personnelName: props.personnelName,
             date: toYYYYMMDD(new Date())
         }
+        const note = attendance.note
         if (note) newAttendance.note = note;
         axios.post(`${BASE_URL}/attendances`, newAttendance).then(response => {
             const newAbbreviation = toStatusAbbreviation(response.data.status);
-            setStatusAbbreviation(newAbbreviation);
-            setSavedStatusAbbreviation(newAbbreviation)
-            setSavedNote(note);
-            setAttendance(response.data)
+            setAttendance({ ...response.data, currentStatusAbbreviation: newAbbreviation, savedStatusAbbreviation: newAbbreviation, savedNote: note })
         });
     }
 
     const showHistory = () => navigate(`/students/${props.attendance.studentName}`);
 
-    const changeStatus = (event: React.FormEvent<HTMLInputElement>) => setStatusAbbreviation(event.currentTarget.value)
+    const changeStatus = (event: React.FormEvent<HTMLInputElement>) => setAttendance({ ...attendance, currentStatusAbbreviation: event.currentTarget.value })
 
-    const changeNote = (event: React.FormEvent<HTMLInputElement>) => setNote(event.currentTarget.value)
+    const changeNote = (event: React.FormEvent<HTMLInputElement>) => setAttendance({ ...attendance, note: event.currentTarget.value })
 
     return <li>
         {displayAttendance(attendance)}
         <div className='left-box'>
             <form onSubmit={submit}>
-                <input type="text" value={statusAbbreviation} onChange={changeStatus} />
-                <input type="text" value={note} onChange={changeNote} placeholder="aantekeningen" />
+                <input type="text" value={attendance.currentStatusAbbreviation} onChange={changeStatus} />
+                <input type="text" value={attendance.note} onChange={changeNote} placeholder="aantekeningen" />
                 <input type="submit" disabled={
-                    !statusAbbreviation.trim()
-                    || statusAbbreviation == savedStatusAbbreviation && note == savedNote
-                }
+                    attendance.note == attendance.savedNote && attendance.currentStatusAbbreviation == attendance.savedStatusAbbreviation}
                     value="Opslaan"></input>
             </form>
             {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
