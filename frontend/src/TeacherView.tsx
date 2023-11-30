@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Attendance, Class, Status } from './Class';
+import { Attendance, Class, Status, addExtraData } from './Class';
 import GroupElement from './coach-view/GroupElement';
-import { BASE_URL, capitalize, dateOptions, format, isValidAbbreviation, saveAttendance, toStatusAbbreviation, toYYYYMMDD } from './utils';
+import { BASE_URL, capitalize, dateOptions, format, isValidAbbreviation, toYYYYMMDD } from './utils';
 
 const TeacherView = () => {
     const [chosenClass, setChosenClass] = useState<Class>()
@@ -32,9 +32,8 @@ const TeacherView = () => {
     const isUnsaved = (attendance: Attendance) =>
         attendance.currentStatusAbbreviation && (attendance.note != attendance.savedNote || attendance.currentStatusAbbreviation != attendance.savedStatusAbbreviation)
 
-    const saveAllNewentries = () => {
+    const saveAllNewentries = () =>
         chosenClass!.attendances.filter(attendance => isUnsaved(attendance)).forEach(attendance => saveAttendance(attendance))
-    }
 
     const saveAttendance = (attendance: Attendance) => {
         const statusAbbreviation = attendance.currentStatusAbbreviation ?? "";
@@ -59,8 +58,6 @@ const TeacherView = () => {
             updateAttendance(extendedAttendance);
         });
     }
-
-
 
     const checkForUnsaved = () =>
         chosenClass!.attendances.some(attendance => isUnsaved(attendance))
@@ -87,16 +84,3 @@ function addExtraAttendanceData(attendances: Attendance[]): Attendance[] {
     return attendances.map(attendance => addExtraData(attendance))
 }
 
-function addExtraData(attendance: Attendance): Attendance {
-    return {
-        studentName: attendance.studentName,
-        status: attendance.status,
-        date: attendance.date,
-        personnelName: attendance.personnelName,
-        timeOfRegistration: attendance.timeOfRegistration,
-        note: attendance.note ?? "",
-        savedNote: attendance.note ?? "",
-        currentStatusAbbreviation: toStatusAbbreviation(attendance.status),
-        savedStatusAbbreviation: toStatusAbbreviation(attendance.status)
-    }
-}

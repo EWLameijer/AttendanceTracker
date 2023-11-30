@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Attendance, displayAttendance } from '../Class.ts';
+import { Attendance, addExtraData, displayAttendance } from '../Class.ts';
 import axios from 'axios';
-import { BASE_URL, format, isValidAbbreviation, toStatusAbbreviation, toYYYYMMDD } from '../utils.ts';
+import { BASE_URL, format, isValidAbbreviation, toYYYYMMDD } from '../utils.ts';
 import { useNavigate } from 'react-router-dom';
 import "../styles.css"
 
 const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string, isCoach: boolean, updateAttendance: (attendance: Attendance) => void }) => {
     const [attendance, setAttendance] = useState<Attendance>(props.attendance);
     const navigate = useNavigate();
+
     useEffect(() => setAttendance(props.attendance), [props.attendance])
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -29,8 +30,9 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
         const note = attendance.note
         if (note) newAttendance.note = note;
         axios.post(`${BASE_URL}/attendances`, newAttendance).then(response => {
-            const newAbbreviation = toStatusAbbreviation(response.data.status);
-            setAttendance({ ...response.data, currentStatusAbbreviation: newAbbreviation, savedStatusAbbreviation: newAbbreviation, savedNote: note })
+            const basicAttendance = response.data;
+            const extendedAttendance = addExtraData(basicAttendance);
+            setAttendance(extendedAttendance)
         });
     }
 

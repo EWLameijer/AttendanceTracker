@@ -1,6 +1,3 @@
-import axios from "axios";
-import { Attendance } from "./Class";
-
 export const capitalize = (text: string) => text[0].toUpperCase() + text.substring(1)
 
 export const dateOptions: Intl.DateTimeFormatOptions = {

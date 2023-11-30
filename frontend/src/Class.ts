@@ -1,3 +1,5 @@
+import { toStatusAbbreviation } from "./utils";
+
 export interface Attendance {
     studentName: string,
     status: string,
@@ -44,3 +46,16 @@ function formatTime(timeOfRegistration: string) {
     return `${date.getDate()}/${date.getMonth()} om ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
+export function addExtraData(attendance: Attendance): Attendance {
+    return {
+        studentName: attendance.studentName,
+        status: attendance.status,
+        date: attendance.date,
+        personnelName: attendance.personnelName,
+        timeOfRegistration: attendance.timeOfRegistration,
+        note: attendance.note || "",
+        savedNote: attendance.note || "",
+        currentStatusAbbreviation: toStatusAbbreviation(attendance.status),
+        savedStatusAbbreviation: toStatusAbbreviation(attendance.status)
+    }
+}
