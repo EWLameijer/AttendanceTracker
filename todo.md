@@ -47,7 +47,7 @@ Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-we
 2) make the remove button remove the group (after confirmation)
 
 ## What should likely still be done:
-
+1) going back and forth (past and future). Possibly also with calendar for quick jump
 2) The things Juan and the other coaches can think of/need!
 3) ERD
 4) UUID vs Long: research, make ADR
@@ -62,8 +62,21 @@ Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-we
 13) allowing students to be transferred to another group
 14) nicer graphics (this can take a lot of time and effort!)
 15) proper security (JWT)
-16) possibly: adding notes or TODOs for students
+16) possibly: adding notes or TODOs for students (or TODOs for the coaches)
 17) deployment on ITvitae-infrastructure
 18) possibly coupling to ITvitae's (Azure?) Active Directory
 19) Finding a way to put historical data (Excel) into the database
 20) Exporting certain data to Excel or Word or PDF format?
+21) 
+- geschiedenis kunnen opvragen vanaf een te kiezen datum
+- geschiedenis kunnen opvragen van totaal
+- interface waar groepen en hun lesdata ingevoerd kunnen worden of invoer d.mv. een excelbestand (keuze aan Chantal)
+- met Chantal overleggen (in januari 2024) of de invoer hiermee compatibel is of als invoer gebruikt kan worden om de gewenste uitvoer te krijgen (zoals printjes om op te hangen)
+- Zodra een status ingevuld wordt, moet dat tekstvak de bijbehorende statuskleur krijgen
+- zou leuk zijn als mensen die op een werkplek wachten ook kunnen helpen
+
+doel van de attendance tracker:
+- makkelijker om aanwezigheid bij te houden
+- voor een evaluatie makkelijk kunnen zien wat de percentages zijn qua aan/afwezigheid en redenen
+- makkelijk maken van communicatie tussen zowel docent als studentbegeleiding als mensen afwezig zijn en waarom (dit gaat twee kanten op)
+  (momenteel bij afwezigheid zonder bericht communiceren ze dit op teams, wellicht kan dit geautomatiseerd worden?)
