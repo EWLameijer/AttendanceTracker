@@ -78,6 +78,4 @@ const GroupElement = (props: {
     </>
 }
 
-
-
 export default GroupElement;
