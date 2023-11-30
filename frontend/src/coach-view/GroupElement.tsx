@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Attendance, Class, Status, addExtraData, isUnsaved, unsavedAttendancesExist } from '../Class.ts'
+import { Attendance, Class, addExtraData, isUnsaved, unsavedAttendancesExist } from '../Class.ts'
 import { BASE_URL, format, isValidAbbreviation, toYYYYMMDD } from '../utils.ts';
 import AttendanceDisplay from './AttendanceDisplay.tsx';
 import { useEffect, useState } from 'react';

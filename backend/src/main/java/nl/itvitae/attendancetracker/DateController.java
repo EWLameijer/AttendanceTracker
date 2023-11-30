@@ -35,6 +35,40 @@ public class DateController {
     public List<ScheduledClassDto> getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);
+        return getScheduledClassDtos(date, attendanceRegistrations);
+    }
+
+    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}/previous")
+    public List<ScheduledClassDto> getByPreviousDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
+        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
+        List<AttendanceRegistration> attendanceRegistrations;
+        var limit = 28;
+        var counter = 1;
+        LocalDate previousDate;
+        do {
+            if (counter > limit) throw new BadRequestException("This is the first day!");
+            previousDate = date.minusDays(counter++);
+            attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(previousDate);
+        } while (attendanceRegistrations.isEmpty());
+        return getScheduledClassDtos(previousDate, attendanceRegistrations);
+    }
+
+    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}/next")
+    public List<ScheduledClassDto> getByNextDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
+        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
+        List<AttendanceRegistration> attendanceRegistrations;
+        var limit = 28;
+        var counter = 1;
+        LocalDate previousDate;
+        do {
+            if (counter > limit) throw new BadRequestException("This is the last day!");
+            previousDate = date.plusDays(counter++);
+            attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(previousDate);
+        } while (attendanceRegistrations.isEmpty());
+        return getScheduledClassDtos(previousDate, attendanceRegistrations);
+    }
+
+    private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations) {
         var classes = scheduledClassRepository.findAllByDate(date);
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
