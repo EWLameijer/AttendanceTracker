@@ -71,7 +71,8 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
         <div className='left-box'>
             <form onSubmit={submit}>
                 <input type="text" value={statusAbbreviation} onChange={change} />
-                <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == savedStatusAbbreviation}></input>
+                <input type="submit" disabled={!statusAbbreviation.trim() || statusAbbreviation == savedStatusAbbreviation}
+                    value="Opslaan"></input>
             </form>
             {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
         </div>
