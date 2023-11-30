@@ -73,7 +73,7 @@ const TeacherView = () => {
         <h2>Hallo Wubbo!</h2>
         <h3>{capitalize(date!.toLocaleDateString("nl-NL", dateOptions))}</h3 >
         <button onClick={setAllUnregisteredAsPresent}>Zet alle ongeregistreerden op aanwezig</button>
-        <GroupElement currentClass={chosenClass} personnelName='Wubbo' isCoach={false} updateAttendance={updateAttendance} />
+        <GroupElement currentClass={chosenClass} personnelName='Wubbo' isCoach={false} updateAttendance={updateAttendance} storeAttendance={saveAttendance} />
         <button onClick={saveAllNewentries} disabled={!checkForUnsaved()}>Stuur alle nieuwe registraties door</button>
     </> : <p>Loading...</p>
 }
