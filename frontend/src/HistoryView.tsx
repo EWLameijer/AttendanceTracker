@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Attendance, translateAttendanceStatus } from "./Class";
+import { Attendance, Status, translateAttendanceStatus } from "./Class";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "./utils";
@@ -23,17 +23,17 @@ const HistoryView = () => {
 
     const getCount = (status: string) => attendances.filter(attendance => attendance.status == status).length
 
-    const timely = getCount("PRESENT");
+    const timely = getCount(Status.PRESENT);
 
     const present = timely + late;
 
-    const fromHome = getCount("WORKING_FROM_HOME");
+    const fromHome = getCount(Status.WORKING_FROM_HOME);
 
-    const sick = getCount("SICK");
+    const sick = getCount(Status.SICK);
 
-    const withoutNotice = getCount("ABSENT_WITHOUT_NOTICE");
+    const withoutNotice = getCount(Status.ABSENT_WITHOUT_NOTICE);
 
-    const withNotice = getCount("ABSENT_WITH_NOTICE");
+    const withNotice = getCount(Status.ABSENT_WITH_NOTICE);
 
     const total = attendances.length;
 

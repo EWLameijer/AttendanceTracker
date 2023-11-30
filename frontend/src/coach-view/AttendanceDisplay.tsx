@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Attendance, displayAttendance } from '../Class.ts';
 import axios from 'axios';
 import { BASE_URL, toYYYYMMDD } from '../utils.ts';
@@ -44,6 +44,7 @@ const AttendanceDisplay = (props: { attendance: Attendance, personnelName: strin
     const [savedStatusAbbreviation, setSavedStatusAbbreviation] = useState(toStatusAbbreviation(props.attendance.status));
     const [savedNote, setSavedNote] = useState(props.attendance.note ?? "");
     const navigate = useNavigate();
+    useEffect(() => setAttendance(props.attendance), [props.attendance])
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

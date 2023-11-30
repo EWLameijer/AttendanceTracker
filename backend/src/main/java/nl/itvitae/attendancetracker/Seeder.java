@@ -63,13 +63,13 @@ public class Seeder implements CommandLineRunner {
             var dataClass = new ScheduledClass(data, dan, scheduledDate);
             scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
 
-            var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
-            var basAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
+            //var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
+            //var basAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
             var celiasAttendance = new TypeOfAttendanceRegistration(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
             var davidsAttendance = new TypeOfAttendanceRegistration(david, scheduledDate, dan, AttendanceStatus.PRESENT);
             var eduardsAttendance = new TypeOfAttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
             var filippasAttendance = new TypeOfAttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
-            attendanceRegistrationService.saveAll(List.of(ariesAttendance, basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
+            attendanceRegistrationService.saveAll(List.of(celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
             for (Student student : java.getMembers()) createHistory(student, 90, juan);
             for (Student student : cyber.getMembers()) createHistory(student, 180, juan);

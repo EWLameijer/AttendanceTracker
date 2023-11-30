@@ -4,17 +4,31 @@ export interface Attendance {
     date: string,
     personnelName: string,
     timeOfRegistration?: string,
-    note?: string
+    note?: string,
+    currentStatusAbbreviation?: string,
+    savedStatusAbbreviation?: string,
+    savedNote?: string
 }
 
-export const translateAttendanceStatus = (status: string) => ({
-    "ABSENT_WITH_NOTICE": "afwezig met bericht",
-    "ABSENT_WITHOUT_NOTICE": "AFWEZIG ZONDER BERICHT",
-    "NOT REGISTERED YET": "NOG NIET GEREGISTREERD",
-    "PRESENT": "aanwezig",
-    "SICK": "ziek",
-    "WORKING_FROM_HOME": "werkt thuis"
-}[status] ?? "TE LAAT - " + status)
+export const Status = {
+    ABSENT_WITH_NOTICE: "ABSENT_WITH_NOTICE",
+    ABSENT_WITHOUT_NOTICE: "ABSENT_WITHOUT_NOTICE",
+    NOT_REGISTERED_YET: "NOT REGISTERED YET",
+    PRESENT: "PRESENT",
+    SICK: "SICK",
+    WORKING_FROM_HOME: "WORKING_FROM_HOME"
+}
+
+const statusTranslations = new Map<string, string>([
+    [Status.ABSENT_WITH_NOTICE, "afwezig met bericht"],
+    [Status.ABSENT_WITHOUT_NOTICE, "AFWEZIG ZONDER BERICHT"],
+    [Status.NOT_REGISTERED_YET, "NOG NIET GEREGISTREERD"],
+    [Status.PRESENT, "aanwezig"],
+    [Status.SICK, "ziek"],
+    [Status.WORKING_FROM_HOME, "werkt thuis"]
+]);
+
+export const translateAttendanceStatus = (status: string) => (statusTranslations.get(status) ?? "TE LAAT - " + status)
 
 export const displayAttendance = (attendance: Attendance) =>
     `${attendance.studentName}: ${translateAttendanceStatus(attendance.status)}` +
