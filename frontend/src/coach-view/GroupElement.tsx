@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Attendance, Class, addExtraData } from '../Class.ts'
+import { Attendance, Class, addExtraData, isUnsaved } from '../Class.ts'
 import { BASE_URL, format, isValidAbbreviation, toYYYYMMDD } from '../utils.ts';
 import AttendanceDisplay from './AttendanceDisplay.tsx';
 import { useState } from 'react';
@@ -40,16 +40,10 @@ const GroupElement = (props: {
         });
     }
 
-    const isUnsaved = (attendance: Attendance) =>
-        attendance.currentStatusAbbreviation && (attendance.note != attendance.savedNote || attendance.currentStatusAbbreviation != attendance.savedStatusAbbreviation)
-
-
     const saveAllNewentries = () =>
-        props.currentClass.attendances.filter(attendance => isUnsaved(attendance)).forEach(attendance => saveAttendance(attendance))
+        chosenClass.attendances.filter(attendance => isUnsaved(attendance)).forEach(attendance => saveAttendance(attendance))
 
-
-    const checkForUnsaved = () =>
-        props.currentClass.attendances.some(attendance => isUnsaved(attendance))
+    const unsavedAttendancesExist = () => chosenClass.attendances.some(attendance => isUnsaved(attendance))
 
     return <>
         <h3>{chosenClass.groupName}{chosenClass.teacherName != props.personnelName ? ` (${chosenClass.teacherName})` : ''}</h3>
@@ -57,7 +51,7 @@ const GroupElement = (props: {
             .sort((a, b) => a.studentName.localeCompare(b.studentName))
             .map(attendance => <AttendanceDisplay key={attendance.studentName} attendance={attendance} personnelName={props.personnelName}
                 isCoach={props.isCoach} updateAttendance={updateAttendance} storeAttendance={saveAttendance} />)}</ol>
-        {!props.isCoach ? <button onClick={saveAllNewentries} disabled={!checkForUnsaved()}>Stuur alle nieuwe registraties door</button> : <></>}
+        {!props.isCoach ? <button onClick={saveAllNewentries} disabled={!unsavedAttendancesExist()}>Stuur alle nieuwe registraties door</button> : <></>}
     </>
 }
 

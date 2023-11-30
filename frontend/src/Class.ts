@@ -59,3 +59,7 @@ export function addExtraData(attendance: Attendance): Attendance {
         savedStatusAbbreviation: toStatusAbbreviation(attendance.status)
     }
 }
+
+export const isUnsaved = (attendance: Attendance) =>
+    attendance.currentStatusAbbreviation && (attendance.note != attendance.savedNote || attendance.currentStatusAbbreviation != attendance.savedStatusAbbreviation)
+

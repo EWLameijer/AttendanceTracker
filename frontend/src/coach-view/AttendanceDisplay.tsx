@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Attendance, displayAttendance } from '../Class.ts';
+import { Attendance, displayAttendance, isUnsaved } from '../Class.ts';
 import { useNavigate } from 'react-router-dom';
 import "../styles.css"
 
@@ -34,8 +34,7 @@ const AttendanceDisplay = (props: {
             <form onSubmit={submit}>
                 <input type="text" value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
                 <input type="text" value={attendance.note} name="note" onChange={changeItem} placeholder="aantekeningen" />
-                <input type="submit" disabled={!attendance.currentStatusAbbreviation ||
-                    attendance.note == attendance.savedNote && attendance.currentStatusAbbreviation == attendance.savedStatusAbbreviation}
+                <input type="submit" disabled={!isUnsaved(attendance)}
                     value="Opslaan"></input>
             </form>
             {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
