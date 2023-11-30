@@ -28,13 +28,16 @@ public abstract class AttendanceRegistration {
     @Setter
     private Attendance attendance;
 
-    private AttendanceRegistration(Personnel personnel, Attendance attendance) {
+    private String note;
+
+    private AttendanceRegistration(Personnel personnel, Attendance attendance, String note) {
         this.personnel = personnel;
         this.dateTime = LocalDateTime.now();
         this.attendance = attendance;
+        this.note = note;
     }
 
-    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel) {
-        this(personnel, new Attendance(student, date));
+    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, String note) {
+        this(personnel, new Attendance(student, date), note);
     }
 }

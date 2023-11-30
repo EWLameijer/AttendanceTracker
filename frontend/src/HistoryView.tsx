@@ -54,12 +54,14 @@ const HistoryView = () => {
         [" - Met bericht", withNotice]
     ]);
 
+    const getNote = (note: string | undefined) => note ? ` (${note})` : ""
+
     return <>
         <h2>Aanwezigheidsgeschiedenis van {name}</h2>
         {[...categories.entries()].map(entry => display(entry[0], entry[1]))}
 
         <ol>{attendances.sort((a, b) => b.date.localeCompare(a.date)).map(attendance =>
-            <li key={attendance.date}>{attendance.date}: {translateAttendanceStatus(attendance.status)}</li>)}</ol>
+            <li key={attendance.date}>{attendance.date}: {translateAttendanceStatus(attendance.status)}{getNote(attendance.note)}</li>)}</ol>
     </>
 }
 

@@ -39,20 +39,8 @@ public class DateController {
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var classDtos = new ArrayList<ScheduledClassDto>();
-        for (ScheduledClass scheduledClass : classes) {
-            var group = scheduledClass.getGroup();
-            var groupName = group.getName();
-            var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
-            for (Student student : group.getMembers()) {
-                var studentName = student.getName();
-                groupAttendances.add(
-                        readableAttendances.stream()
-                                .filter(a -> a.studentName().equals(studentName))
-                                .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
-                                .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null)));
-            }
-            classDtos.add(new ScheduledClassDto(groupName, scheduledClass.getTeacher().getName(), date.toString(), groupAttendances));
-        }
+        for (ScheduledClass scheduledClass : classes)
+            classDtos.add(scheduledClassDtoFor(scheduledClass, readableAttendances, date));
         return classDtos;
     }
 
@@ -67,7 +55,10 @@ public class DateController {
         if (possibleClass.isEmpty()) return null;
         var chosenClass = possibleClass.get();
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
+        return scheduledClassDtoFor(chosenClass, readableAttendances, date);
+    }
 
+    private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {
         var group = chosenClass.getGroup();
         var groupName = group.getName();
         var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
@@ -77,7 +68,7 @@ public class DateController {
                     readableAttendances.stream()
                             .filter(a -> a.studentName().equals(studentName))
                             .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
-                            .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null)));
+                            .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null, null)));
         }
         return new ScheduledClassDto(groupName, chosenClass.getTeacher().getName(), date.toString(), groupAttendances);
     }

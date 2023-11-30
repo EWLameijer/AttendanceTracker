@@ -56,21 +56,14 @@ public class AttendanceController {
 
         var status = attendanceRegistrationDto.status();
         var attendanceRegistration = status.contains(":") ?
-                new LateAttendanceRegistration(student, date, personnel, toLocalTime(status)) :
-                new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status));
+                new LateAttendanceRegistration(student, date, personnel, toLocalTime(status), attendanceRegistrationDto.note()) :
+                new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
         attendanceRegistrationService.save(attendanceRegistration);
         URI locationOfNewReview = ucb
                 .path("attendances/{id}")
                 .buildAndExpand(attendanceRegistration.getId())
                 .toUri();
-        return ResponseEntity.created(locationOfNewReview).body(new AttendanceRegistrationDto(
-                attendanceRegistration.getId(),
-                attendanceRegistrationDto.studentName(),
-                attendanceRegistrationDto.date(),
-                attendanceRegistrationDto.status(),
-                attendanceRegistrationDto.personnelName(),
-                attendanceRegistration.getDateTime().toString()
-        ));
+        return ResponseEntity.created(locationOfNewReview).body(AttendanceRegistrationDto.from(attendanceRegistration));
     }
 
     private AttendanceStatus toStatus(String status) {

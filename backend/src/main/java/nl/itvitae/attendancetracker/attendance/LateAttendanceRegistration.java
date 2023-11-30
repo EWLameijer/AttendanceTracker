@@ -15,8 +15,12 @@ import java.time.LocalTime;
 public class LateAttendanceRegistration extends AttendanceRegistration {
     private LocalTime arrival;
 
-    public LateAttendanceRegistration(Student student, LocalDate date, Personnel personnel, LocalTime arrival) {
-        super(student, date, personnel);
+    public LateAttendanceRegistration(Student student, LocalDate date, Personnel personnel, LocalTime arrival, String note) {
+        super(student, date, personnel, note);
         this.arrival = arrival;
+    }
+
+    public LateAttendanceRegistration(Student student, LocalDate date, Personnel personnel, LocalTime arrival) {
+        this(student, date, personnel, arrival, null);
     }
 }

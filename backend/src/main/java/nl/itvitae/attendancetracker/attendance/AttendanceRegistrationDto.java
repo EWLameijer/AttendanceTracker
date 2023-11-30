@@ -8,7 +8,9 @@ public record AttendanceRegistrationDto(
         String date,
         String status,
         String personnelName,
-        String timeOfRegistration) {
+        String timeOfRegistration,
+        String note
+) {
     public static AttendanceRegistrationDto from(AttendanceRegistration attendanceRegistration) {
         var by = attendanceRegistration.getPersonnel().getName();
         var registrationTime = attendanceRegistration.getDateTime();
@@ -24,7 +26,8 @@ public record AttendanceRegistrationDto(
                 attendanceRegistration.getAttendance().getDate().toString(),
                 status,
                 by,
-                registrationTime.toString()
+                registrationTime.toString(),
+                attendanceRegistration.getNote()
         );
     }
 }

@@ -14,8 +14,12 @@ import java.time.LocalDate;
 public class TypeOfAttendanceRegistration extends AttendanceRegistration {
     private AttendanceStatus status;
 
-    public TypeOfAttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status) {
-        super(student, date, personnel);
+    public TypeOfAttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status, String note) {
+        super(student, date, personnel, note);
         this.status = status;
+    }
+
+    public TypeOfAttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status) {
+        this(student, date, personnel, status, null);
     }
 }

@@ -3,7 +3,8 @@ export interface Attendance {
     status: string,
     date: string,
     personnelName: string,
-    timeOfRegistration: string
+    timeOfRegistration?: string,
+    note?: string
 }
 
 export const translateAttendanceStatus = (status: string) => ({
@@ -17,7 +18,7 @@ export const translateAttendanceStatus = (status: string) => ({
 
 export const displayAttendance = (attendance: Attendance) =>
     `${attendance.studentName}: ${translateAttendanceStatus(attendance.status)}` +
-    (attendance.personnelName ? ` - ${attendance.personnelName} (${formatTime(attendance.timeOfRegistration)})` : "");
+    (attendance.personnelName ? ` - ${attendance.personnelName} (${formatTime(attendance.timeOfRegistration!)})` : "");
 
 export interface Class {
     groupName: string,
