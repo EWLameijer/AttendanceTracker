@@ -16,9 +16,11 @@ const statusToAbbreviation = new Map<string, string>([
 
 const toStatusAbbreviation = (statusText: string) => statusToAbbreviation.get(statusText) ?? statusText;
 
+const standardize = (text: string) => text.trim().toLocaleLowerCase()
+
 const isValidAbbreviation = (abbreviation: string) => {
     const statusAbbreviations = statusToAbbreviation.values();
-    if ([...statusAbbreviations].includes(abbreviation.toLocaleLowerCase())) return true;
+    if ([...statusAbbreviations].includes(standardize(abbreviation))) return true;
     const digits = extractDigits(abbreviation);
     return digits.length == 4 && digits[0] == '1' && digits[1] <= '5' && digits[2] <= '5';
 }
@@ -31,7 +33,7 @@ const format = (abbreviation: string) => {
         digits.splice(2, 0, ":") // as of 20231126, toSpliced not available in current TypeScript version
         return digits.join("");
     }
-    return ([...statusToAbbreviation.entries()].find(entry => entry[1] == abbreviation.toLocaleLowerCase()))![0];
+    return ([...statusToAbbreviation.entries()].find(entry => entry[1] == standardize(abbreviation)))![0];
 }
 
 const AttendanceDisplay = (props: { attendance: Attendance, personnelName: string, isCoach: boolean }) => {
