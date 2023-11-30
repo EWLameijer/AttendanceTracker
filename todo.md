@@ -10,6 +10,19 @@
 10) Possibly ERDs and/or DDD-like class diagrams
 11) Create/add simple frontend
 
+=> FUN: Dates  
+=> IMPORTANT: ADR GUIDs, ADR coding principles and conventions, Lombok and plugins
+=> CORE: WebSockets
+
+Dates to do:
+1. make method available for future dates (backend)
+2. unify the schedules so that the teacher also returns an array, be it of one class.
+3. adjust the coaches view to take into account the new structure
+4. update the buttons so they are greyed out for the first and last day
+5. make React call the endpoint without /previous and /next, because it already has both 
+  available at all times
+6. work on teacher functionality, unifying the front end.
+
 Programmatically:
 -frontend: haal students-endpoint weg => of transformeer het in
 groups-endpoint
