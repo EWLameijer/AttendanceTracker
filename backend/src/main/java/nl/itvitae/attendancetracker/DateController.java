@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,19 +39,35 @@ public class DateController {
         return getScheduledClassDtos(date, attendanceRegistrations);
     }
 
+    record DateAndAttendances(LocalDate date, List<AttendanceRegistration> attendanceRegistrations) {
+    }
+
     @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}/previous")
-    public List<ScheduledClassDto> getByPreviousDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
+    public ScheduledDateDto getByPreviousDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-        List<AttendanceRegistration> attendanceRegistrations;
-        var limit = 28;
-        var counter = 1;
-        LocalDate previousDate;
+        final int dayDirection = -1; // look for dates in the past
+        var possiblePreviousDateAndAttendances = findNearestDateWithAttendances(date, dayDirection);
+        if (possiblePreviousDateAndAttendances.isEmpty())
+            throw new BadRequestException("First date! Should not happen...");
+        // is there a derived query that would work here?
+        var previousDateAndAttendances = possiblePreviousDateAndAttendances.get();
+        var previousDate = previousDateAndAttendances.date;
+        var attendanceRegistrations = previousDateAndAttendances.attendanceRegistrations;
+        var possibleEarlierDateAndAttendances = findNearestDateWithAttendances(previousDate, dayDirection);
+        var earlierDate = possibleEarlierDateAndAttendances.map(dateAndAttendances -> dateAndAttendances.date).orElse(null);
+        return new ScheduledDateDto(earlierDate, previousDate, date, getScheduledClassDtos(previousDate, attendanceRegistrations));
+    }
+
+    private Optional<DateAndAttendances> findNearestDateWithAttendances(LocalDate date, int dayDirection) {
+        LocalDate currentDate = date;
+        int counter = 0;
         do {
-            if (counter > limit) throw new BadRequestException("This is the first day!");
-            previousDate = date.minusDays(counter++);
-            attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(previousDate);
-        } while (attendanceRegistrations.isEmpty());
-        return getScheduledClassDtos(previousDate, attendanceRegistrations);
+            if (++counter > 28) return Optional.empty();
+            currentDate = currentDate.plusDays(dayDirection);
+            var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(currentDate);
+            if (!attendanceRegistrations.isEmpty())
+                return Optional.of(new DateAndAttendances(date, attendanceRegistrations));
+        } while (true);
     }
 
     @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}/next")
