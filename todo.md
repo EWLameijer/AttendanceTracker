@@ -40,6 +40,7 @@ Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-we
 ## Current Branch
 
 // adding and removing groups only makes sense when one can schedule...
+// deduplicate AttendanceDisplay logic
 
 3) start the form with a text field and add group button
 4) make that add group button create a new group

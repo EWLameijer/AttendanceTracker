@@ -43,13 +43,14 @@ public class Seeder implements CommandLineRunner {
             groupRepository.saveAll(List.of(java, cyber, data));
             var arie = new Student("Arie", java);
             var bas = new Student("Bas", java);
+            var zebedeus = new Student("Zebedeus", java);
             var celia = new Student("Celine", cyber);
             var xerxes = new Student("Xerxes", cyber);
             var david = new Student("David", data);
             var eduard = new Student("Eduard", data);
             var filippa = new Student("Filippa", data);
             studentRepository.saveAll(List.of(
-                    arie, bas, celia, david, eduard, filippa, xerxes
+                    arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
             var wubbo = new Personnel("Wubbo", ATRole.TEACHER);
             var niels = new Personnel("Niels", ATRole.TEACHER);
@@ -64,12 +65,13 @@ public class Seeder implements CommandLineRunner {
             scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
 
             //var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
-            //var basAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
+            var basAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
+            //var zebeAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
             var celiasAttendance = new TypeOfAttendanceRegistration(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
             var davidsAttendance = new TypeOfAttendanceRegistration(david, scheduledDate, dan, AttendanceStatus.PRESENT);
             var eduardsAttendance = new TypeOfAttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
             var filippasAttendance = new TypeOfAttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
-            attendanceRegistrationService.saveAll(List.of(celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
+            attendanceRegistrationService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
             for (Student student : java.getMembers()) createHistory(student, 90, juan);
             for (Student student : cyber.getMembers()) createHistory(student, 180, juan);

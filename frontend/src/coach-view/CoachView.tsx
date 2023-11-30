@@ -20,7 +20,7 @@ const CoachView = () => {
             <h2>Hallo Juan!</h2>
             <h3>{capitalize(date.toLocaleDateString("nl-NL", dateOptions))}</h3 >
             <ol>{classes.sort((a, b) => a.groupName.localeCompare(b.groupName)).map(currentClass =>
-                <li key={currentClass.groupName}><GroupElement currentClass={currentClass} personnelName='Juan' isCoach={true} /></li>)}</ol>
+                <li key={currentClass.groupName}><GroupElement currentClass={currentClass} personnelName='Juan' isCoach={true} updateAttendance={() => { }} /></li>)}</ol>
         </>
         : <p>Loading...</p>
 }
