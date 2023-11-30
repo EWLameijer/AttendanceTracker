@@ -1,6 +1,7 @@
 package nl.itvitae.attendancetracker.attendance;
 
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
 import nl.itvitae.attendancetracker.student.StudentRepository;
@@ -39,31 +40,32 @@ public class AttendanceController {
                 .flatMap(Optional::stream).map(AttendanceRegistrationDto::from).toList();
     }
 
+    @Transactional
     @PostMapping("attendances")
-    public ResponseEntity<AttendanceRegistrationDto> register(
-            @RequestBody AttendanceRegistrationDto attendanceRegistrationDto,
+    public ResponseEntity<List<AttendanceRegistrationDto>> register(
+            @RequestBody AttendanceRegistrationDto[] attendanceRegistrationDtos,
             UriComponentsBuilder ucb
     ) {
-        var possibleStudent = studentRepository.findByNameIgnoringCase(attendanceRegistrationDto.studentName());
-        if (possibleStudent.isEmpty()) throw new IllegalArgumentException("No student with that name found!");
-        var student = possibleStudent.get();
+        var resultingRegistrations = new ArrayList<AttendanceRegistration>();
+        for (AttendanceRegistrationDto attendanceRegistrationDto : attendanceRegistrationDtos) {
+            var possibleStudent = studentRepository.findByNameIgnoringCase(attendanceRegistrationDto.studentName());
+            if (possibleStudent.isEmpty()) throw new IllegalArgumentException("No student with that name found!");
+            var student = possibleStudent.get();
 
-        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(attendanceRegistrationDto.date()));
+            var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(attendanceRegistrationDto.date()));
 
-        var possiblePersonnel = personnelRepository.findByNameIgnoringCase(attendanceRegistrationDto.personnelName());
-        if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
-        var personnel = possiblePersonnel.get();
+            var possiblePersonnel = personnelRepository.findByNameIgnoringCase(attendanceRegistrationDto.personnelName());
+            if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
+            var personnel = possiblePersonnel.get();
 
-        var status = attendanceRegistrationDto.status();
-        var attendanceRegistration = status.contains(":") ?
-                new LateAttendanceRegistration(student, date, personnel, toLocalTime(status), attendanceRegistrationDto.note()) :
-                new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
-        attendanceRegistrationService.save(attendanceRegistration);
-        URI locationOfNewReview = ucb
-                .path("attendances/{id}")
-                .buildAndExpand(attendanceRegistration.getId())
-                .toUri();
-        return ResponseEntity.created(locationOfNewReview).body(AttendanceRegistrationDto.from(attendanceRegistration));
+            var status = attendanceRegistrationDto.status();
+            var attendanceRegistration = status.contains(":") ?
+                    new LateAttendanceRegistration(student, date, personnel, toLocalTime(status), attendanceRegistrationDto.note()) :
+                    new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
+            attendanceRegistrationService.save(attendanceRegistration);
+            resultingRegistrations.add(attendanceRegistration);
+        }
+        return ResponseEntity.created(URI.create("")).body(resultingRegistrations.stream().map(AttendanceRegistrationDto::from).toList());
     }
 
     private AttendanceStatus toStatus(String status) {

@@ -1,57 +1,80 @@
 import axios from 'axios';
-import { Attendance, Class, addExtraData, isUnsaved } from '../Class.ts'
+import { Attendance, Class, Status, addExtraData, isUnsaved, unsavedAttendancesExist } from '../Class.ts'
 import { BASE_URL, format, isValidAbbreviation, toYYYYMMDD } from '../utils.ts';
 import AttendanceDisplay from './AttendanceDisplay.tsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const GroupElement = (props: {
-    currentClass: Class, personnelName: string, isCoach: boolean
+    chosenClass: Class, personnelName: string, isCoach: boolean
 }) => {
-    const [chosenClass, setChosenClass] = useState(props.currentClass)
+    const [chosenClass, setChosenClass] = useState(props.chosenClass)
+    useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass])
 
-    const updateAttendance = (updatedAttendance: Attendance) => {
-        const studentIndex = chosenClass.attendances.findIndex(attendance => attendance.studentName === updatedAttendance.studentName)
+    const updateAttendance = (updatedAttendances: Attendance[]) => {
         const newAttendances = [...chosenClass.attendances];
-        newAttendances[studentIndex] = updatedAttendance;
+        for (const updatedAttendance of updatedAttendances) {
+            const studentIndex = chosenClass.attendances.findIndex(attendance => attendance.studentName === updatedAttendance.studentName)
+            newAttendances[studentIndex] = updatedAttendance;
+        }
         setChosenClass({ ...chosenClass!, attendances: newAttendances })
     }
 
-    const saveAttendance = (attendance: Attendance) => {
-        const statusAbbreviation = attendance.currentStatusAbbreviation ?? "";
-        if (!attendance.currentStatusAbbreviation) return;
-        if (!isValidAbbreviation(statusAbbreviation)) {
-            alert(`Afkorting '${statusAbbreviation}' is onbekend.`)
-            return
+    const saveAttendances = (attendances: Attendance[]) => {
+        for (const attendance of attendances) {
+            const statusAbbreviation = attendance.currentStatusAbbreviation ?? "";
+            if (!attendance.currentStatusAbbreviation) return;
+            if (!isValidAbbreviation(statusAbbreviation)) {
+                alert(`Afkorting '${statusAbbreviation}' is onbekend.`)
+                return
+            }
         }
 
-        const formattedStatus = format(statusAbbreviation)
-        const newAttendance: Attendance = {
-            studentName: attendance.studentName,
-            status: formattedStatus,
-            personnelName: props.personnelName,
-            date: toYYYYMMDD(new Date())
-        }
-        const note = attendance.note
-        if (note) newAttendance.note = note;
-        axios.post(`${BASE_URL}/attendances`, newAttendance).then(response => {
-            const basicAttendance = response.data;
-            const extendedAttendance = addExtraData(basicAttendance);
-            updateAttendance(extendedAttendance);
+        const formattedAttendances = attendances.map(attendance => {
+            const formattedStatus = format(attendance.currentStatusAbbreviation ?? "")
+            const newAttendance: Attendance = {
+                studentName: attendance.studentName,
+                status: formattedStatus,
+                personnelName: props.personnelName,
+                date: toYYYYMMDD(new Date())
+            }
+            const note = attendance.note
+            if (note) newAttendance.note = note;
+            return newAttendance
+        });
+
+        axios.post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances).then(response => {
+            const basicAttendances = response.data;
+            const extendedAttendances = basicAttendances.map(attendance => addExtraData(attendance));
+            updateAttendance(extendedAttendances);
         });
     }
 
-    const saveAllNewentries = () =>
-        chosenClass.attendances.filter(attendance => isUnsaved(attendance)).forEach(attendance => saveAttendance(attendance))
+    const setUnregisteredAsPresent = (attendance: Attendance): Attendance => {
+        const newAttendance = { ...attendance };
+        if (newAttendance.status == Status.NOT_REGISTERED_YET && !newAttendance.savedStatusAbbreviation) {
+            newAttendance.currentStatusAbbreviation = 'p';
+        }
+        return newAttendance;
+    }
 
-    const unsavedAttendancesExist = () => chosenClass.attendances.some(attendance => isUnsaved(attendance))
+    const saveAllNewentries = () =>
+        saveAttendances(chosenClass.attendances.filter(attendance => isUnsaved(attendance)))
+
+    const setAllUnregisteredAsPresent = () => {
+        const newAttendances = chosenClass!.attendances.map(attendance => setUnregisteredAsPresent(attendance))
+        setChosenClass({ ...chosenClass!, attendances: newAttendances });
+    }
+
+    const unregisteredAttendancesExist = () => chosenClass!.attendances.some(attendance => !attendance.currentStatusAbbreviation)
 
     return <>
         <h3>{chosenClass.groupName}{chosenClass.teacherName != props.personnelName ? ` (${chosenClass.teacherName})` : ''}</h3>
+        {!props.isCoach ? <button onClick={setAllUnregisteredAsPresent} disabled={!unregisteredAttendancesExist()}>Zet alle ongeregistreerden op aanwezig</button> : <></>}
         <ol>{chosenClass.attendances
             .sort((a, b) => a.studentName.localeCompare(b.studentName))
             .map(attendance => <AttendanceDisplay key={attendance.studentName} attendance={attendance} personnelName={props.personnelName}
-                isCoach={props.isCoach} updateAttendance={updateAttendance} storeAttendance={saveAttendance} />)}</ol>
-        {!props.isCoach ? <button onClick={saveAllNewentries} disabled={!unsavedAttendancesExist()}>Stuur alle nieuwe registraties door</button> : <></>}
+                isCoach={props.isCoach} updateAttendance={updateAttendance} saveAttendances={saveAttendances} />)}</ol>
+        {!props.isCoach ? <button onClick={saveAllNewentries} disabled={!unsavedAttendancesExist(chosenClass)}>Stuur alle nieuwe registraties door</button> : <></>}
     </>
 }
 

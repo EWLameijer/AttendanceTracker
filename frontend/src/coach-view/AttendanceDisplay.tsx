@@ -7,8 +7,8 @@ const AttendanceDisplay = (props: {
     attendance: Attendance,
     personnelName: string,
     isCoach: boolean,
-    updateAttendance: (attendance: Attendance) => void
-    storeAttendance: (attendance: Attendance) => void,
+    updateAttendance: (attendances: Attendance[]) => void
+    saveAttendances: (attendance: Attendance[]) => void,
 }) => {
     const [attendance, setAttendance] = useState<Attendance>(props.attendance);
     const navigate = useNavigate();
@@ -17,14 +17,14 @@ const AttendanceDisplay = (props: {
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        props.storeAttendance(attendance);
+        props.saveAttendances([attendance]);
     }
 
     const showHistory = () => navigate(`/students/${props.attendance.studentName}`);
 
     const changeItem = (event: React.FormEvent<HTMLInputElement>) => {
         const newAttendance = { ...attendance, [event.currentTarget.name]: event.currentTarget.value };
-        props.updateAttendance(newAttendance);
+        props.updateAttendance([newAttendance]);
         setAttendance(newAttendance);
     }
 
