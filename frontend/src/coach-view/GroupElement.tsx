@@ -51,7 +51,7 @@ const GroupElement = (props: {
 
     const setUnregisteredAsPresent = (attendance: Attendance): Attendance => {
         const newAttendance = { ...attendance };
-        if (newAttendance.status == Status.NOT_REGISTERED_YET && !newAttendance.savedStatusAbbreviation) {
+        if (!newAttendance.savedStatusAbbreviation) {
             newAttendance.currentStatusAbbreviation = 'p';
         }
         return newAttendance;
@@ -65,7 +65,7 @@ const GroupElement = (props: {
         setChosenClass({ ...chosenClass!, attendances: newAttendances });
     }
 
-    const unregisteredAttendancesExist = () => chosenClass!.attendances.some(attendance => !attendance.currentStatusAbbreviation)
+    const unregisteredAttendancesExist = () => chosenClass!.attendances.some(attendance => !attendance.savedStatusAbbreviation)
 
     return <>
         <h3>{chosenClass.groupName}{chosenClass.teacherName != props.personnelName ? ` (${chosenClass.teacherName})` : ''}</h3>
