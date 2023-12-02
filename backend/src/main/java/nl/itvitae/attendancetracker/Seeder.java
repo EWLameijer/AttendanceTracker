@@ -42,6 +42,7 @@ public class Seeder implements CommandLineRunner {
 
             groupRepository.saveAll(List.of(java, cyber, data));
             var arie = new Student("Arie", java);
+            var larie = new Student("Larie", java);
             var bas = new Student("Bas", java);
             var zebedeus = new Student("Zebedeus", java);
             var celia = new Student("Celine", cyber);
