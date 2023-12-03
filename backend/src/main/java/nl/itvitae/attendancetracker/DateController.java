@@ -32,23 +32,15 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
-    public List<ScheduledClassDto> getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
-        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-        var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);
-        return getScheduledClassDtos(date, attendanceRegistrations);
-    }
-
     record DateAndAttendances(LocalDate date, List<AttendanceRegistration> attendanceRegistrations) {
     }
 
-    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}/previous")
-    public ScheduledDateDto getByPreviousDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
+    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
+    public ScheduledDateDto getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
         var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-        final int dayDirection = -1; // look for dates in the past
-        var possiblePreviousDateAndAttendances = findNearestDateWithAttendances(date, dayDirection);
-        if (possiblePreviousDateAndAttendances.isEmpty())
-            throw new BadRequestException("First date! Should not happen...");
+        var possiblePreviousDateAndAttendances = findPreviousDateWithAttendances(date);
+
+        var possibleNextDateAndAttendances = findNearestDateWithAttendances(date, dayDirection)
         // is there a derived query that would work here?
         var previousDateAndAttendances = possiblePreviousDateAndAttendances.get();
         var previousDate = previousDateAndAttendances.date;
@@ -56,6 +48,11 @@ public class DateController {
         var possibleEarlierDateAndAttendances = findNearestDateWithAttendances(previousDate, dayDirection);
         var earlierDate = possibleEarlierDateAndAttendances.map(dateAndAttendances -> dateAndAttendances.date).orElse(null);
         return new ScheduledDateDto(earlierDate, previousDate, date, getScheduledClassDtos(previousDate, attendanceRegistrations));
+    }
+
+    private Optional<DateAndAttendances> findPreviousDateWithAttendances(LocalDate date) {
+        final int dayDirection = -1;
+        return findNearestDateWithAttendances(date, dayDirection);
     }
 
     private Optional<DateAndAttendances> findNearestDateWithAttendances(LocalDate date, int dayDirection) {
