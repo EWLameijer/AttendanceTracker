@@ -49,7 +49,7 @@ public class DateController {
         if (attendances.isEmpty()) throw new BadRequestException("No attendances on this date!");
         var previousDate = findPreviousDate(chosenDate, personnel);
         var nextDate = findNextDate(chosenDate, personnel);
-        return new ScheduledDateDto(previousDate, chosenDate, nextDate, getScheduledClassDtos(chosenDate, attendances));
+        return new ScheduledDateDto(previousDate, chosenDate, nextDate, getScheduledClassDtos(chosenDate, attendances, personnel));
     }
 
     private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Personnel personnel) {
@@ -89,8 +89,10 @@ public class DateController {
         return Optional.empty();
     }
 
-    private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations) {
-        var classes = scheduledClassRepository.findAllByDate(date);
+    private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Personnel personnel) {
+        var classes = personnel.getRole() == ATRole.COACH
+                ? scheduledClassRepository.findAllByDate(date)
+                : scheduledClassRepository.findByDateAndTeacher(date, personnel).stream().toList();
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var classDtos = new ArrayList<ScheduledClassDto>();

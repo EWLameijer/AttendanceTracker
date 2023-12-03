@@ -15,8 +15,9 @@
 => CORE: WebSockets
 
 @@@Dates to do:
+1. Test teacher on certain date (return value should include next, previous date) DONE 
+2. Test coach on certain date (return value should include next, previous date) DONE 
 
-2. unify the schedules so that the teacher also returns an array, be it of one class.
 3. adjust the coaches view to take into account the new structure
 4. update the buttons so they are greyed out for the first and last day
 5. make React call the endpoint without /previous and /next, because it already has both 
