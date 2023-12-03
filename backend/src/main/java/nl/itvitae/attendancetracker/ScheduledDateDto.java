@@ -10,5 +10,5 @@ public record ScheduledDateDto(
         Optional<LocalDate> previousDate,
         LocalDate currentDate,
         Optional<LocalDate> nextDate,
-        List<ScheduledClassDto> scheduledClassDtos) {
+        List<ScheduledClassDto> classes) {
 }

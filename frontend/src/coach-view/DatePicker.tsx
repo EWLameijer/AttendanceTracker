@@ -6,46 +6,58 @@ import GroupElement from "./GroupElement";
 
 let lastDate = new Date(); // there may be a better way than this...
 
+interface DateSchedule {
+    previousDate?: string,
+    currentDate: string,
+    nextDate?: string,
+    classes: Class[]
+}
+
 const DatePicker = (props: { isCoach: boolean }) => {
     const [classes, setClasses] = useState<Class[]>([])
+    const [previousDate, setPreviousDate] = useState<string | undefined>()
+    const [nextDate, setNextDate] = useState<string | undefined>()
 
     useEffect(() => {
         const dateAsString = toYYYYMMDD(lastDate);
         loadDate(dateAsString);
     }, []);
 
-    function loadDate(dateAsString: string, postfix: string = "") {
-        if (props.isCoach) {
-            axios.get<Class[]>(`${BASE_URL}/coach-view/juan/dates/${dateAsString}${postfix}`).then(response => {
-                const rawClasses = response.data;
-                for (const rawClass of rawClasses) {
-                    const fullFormatAttendances = rawClass.attendances.map(attendance => addExtraData(attendance))
-                    rawClass.attendances = fullFormatAttendances
-                }
-                if (rawClasses[0].attendances[0].date) lastDate = new Date(Date.parse(rawClasses[0].attendances[0].date));
-                setClasses(rawClasses);
-            });
-        }
+    function loadDate(dateAsString: string) {
+        const pathStart = props.isCoach ? 'coach-view/juan' : 'teacher-view/wubbo'
+        axios.get<DateSchedule>(`${BASE_URL}/${pathStart}/dates/${dateAsString}`).then(response => {
+            const schedule = response.data;
+            setPreviousDate(schedule.previousDate)
+            setNextDate(schedule.nextDate);
+            lastDate = new Date(Date.parse(schedule.currentDate));
+            const rawClasses = schedule.classes;
+            for (const rawClass of rawClasses) {
+                const fullFormatAttendances = rawClass.attendances.map(attendance => addExtraData(attendance))
+                rawClass.attendances = fullFormatAttendances
+            }
+            //if (rawClasses[0].attendances[0].date) lastDate = new Date(Date.parse(rawClasses[0].attendances[0].date));
+            setClasses(rawClasses);
+        });
     }
 
     const getDisplayedDay = () => classes[0].attendances[0].date ? new Date(Date.parse(classes[0].attendances[0].date)) : lastDate
 
     const previousLessonDay = () => {
-        const dateAsString = toYYYYMMDD(getDisplayedDay());
-        loadDate(dateAsString, "/previous")
+        loadDate(previousDate!)
     }
 
     const nextLessonDay = () => {
-        const dateAsString = toYYYYMMDD(getDisplayedDay());
-        loadDate(dateAsString, "/next")
+        loadDate(nextDate!)
     }
 
     return classes.length == 0 ? <></> : <>
-        <h3><button onClick={previousLessonDay}>Vorige lesdag</button>
+        <h3><button onClick={previousLessonDay} disabled={!previousDate}>Vorige lesdag</button>
             {capitalize(getDisplayedDay().toLocaleDateString("nl-NL", dateOptions))}
-            <button onClick={nextLessonDay}>Volgende lesdag</button></h3 >
-        <ol>{classes.sort((a, b) => a.groupName.localeCompare(b.groupName)).map(currentClass =>
-            <li key={currentClass.groupName}><GroupElement chosenClass={currentClass} personnelName='Juan' isCoach={true} /></li>)}</ol>
+            <button onClick={nextLessonDay} disabled={!nextDate}>Volgende lesdag</button></h3 >
+        {props.isCoach ?
+            <ol>{classes.sort((a, b) => a.groupName.localeCompare(b.groupName)).map(currentClass =>
+                <li key={currentClass.groupName}><GroupElement chosenClass={currentClass} personnelName='Juan' isCoach={true} /></li>)}</ol>
+            : <GroupElement chosenClass={classes[0]} personnelName='Wubbo' isCoach={false} />}
     </>
 }
 
