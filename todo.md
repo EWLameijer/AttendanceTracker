@@ -14,8 +14,8 @@
 => IMPORTANT: ADR GUIDs, ADR coding principles and conventions, Lombok and plugins
 => CORE: WebSockets
 
-Dates to do:
-1. make method available for future dates (backend)
+@@@Dates to do:
+
 2. unify the schedules so that the teacher also returns an array, be it of one class.
 3. adjust the coaches view to take into account the new structure
 4. update the buttons so they are greyed out for the first and last day

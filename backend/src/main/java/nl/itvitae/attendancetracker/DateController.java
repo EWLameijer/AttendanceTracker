@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationRepository;
+import nl.itvitae.attendancetracker.personnel.ATRole;
+import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
@@ -32,54 +34,59 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
-    record DateAndAttendances(LocalDate date, List<AttendanceRegistration> attendanceRegistrations) {
-    }
-
     @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
     public ScheduledDateDto getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
-        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-        var possiblePreviousDateAndAttendances = findPreviousDateWithAttendances(date);
-
-        var possibleNextDateAndAttendances = findNearestDateWithAttendances(date, dayDirection)
-        // is there a derived query that would work here?
-        var previousDateAndAttendances = possiblePreviousDateAndAttendances.get();
-        var previousDate = previousDateAndAttendances.date;
-        var attendanceRegistrations = previousDateAndAttendances.attendanceRegistrations;
-        var possibleEarlierDateAndAttendances = findNearestDateWithAttendances(previousDate, dayDirection);
-        var earlierDate = possibleEarlierDateAndAttendances.map(dateAndAttendances -> dateAndAttendances.date).orElse(null);
-        return new ScheduledDateDto(earlierDate, previousDate, date, getScheduledClassDtos(previousDate, attendanceRegistrations));
+        return getDateDtoForDateAndPersonnel(dateAsString, nameOfCoach);
     }
 
-    private Optional<DateAndAttendances> findPreviousDateWithAttendances(LocalDate date) {
+    private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
+        var chosenDate = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
+
+        // will do this nicer when we have proper authentication
+        var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
+                .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
+        var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
+        if (attendances.isEmpty()) throw new BadRequestException("No attendances on this date!");
+        var previousDate = findPreviousDate(chosenDate, personnel);
+        var nextDate = findNextDate(chosenDate, personnel);
+        return new ScheduledDateDto(previousDate, chosenDate, nextDate, getScheduledClassDtos(chosenDate, attendances));
+    }
+
+    private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Personnel personnel) {
+        var attendances = attendanceRegistrationRepository.findByAttendanceDate(date);
+        if (personnel.getRole() == ATRole.COACH) return attendances;
+
+        // otherwise: find by teacher
+        var possibleScheduledClass = scheduledClassRepository.findByDateAndTeacher(date, personnel);
+        if (possibleScheduledClass.isEmpty()) return List.of();
+        var students = possibleScheduledClass.get().getGroup().getMembers();
+
+        // there may be a better way, to get attendances by group. However, I do not see that now, and
+        // our database is likely small enough to make the extra attendances fetched not problematic.
+        return attendances.stream()
+                .filter(attendanceRegistration -> students.contains(attendanceRegistration.getAttendance().getStudent()))
+                .toList();
+    }
+
+    private Optional<LocalDate> findPreviousDate(LocalDate date, Personnel personnel) {
         final int dayDirection = -1;
-        return findNearestDateWithAttendances(date, dayDirection);
+        return findNearestDate(date, dayDirection, personnel);
     }
 
-    private Optional<DateAndAttendances> findNearestDateWithAttendances(LocalDate date, int dayDirection) {
-        LocalDate currentDate = date;
-        int counter = 0;
-        do {
-            if (++counter > 28) return Optional.empty();
-            currentDate = currentDate.plusDays(dayDirection);
-            var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(currentDate);
-            if (!attendanceRegistrations.isEmpty())
-                return Optional.of(new DateAndAttendances(date, attendanceRegistrations));
-        } while (true);
+    private Optional<LocalDate> findNextDate(LocalDate date, Personnel personnel) {
+        final int dayDirection = 1;
+        return findNearestDate(date, dayDirection, personnel);
     }
 
-    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}/next")
-    public List<ScheduledClassDto> getByNextDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
-        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-        List<AttendanceRegistration> attendanceRegistrations;
-        var limit = 28;
-        var counter = 1;
-        LocalDate previousDate;
-        do {
-            if (counter > limit) throw new BadRequestException("This is the last day!");
-            previousDate = date.plusDays(counter++);
-            attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(previousDate);
-        } while (attendanceRegistrations.isEmpty());
-        return getScheduledClassDtos(previousDate, attendanceRegistrations);
+    private Optional<LocalDate> findNearestDate(LocalDate originalDate, int dayDirection, Personnel personnel) {
+        // students have at most a 3-week holiday: seeing no lessons after 4 weeks means the course started/stopped.
+        final int maxDaysToInvestigate = 28;
+        for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
+            var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
+            var attendanceRegistrations = findAttendancesByDateAndPersonnel(dateToInvestigate, personnel);
+            if (!attendanceRegistrations.isEmpty()) return Optional.of(dateToInvestigate);
+        }
+        return Optional.empty();
     }
 
     private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations) {
@@ -93,17 +100,8 @@ public class DateController {
     }
 
     @GetMapping("teacher-view/{nameOfTeacher}/dates/{dateAsString}")
-    public ScheduledClassDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
-        var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-        var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceDate(date);
-        var possibleTeacher = personnelRepository.findByNameIgnoringCase(nameOfTeacher);
-        if (possibleTeacher.isEmpty()) return null;
-        var teacher = possibleTeacher.get();
-        var possibleClass = scheduledClassRepository.findByDateAndTeacher(date, teacher);
-        if (possibleClass.isEmpty()) return null;
-        var chosenClass = possibleClass.get();
-        var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
-        return scheduledClassDtoFor(chosenClass, readableAttendances, date);
+    public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
+        return getDateDtoForDateAndPersonnel(dateAsString, nameOfTeacher);
     }
 
     private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {
