@@ -6,23 +6,11 @@
 6) IntelliJ: actions on save & other settings
 7) ADR: notes on Lombok?
 8) Ubiquitous Language?
-9) Create Scrumboard (Git? Trello?)
-10) Possibly ERDs and/or DDD-like class diagrams
-11) Create/add simple frontend
+9) Possibly ERDs and/or DDD-like class diagrams
 
 => FUN: Dates  
-=> IMPORTANT: ADR GUIDs, ADR coding principles and conventions, Lombok and plugins
+=> IMPORTANT: ADR coding principles and conventions, Lombok and plugins
 => CORE: WebSockets
-
-@@@Dates to do:
-1. Test teacher on certain date (return value should include next, previous date) DONE 
-2. Test coach on certain date (return value should include next, previous date) DONE 
-
-3. adjust the coaches view to take into account the new structure
-4. update the buttons so they are greyed out for the first and last day
-5. make React call the endpoint without /previous and /next, because it already has both 
-  available at all times
-6. work on teacher functionality, unifying the front end.
 
 Programmatically:
 -frontend: haal students-endpoint weg => of transformeer het in
@@ -61,7 +49,7 @@ Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-we
 2) make the remove button remove the group (after confirmation)
 
 ## What should likely still be done:
-1) going back and forth (past and future). Possibly also with calendar for quick jump
+1) Possibly also with calendar for quick jump
 2) The things Juan and the other coaches can think of/need!
 3) ERD
 4) UUID vs Long: research, make ADR
