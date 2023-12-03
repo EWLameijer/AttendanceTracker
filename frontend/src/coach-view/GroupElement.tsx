@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Attendance, Class, addExtraData, isUnsaved, unsavedAttendancesExist } from '../Class.ts'
-import { BASE_URL, format, isValidAbbreviation, toYYYYMMDD } from '../utils.ts';
+import { BASE_URL, format, isValidAbbreviation } from '../utils.ts';
 import AttendanceDisplay from './AttendanceDisplay.tsx';
 import { useEffect, useState } from 'react';
 
@@ -35,7 +35,7 @@ const GroupElement = (props: {
                 studentName: attendance.studentName,
                 status: formattedStatus,
                 personnelName: props.personnelName,
-                date: toYYYYMMDD(new Date())
+                date: props.chosenClass.attendances[0].date
             }
             const note = attendance.note
             if (note) newAttendance.note = note;
