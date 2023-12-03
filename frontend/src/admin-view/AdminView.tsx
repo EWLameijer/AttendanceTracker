@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import GroupEditComponent from './GroupEditComponent';
 import { Group } from './Group';
 import { BASE_URL } from '../utils';
+import AddGroup from './AddGroup';
 
 const AdminView = () => {
     const [groups, setGroups] = useState<Group[]>([])
@@ -12,8 +13,16 @@ const AdminView = () => {
         });
     }, []);
 
+    const addGroup = (groupName: string) => {
+        axios.post<Group>(`${BASE_URL}/admin-view/chantal/groups`, { name: groupName }).then(response => {
+            const newGroup = response.data;
+            setGroups([...groups, newGroup])
+        });
+    }
+
     return <>
         <h2>Hallo Chantal!</h2>
+        <AddGroup add={addGroup} />
         <ol>{groups.sort((a, b) => a.name.localeCompare(b.name)).map(group => <GroupEditComponent key={group.name} group={group} />)}</ol>
     </>
 }
