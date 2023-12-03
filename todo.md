@@ -37,25 +37,14 @@ Explore/execute and make notes of https://spring.io/guides/gs/messaging-stomp-we
   DELETED: noContent <= REsponseeNTITY
   PUT: skip
 
-## Current Branch
-
-// adding and removing groups only makes sense when one can schedule...
-
-3) start the form with a text field and add group button
-4) make that add group button create a new group
-1) add to each group a remove button
-2) make the remove button remove the group (after confirmation)
-
 ## What should likely still be done:
 1) going back and forth (past and future). Possibly also with calendar for quick jump
 2) The things Juan and the other coaches can think of/need!
 3) ERD
-4) UUID vs Long: research, make ADR
 5) Ubiquitous language (document)
 6) Coding standards (document)
 7) Documents to write down feedback from (potential) users
 8) Wireframes (possibly?)
-9) group administration endpoint and front-end
 10) lesson administration endpoint and front-end
 11) enabling registerer to undo mistaken input
 12) enabling websockets (automatic updating)
