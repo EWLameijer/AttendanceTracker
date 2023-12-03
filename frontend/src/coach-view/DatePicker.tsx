@@ -4,7 +4,8 @@ import axios from "axios";
 import { Class, addExtraData } from "../Class";
 import GroupElement from "./GroupElement";
 
-let lastDate = new Date(); // there may be a better way than this...
+// there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
+let lastDate = new Date();
 
 interface DateSchedule {
     previousDate?: string,
@@ -35,7 +36,6 @@ const DatePicker = (props: { isCoach: boolean }) => {
                 const fullFormatAttendances = rawClass.attendances.map(attendance => addExtraData(attendance))
                 rawClass.attendances = fullFormatAttendances
             }
-            //if (rawClasses[0].attendances[0].date) lastDate = new Date(Date.parse(rawClasses[0].attendances[0].date));
             setClasses(rawClasses);
         });
     }
