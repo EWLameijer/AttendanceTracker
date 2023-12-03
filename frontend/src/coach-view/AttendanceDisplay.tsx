@@ -28,14 +28,43 @@ const AttendanceDisplay = (props: {
         setAttendance(newAttendance);
     }
 
+    const setAttendanceStyle = (attendance: Attendance) => {
+        switch(attendance.status.toString()) { 
+            case "ABSENT_WITH_NOTICE": { 
+                return "input-attendance-absent-with-notice"
+                break; 
+            } 
+            case "ABSENT_WITHOUT_NOTICE": { 
+               return "input-attendance-absent-without-notice"
+               break; 
+            } 
+            case "PRESENT": { 
+               return "input-attendance-present"
+               break; 
+            } 
+            case "SICK": { 
+               return "input-attendance-sick"
+               break; 
+            }
+            case "WORKING_FROM_HOME": { 
+                return "input-attendance-working-from-home"
+                break; 
+            }
+            default: { 
+                if (attendance.status.toString().includes(":"))
+                    return "input-attendance-late"                
+               break; 
+            } 
+         } 
+    }
+
     return <li>
         {displayAttendance(attendance)}
         <div className='left-box'>
             <form onSubmit={submit}>
-                <input className={`input-attendance-${attendance.currentStatusAbbreviation}`} type="text" value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
+                <input className={setAttendanceStyle(attendance)} type="text" value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
                 <input type="text" value={attendance.note} name="note" onChange={changeItem} placeholder="aantekeningen" />
-                <input type="submit" disabled={!isUnsaved(attendance)}
-                    value="Opslaan"></input>
+                <input type="submit" disabled={!isUnsaved(attendance)}value="Opslaan"></input>
             </form>
             {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
         </div>
