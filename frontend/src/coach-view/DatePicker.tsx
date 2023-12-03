@@ -40,7 +40,7 @@ const DatePicker = (props: { isCoach: boolean }) => {
         });
     }
 
-    const getDisplayedDay = () => classes[0].attendances[0].date ? new Date(Date.parse(classes[0].attendances[0].date)) : lastDate
+    const getDisplayedDay = () => lastDate
 
     const previousLessonDay = () => loadDate(previousDate!)
 
@@ -52,8 +52,8 @@ const DatePicker = (props: { isCoach: boolean }) => {
             <button onClick={nextLessonDay} disabled={!nextDate}>Volgende lesdag</button></h3 >
         {props.isCoach ?
             <ol>{classes.sort((a, b) => a.groupName.localeCompare(b.groupName)).map(currentClass =>
-                <li key={currentClass.groupName}><GroupElement chosenClass={currentClass} personnelName='Juan' isCoach={true} /></li>)}</ol>
-            : <GroupElement chosenClass={classes[0]} personnelName='Wubbo' isCoach={false} />}
+                <li key={currentClass.groupName}><GroupElement chosenClass={currentClass} personnelName='Juan' isCoach={true} dateAsString={toYYYYMMDD(lastDate)} /></li>)}</ol>
+            : <GroupElement chosenClass={classes[0]} personnelName='Wubbo' isCoach={false} dateAsString={toYYYYMMDD(lastDate)} />}
     </>
 }
 

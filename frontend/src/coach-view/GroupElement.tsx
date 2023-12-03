@@ -5,7 +5,7 @@ import AttendanceDisplay from './AttendanceDisplay.tsx';
 import { useEffect, useState } from 'react';
 
 const GroupElement = (props: {
-    chosenClass: Class, personnelName: string, isCoach: boolean
+    chosenClass: Class, personnelName: string, isCoach: boolean, dateAsString: string
 }) => {
     const [chosenClass, setChosenClass] = useState(props.chosenClass)
     useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass])
@@ -35,7 +35,7 @@ const GroupElement = (props: {
                 studentName: attendance.studentName,
                 status: formattedStatus,
                 personnelName: props.personnelName,
-                date: props.chosenClass.attendances[0].date
+                date: props.dateAsString
             }
             const note = attendance.note
             if (note) newAttendance.note = note;
@@ -65,7 +65,7 @@ const GroupElement = (props: {
         setChosenClass({ ...chosenClass!, attendances: newAttendances });
     }
 
-    const unregisteredAttendancesExist = () => chosenClass!.attendances.some(attendance => !attendance.savedStatusAbbreviation)
+    const unregisteredAttendancesExist = () => chosenClass!.attendances.some(attendance => !attendance.currentStatusAbbreviation)
 
     return <>
         <h3>{chosenClass.groupName}{chosenClass.teacherName != props.personnelName ? ` (${chosenClass.teacherName})` : ''}</h3>
