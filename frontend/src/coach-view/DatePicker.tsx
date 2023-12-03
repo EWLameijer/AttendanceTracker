@@ -42,13 +42,9 @@ const DatePicker = (props: { isCoach: boolean }) => {
 
     const getDisplayedDay = () => classes[0].attendances[0].date ? new Date(Date.parse(classes[0].attendances[0].date)) : lastDate
 
-    const previousLessonDay = () => {
-        loadDate(previousDate!)
-    }
+    const previousLessonDay = () => loadDate(previousDate!)
 
-    const nextLessonDay = () => {
-        loadDate(nextDate!)
-    }
+    const nextLessonDay = () => loadDate(nextDate!)
 
     return classes.length == 0 ? <></> : <>
         <h3><button onClick={previousLessonDay} disabled={!previousDate}>Vorige lesdag</button>
