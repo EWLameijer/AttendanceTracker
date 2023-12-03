@@ -2,3 +2,28 @@
     display: flex;
     justify-content: flex-start;
 }
+
+.input-attendance-az {
+    background-color: #e60000
+}
+
+.input-attendance-am {
+    background-color: #ff6600
+}
+
+.input-attendance-p {
+    background-color: #3CBC8D
+}
+
+.input-attendance-t {
+    background-color: #cc66ff
+}
+
+.input-attendance-z {
+    background-color: #66ccff
+}
+
+.input-attendance-{numbers} {
+    background-color: #ffff00
+}
+
