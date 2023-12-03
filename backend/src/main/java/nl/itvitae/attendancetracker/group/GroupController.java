@@ -2,10 +2,12 @@ package nl.itvitae.attendancetracker.group;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -27,5 +29,15 @@ public class GroupController {
         var newGroup = new Group(name.trim());
         groupRepository.save(newGroup);
         return ResponseEntity.created(URI.create("")).body(GroupDto.from(newGroup));
+    }
+
+    @DeleteMapping("/admin-view/{adminName}/groups/{id}")
+    public ResponseEntity<Void> deleteGroup(@PathVariable UUID id) {
+        var groupToDelete = groupRepository.findById(id).orElseThrow();
+
+        // need to convert set to list, else ConcurrentModificationException
+        groupToDelete.getMembers().stream().toList().forEach(Student::removeFromGroup);
+        groupRepository.delete(groupToDelete);
+        return ResponseEntity.noContent().build();
     }
 }
