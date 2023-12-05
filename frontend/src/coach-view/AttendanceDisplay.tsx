@@ -29,10 +29,7 @@ const AttendanceDisplay = (props: {
     }
 
     function setAttendanceStyle(abbreviation: string){
-        if(statusIsATime(abbreviation))
-            return "input-attendance-late";
-        else
-            return attendanceStyle.get(abbreviation);
+        return (statusIsATime(abbreviation)) ? "input-attendance-late" : attendanceStyle.get(abbreviation);
     }
 
     const attendanceStyle = new Map<string, string>([
