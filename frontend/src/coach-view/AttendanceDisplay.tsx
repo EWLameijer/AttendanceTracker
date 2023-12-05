@@ -47,7 +47,7 @@ const AttendanceDisplay = (props: {
         {displayAttendance(attendance)}
         <div className='left-box'>
             <form onSubmit={submit}>
-                <input className={setAttendanceStyle(attendance.savedStatusAbbreviation!)} type="text" value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
+                <input type="text" className={setAttendanceStyle(attendance.savedStatusAbbreviation!)} value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
                 <input type="text" value={attendance.note} name="note" onChange={changeItem} placeholder="aantekeningen" />
                 <input type="submit" disabled={!isUnsaved(attendance)}value="Opslaan"></input>
             </form>
