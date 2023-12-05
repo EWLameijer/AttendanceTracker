@@ -32,10 +32,10 @@ const AttendanceDisplay = (props: {
         if(abbreviation.includes(":"))
             return "input-attendance-late";
         else
-            return attendanceStyleMap.get(abbreviation);
+            return attendanceStyle.get(abbreviation);
     }
 
-    const attendanceStyleMap = new Map<string, string>([
+    const attendanceStyle = new Map<string, string>([
         ["am", "input-attendance-absent-with-notice"],
         ["az", "input-attendance-absent-without-notice"],
         ["p", "input-attendance-present"],
