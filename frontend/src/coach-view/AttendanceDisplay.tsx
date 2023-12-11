@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Attendance, displayAttendance, isUnsaved, statusIsATime } from '../Class.ts';
+import { Attendance, displayAttendance, isUnsaved, statusIsLate } from '../Class.ts';
 import { useNavigate } from 'react-router-dom';
 import "../styles.css"
 
@@ -29,7 +29,7 @@ const AttendanceDisplay = (props: {
     }
 
     function setAttendanceStyle(abbreviation: string){
-        return (statusIsATime(abbreviation)) ? "input-attendance-late" : attendanceStyle.get(abbreviation);
+        return (statusIsLate(abbreviation)) ? "input-attendance-late" : attendanceStyle.get(abbreviation);
     }
 
     const attendanceStyle = new Map<string, string>([

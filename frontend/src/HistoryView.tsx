@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Attendance, Status, statusIsATime, translateAttendanceStatus } from "./Class";
+import { Attendance, Status, statusIsLate, translateAttendanceStatus } from "./Class";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "./utils";
@@ -17,7 +17,7 @@ const HistoryView = () => {
         });
     }, [name]);
 
-    const isLate = (status: string) => statusIsATime(status)
+    const isLate = (status: string) => statusIsLate(status)
 
     const late = attendances.filter(attendance => isLate(attendance.status)).length;
 

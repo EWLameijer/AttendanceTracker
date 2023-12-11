@@ -30,7 +30,7 @@ const statusTranslations = new Map<string, string>([
     [Status.WORKING_FROM_HOME, "werkt thuis"]
 ]);
 
-export function statusIsATime(text: string){
+export function statusIsLate(text: string){
     return text.includes(":");
 }
 
