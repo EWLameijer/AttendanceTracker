@@ -1,3 +1,5 @@
+EW thoughts 
+
 1) Scenarios and personas would be helpful
 2) Wireframes would help
 3) Coding conventions may be useful, including hor/vert slicing, KISS/YAGNI etc.

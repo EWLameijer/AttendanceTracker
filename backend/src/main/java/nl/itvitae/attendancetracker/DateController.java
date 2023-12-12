@@ -41,8 +41,6 @@ public class DateController {
 
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
         var chosenDate = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
-
-        // will do this nicer when we have proper authentication
         var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
         var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
