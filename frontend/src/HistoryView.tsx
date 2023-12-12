@@ -17,9 +17,7 @@ const HistoryView = () => {
         });
     }, [name]);
 
-    const isLate = (status: string) => statusIsLate(status)
-
-    const late = attendances.filter(attendance => isLate(attendance.status)).length;
+    const late = attendances.filter(attendance => statusIsLate(attendance.status)).length;
 
     const getCount = (status: string) => attendances.filter(attendance => attendance.status == status).length
 
