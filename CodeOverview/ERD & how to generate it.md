@@ -5,7 +5,6 @@ There are a bunch of websites that offer this functionality.
 
 I (Mark) used https://www.lucidchart.com.
 Here you can make a free account. The limitation seems to be that you can only have 3 files stored. Which is 2 more than I need for this project.
-There are also a bunch of other websites that let you do this.
 
 ## Making the ERD:
 
