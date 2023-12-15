@@ -15,12 +15,12 @@ Here you can make a free account. The limitation seems to be that you can only h
 5. Click on import data, select "from SQL database".
 6. Select database archetype of choice, we currently use PostgreSQL.
 7. Copy the SQL command at the bottom.
-8. Run it in pgAdmin 4 (the program we currently use to look at the DB). To do this: Right click on the attendance table and select Query Tool.
+8. Run it in pgAdmin 4 (the program we currently use to look at the DB). To do this: Right click on the attendance database and select Query Tool.
 9. This generates some SQL schemas. Save these in .csv format.
 10. Click on the "Next" button below the SQL command in your browser (you might have to scroll down a bit).
 11. Upload the file and click "Import".
 12. Drag the table names from the bottom left corner into the work area in the middle. The relationships are automatically added once you add the relevant tables.
-13. You can adjust the locations of both the lines and end points by clicking on them once to select them, and then on the next click dragging them.To move the end points, you have to click on them and then drag the blue dot somewhere else. This lets you move them between the left and right side. Do be careful, since you can put those anywhere (also on other attributes or attached to nothing).
+13. You can adjust the locations of both the lines and end points by clicking on them once to select them, and then on the next click dragging them. To move the end points, you have to click on them and then drag the blue dot somewhere else. This lets you move them between the left and right side. Do be careful, since you can put those anywhere (also on other attributes or attached to nothing).
 14. Once it looks like what you want (ideally no crossing lines) and in a fairly logical layout, you should save the document. This way you can edit it at a later time if needed.
 
 ## Exporting the ERD:
