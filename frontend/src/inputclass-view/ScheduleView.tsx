@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Attendance, Class, addExtraData } from './Class';
-import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from './utils';
+import { Attendance, Class, addExtraData } from '../Class';
+import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from '../utils';
 
-const ScheduleClassView = () => {
+const ScheduleView = () => {
     const [chosenClass, setChosenClass] = useState<Class>()
     const [date, setDate] = useState<Date | undefined>()
 
@@ -13,4 +13,4 @@ const ScheduleClassView = () => {
     </>
 }
 
-export default ScheduleClassView;
+export default ScheduleView;
