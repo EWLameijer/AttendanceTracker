@@ -16,11 +16,10 @@ const ScheduleClassView = () => {
         });
     }, []);
 
-    return chosenClass ? <>
+    return  <>
         <h2>Hallo Wubbo!</h2>
-        <h3>{capitalize(date!.toLocaleDateString("nl-NL", dateOptions))}</h3 >
-        <GroupElement chosenClass={chosenClass} personnelName='Wubbo' isCoach={false} />
-    </> : <p>Overzicht wordt geladen...</p>
+        <h3>Voer nieuwe les in:</h3 >
+    </>
 }
 
 export default ScheduleClassView;
