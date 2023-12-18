@@ -5,8 +5,13 @@ import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from '../utils';
 
 const ScheduleView = () => {
     function saveClass(){
-        let test = document.getElementById('ptest');
-        test.textContent = document.getElementById('selectedGroup')?.innerText;
+        let date = document.getElementById("selectedDate");
+        let teacher = document.getElementById("selectedTeacher");
+        let group = document.getElementById("selectedGroup");
+
+        let ptext = document.getElementById("pOutput");
+
+        ptext.textContent = document.getElementById('selectedGroup')?.innerText;
     }
 
     return  <>
@@ -30,7 +35,7 @@ const ScheduleView = () => {
 
         <button onClick={saveClass}>Opslaan</button>
 
-        <p id="ptest">a</p>
+        <p id="pOutput">a</p>
     </>
 }
 
