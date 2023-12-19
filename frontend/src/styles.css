@@ -2,3 +2,28 @@
     display: flex;
     justify-content: flex-start;
 }
+
+.input-attendance-absent-with-notice {
+    background-color: #ff6600
+}
+
+.input-attendance-absent-without-notice {
+    background-color: #e60000
+}
+
+.input-attendance-present {
+    background-color: #3CBC8D
+}
+
+.input-attendance-sick {
+    background-color: #66ccff
+}
+
+.input-attendance-working-from-home {
+    background-color: #cc66ff
+}
+
+.input-attendance-late {
+    background-color: #ffff00
+}
+

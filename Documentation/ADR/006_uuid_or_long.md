@@ -18,7 +18,7 @@ Further sources:
 - https://www.baeldung.com/uuid-vs-sequential-id-as-primary-key 
 - https://blog.boot.dev/clean-code/what-are-uuids-and-should-you-use-them/
 
-An important rule in software development (see Code Complete 2) is not to optimize performance until it turns out to be a problem, use the simplest solution available instead. Sequential Ids and UUIDs are about equally simple to code, but UUIDs avoid a lot of problems. Flexibility is usually far more important than performance (until performance matters, of course), so UUIDs for now seem to be the way to go. 
+An important rule in software development (see Code Complete 2) is to not optimize performance until it turns out to be a problem, use the simplest solution available instead. Sequential Ids and UUIDs are about equally simple to code, but UUIDs avoid a lot of problems. Flexibility is usually far more important than performance (until performance matters, of course), so UUIDs for now seem to be the way to go. 
 
 ## Decision
 We'll choose UUIDs for now.

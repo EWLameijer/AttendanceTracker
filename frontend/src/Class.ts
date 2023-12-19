@@ -30,6 +30,8 @@ const statusTranslations = new Map<string, string>([
     [Status.WORKING_FROM_HOME, "werkt thuis"]
 ]);
 
+export const statusIsLate = (text: string) => text.includes(":");
+
 export const translateAttendanceStatus = (status: string) => (statusTranslations.get(status) ?? "TE LAAT - " + status)
 
 export const displayAttendance = (attendance: Attendance) =>
