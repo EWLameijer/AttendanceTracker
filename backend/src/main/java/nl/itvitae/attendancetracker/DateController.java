@@ -78,7 +78,8 @@ public class DateController {
 
     private Optional<LocalDate> findNearestDate(LocalDate originalDate, int dayDirection, Personnel personnel) {
         // students have at most a 3-week holiday: seeing no lessons after 4 weeks means the course started/stopped.
-        final int maxDaysToInvestigate = 28;
+        // Asked Chantal 202312XX: In some cases, she may be willing to give me 4 weeks holiday; so 5 weeks it is
+        final int maxDaysToInvestigate = 5 * 7;
         for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
             var attendanceRegistrations = findAttendancesByDateAndPersonnel(dateToInvestigate, personnel);
