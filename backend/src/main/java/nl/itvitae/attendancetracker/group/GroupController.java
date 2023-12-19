@@ -5,6 +5,7 @@ import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.UUID;
@@ -23,12 +24,21 @@ public class GroupController {
     }
 
     @PostMapping("/admin-view/{adminName}/groups")
-    public ResponseEntity<GroupDto> createGroup(@RequestBody GroupDto groupDto) {
+    public ResponseEntity<GroupDto> createGroup(@RequestBody GroupDto groupDto, UriComponentsBuilder ucb) {
         var name = groupDto.name();
         if (name == null || name.isBlank()) throw new BadRequestException("A group requires a name!");
         var newGroup = new Group(name.trim());
         groupRepository.save(newGroup);
-        return ResponseEntity.created(URI.create("")).body(GroupDto.from(newGroup));
+        URI uri = ucb.path("groups/{id}")
+                .buildAndExpand(newGroup.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(GroupDto.from(newGroup));
+    }
+
+    @GetMapping("groups/{id}")
+    public ResponseEntity<GroupDto> getById(@PathVariable UUID id) {
+        var possibleGroup = groupRepository.findById(id);
+        return possibleGroup.map(group -> ResponseEntity.ok(GroupDto.from(group))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/admin-view/{adminName}/groups/{id}")
