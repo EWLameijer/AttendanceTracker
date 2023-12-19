@@ -5,7 +5,7 @@ const AddGroup = (props: { add: (groupName: string) => void }) => {
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (groupName.trim() == "") {
+        if (groupName.trim() === "") {
             alert("Een groep heeft een naam nodig!");
             return;
         }
