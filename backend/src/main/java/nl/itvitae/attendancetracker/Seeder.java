@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -73,21 +74,28 @@ public class Seeder implements CommandLineRunner {
             var filippasAttendance = new TypeOfAttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
             attendanceRegistrationService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
-            for (Student student : java.getMembers()) createHistory(student, 90, juan);
-            for (Student student : cyber.getMembers()) createHistory(student, 180, juan);
-            for (Student student : data.getMembers()) createHistory(student, 270, juan);
+            createHistory(java, 90, wubbo, juan);
+            createHistory(cyber, 180, niels, juan);
+            createHistory(data, 270, dan, juan);
             System.out.println("Students seeded!");
         }
     }
 
-    private void createHistory(Student student, int days, Personnel registrar) {
-        var today = LocalDate.now();
-        AttendanceRegistration currentAttendance = new TypeOfAttendanceRegistration(student, today, registrar, AttendanceStatus.PRESENT);
+    private void createHistory(Group group, int days, Personnel teacher, Personnel registrar) {
+        var today = LocalDate.now().minusDays(1);
+        var nextDaysPerformance = new HashMap<Student, AttendanceRegistration>();
+        for (Student student : group.getMembers()) {
+            nextDaysPerformance.put(student, new TypeOfAttendanceRegistration(student, today, registrar, AttendanceStatus.PRESENT));
+        }
         for (int day = 1; day < days; day++) {
             var dateToAssess = today.minusDays(day);
             if (isStudyDay(dateToAssess.getDayOfWeek())) {
-                currentAttendance = getNewAttendance(student, dateToAssess, registrar, currentAttendance);
-                attendanceRegistrationService.save(currentAttendance);
+                scheduledClassRepository.save(new ScheduledClass(group, teacher, dateToAssess));
+                for (Student student : group.getMembers()) {
+                    AttendanceRegistration currentAttendance = getNewAttendance(student, dateToAssess, registrar, nextDaysPerformance.get(student));
+                    nextDaysPerformance.put(student, currentAttendance);
+                    attendanceRegistrationService.save(currentAttendance);
+                }
             }
         }
     }
