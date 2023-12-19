@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Attendance, displayAttendance, isUnsaved } from '../Class.ts';
+import { Attendance, displayAttendance, isUnsaved, statusIsLate } from '../Class.ts';
 import { useNavigate } from 'react-router-dom';
 import "../styles.css"
 
@@ -28,14 +28,25 @@ const AttendanceDisplay = (props: {
         setAttendance(newAttendance);
     }
 
+    function setAttendanceStyle(abbreviation: string){
+        return (statusIsLate(abbreviation)) ? "input-attendance-late" : attendanceStyle.get(abbreviation);
+    }
+
+    const attendanceStyle = new Map<string, string>([
+        ["am", "input-attendance-absent-with-notice"],
+        ["az", "input-attendance-absent-without-notice"],
+        ["p", "input-attendance-present"],
+        ["t", "input-attendance-working-from-home"],
+        ["z", "input-attendance-sick"],
+    ]);
+
     return <li>
         {displayAttendance(attendance)}
         <div className='left-box'>
             <form onSubmit={submit}>
-                <input type="text" value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
+                <input type="text" className={setAttendanceStyle(attendance.savedStatusAbbreviation!)} value={attendance.currentStatusAbbreviation} name="currentStatusAbbreviation" onChange={changeItem} />
                 <input type="text" value={attendance.note} name="note" onChange={changeItem} placeholder="aantekeningen" />
-                <input type="submit" disabled={!isUnsaved(attendance)}
-                    value="Opslaan"></input>
+                <input type="submit" disabled={!isUnsaved(attendance)}value="Opslaan"></input>
             </form>
             {props.isCoach ? <button onClick={showHistory}>Geschiedenis</button> : <></>}
         </div>
