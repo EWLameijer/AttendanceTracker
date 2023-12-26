@@ -5,13 +5,24 @@ import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from '../utils';
 
 const ScheduleView = () => {
     function saveClass(){
-        let date = document.getElementById("selectedDate");
-        let teacher = document.getElementById("selectedTeacher");
-        let group = document.getElementById("selectedGroup");
+        // let date = document.getElementById("selectedDate");
+        // let teacher = document.getElementById("selectedTeacher");
+        // let group = document.getElementById("selectedGroup");
 
         let ptext = document.getElementById("pOutput");
 
         ptext.textContent = document.getElementById('selectedGroup')?.innerText;
+    }
+        
+    let date, teacher, group;
+
+    state = {
+        teachers = axios.get(),
+        groups = axios.get()
+    };
+
+    function setGroup(text: string){
+        group = document.getElementById("selectedGroup");
     }
 
     return  <>
@@ -23,17 +34,18 @@ const ScheduleView = () => {
         <p>Kies een leraar:</p>
         <select id="selectedTeacher">
             {/* get all teachers */}
+            {this.state.teachers.map(teacher => <option key={teacher}></select>{teacher}</option>)}
             <option value="Wubbo">Wubbo</option>
             <option value="Kenji">Kenji</option>
         </select>
         <p>Kies een groep:</p>
-        <select id="selectedGroup">
+        <select id="selectedGroup" onSelect="setGroup()">
             {/* get all groups */}
             <option value="51 Java">Java</option>
             <option value="52 Cyber">Cyber</option>
         </select>
 
-        <button onClick={saveClass}>Opslaan</button>
+        {/* <button onClick={saveClass}>Opslaan</button> */}
 
         <p id="pOutput">a</p>
     </>
