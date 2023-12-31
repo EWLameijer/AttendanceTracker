@@ -44,7 +44,11 @@ public class DateController {
         var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
         var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
-        if (attendances.isEmpty()) throw new BadRequestException("No attendances on this date!");
+        // if the requested day does not have a schedule, return the most recent lesson date instead
+        if (attendances.isEmpty()) {
+            chosenDate = findPreviousDate(LocalDate.now(), personnel).orElseThrow(() -> new BadRequestException("No nearby lesson date!"));
+            attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
+        }
         var previousDate = findPreviousDate(chosenDate, personnel);
         var nextDate = findNextDate(chosenDate, personnel);
         return new ScheduledDateDto(previousDate, chosenDate, nextDate, getScheduledClassDtos(chosenDate, attendances, personnel));
