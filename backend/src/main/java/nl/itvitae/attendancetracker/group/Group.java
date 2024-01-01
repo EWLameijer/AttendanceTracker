@@ -13,7 +13,6 @@ import java.util.UUID;
 
 @Entity(name = "groups") // "group" is apparently a (Postgre)SQL statement?
 @Getter
-@Setter
 @NoArgsConstructor
 public class Group {
     @Id
@@ -22,6 +21,7 @@ public class Group {
 
     private String name;
 
+    @Setter
     private boolean isTerminated = false;
 
     @OneToMany(mappedBy = "group")
