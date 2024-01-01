@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nl.itvitae.attendancetracker.student.Student;
 
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Entity(name = "groups") // "group" is apparently a (Postgre)SQL statement?
 @Getter
+@Setter
 @NoArgsConstructor
 public class Group {
     @Id
@@ -19,6 +21,8 @@ public class Group {
     private UUID id;
 
     private String name;
+
+    private boolean isTerminated = false;
 
     @OneToMany(mappedBy = "group")
     @JsonManagedReference
