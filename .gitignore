@@ -33,3 +33,4 @@ build/
 .vscode/
 
 *.backup
+/backend/src/main/java/nl/itvitae/attendancetracker/AllMyFirstSecrets.java
