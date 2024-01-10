@@ -17,8 +17,8 @@ https://youtu.be/rpGJQz3KFKE?feature=shared&t=811
 
 Prettier can be configured to "format on save". And it works out of the box.
 
-A possible alternative would be BiomeJS. But this has only been around for about 3 years. And comparatively, far fewer projects use it.
-Also, Biome apparently uses tabs instead of spaces. Which is a bad thing for Git, according to Wubbo.
+A possible alternative would be BiomeJS. But this has only been around for about 3 years. And comparatively, far fewer projects use it (Prettier: 6.9 million, Biome: 2k).
+Also, Biome apparently uses tabs instead of spaces, which is a bad thing for Git, according to Wubbo.
 
 ## Decision
 
