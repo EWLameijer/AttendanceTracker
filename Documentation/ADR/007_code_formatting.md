@@ -7,7 +7,7 @@ Code formatting is a nice thing to have. It makes code more readable. Especially
 However, manually formatting code is boring and tedious.
 I'm used to Visual Studio, where formatting can be done automatically.
 
-Here, we use IntelliJ and VS Code, which seem to not do auto-formatting.
+Here, we use IntelliJ and VS Code. IntelliJ does have auto-formatting on save. VS Code doesn't seem to have auto-formatting.
 
 Thus, it seems useful to use an extension that will auto-format code, at least for VS Code. IntelliJ only has Java, which is fairly readable for me. An opinionated auto-formatter is preferred, so that we don't have to have entire conversations about "how many spaces to use for indentation" and so on.
 
@@ -24,6 +24,12 @@ Also, Biome apparently uses tabs instead of spaces, which is a bad thing for Git
 
 We're going to use Prettier for code formatting in VS Code.
 Prettier is also only available in IntelliJ Ultimate, so we can't even use it in Community Edition.
+
+## How to install Prettier in VS Code
+
+1. Go to the Extensions window (Ctrl + Shift + X).
+2. Install "Prettier - Code formatter".
+3.
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
