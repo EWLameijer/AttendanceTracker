@@ -2,6 +2,7 @@ package nl.itvitae.attendancetracker.group;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.UUID;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,10 +17,11 @@ import java.util.stream.StreamSupport;
 public class GroupController {
     private final GroupRepository groupRepository;
 
+    private final ScheduledClassRepository scheduledClassRepository;
+
     @GetMapping("/admin-view/{adminName}/groups")
     public Iterable<GroupDto> getAll() {
-        return StreamSupport.stream(groupRepository.findAll().spliterator(), false)
-                .map(GroupDto::from).toList();
+        return groupRepository.findAllActive().stream().map(GroupDto::from).toList();
     }
 
     @PostMapping("/admin-view/{adminName}/groups")
@@ -45,9 +46,17 @@ public class GroupController {
     public ResponseEntity<Void> deleteGroup(@PathVariable UUID id) {
         var groupToDelete = groupRepository.findById(id).orElseThrow();
 
-        // need to convert set to list, else ConcurrentModificationException
-        groupToDelete.getMembers().stream().toList().forEach(Student::removeFromGroup);
-        groupRepository.delete(groupToDelete);
+        var scheduledClassesWithThisGroup = scheduledClassRepository.findAllByGroup(groupToDelete);
+        if (scheduledClassesWithThisGroup.isEmpty()) {
+            // You can ONLY remove students (and the group itself) if no scheduled dates are made yet
+            // need to convert set to list, else a ConcurrentModificationException occurs
+            groupToDelete.getMembers().stream().toList().forEach(Student::removeFromGroup);
+            groupRepository.delete(groupToDelete);
+        } else {
+            // the group has scheduled classes, so soft-delete it so coaches and teachers can view history
+            groupToDelete.setTerminated(true);
+            groupRepository.save(groupToDelete);
+        }
         return ResponseEntity.noContent().build();
     }
 }

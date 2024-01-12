@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nl.itvitae.attendancetracker.student.Student;
 
 import java.util.HashSet;
@@ -19,6 +20,9 @@ public class Group {
     private UUID id;
 
     private String name;
+
+    @Setter
+    private boolean isTerminated = false;
 
     @OneToMany(mappedBy = "group")
     @JsonManagedReference
