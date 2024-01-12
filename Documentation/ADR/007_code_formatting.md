@@ -30,7 +30,7 @@ Prettier is also only available in IntelliJ Ultimate, so we can't even use it in
 1. Go to the Extensions window (Ctrl + Shift + X).
 2. Install "Prettier - Code formatter".
 3. There is a config file in the root of frontend called ".prettierrc".
-4. Go to VS Code's settings using Ctrl + ,
+4. Go to VS Code's settings (Ctrl + ,).
 5. Search for "Default formatter".
 6. Select the option to use "Prettier - code formatter" as default. The list isn't alphabetically sorted.
    There doesn't seem to be a way to force this via config files.
