@@ -3,12 +3,17 @@ import { useState, useEffect } from "react";
 import { Attendance, Class, addExtraData } from "../Class";
 import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
 import { ScheduledClass } from "./ScheduledClass";
+import { Group } from "../admin-view/Group";
 
 const ScheduleView = () => {
-  const [scheduledClass, setScheduledClass] = useState({
-    teacher: "Kenji",
-    group: "52 Cyber",
-  });
+  const [groups, setGroups] = useState<Group[]>([]);
+  // const [teachers, setTeachers] = useState<Teacher[]>({});
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
+      setGroups(response.data);
+    });
+  }, []);
 
   function saveClass() {
     // let date = document.getElementById("selectedDate");
@@ -26,12 +31,19 @@ const ScheduleView = () => {
       <br />
       <p>Kies een leraar:</p>
       <select id="teacher">
-        <option>{scheduledClass.teacher}</option>
+        <option>Kenji</option>
       </select>
       <p>Kies een groep:</p>
-      <select id="group">
-        <option>{scheduledClass.group}</option>
-      </select>
+
+      <select id="group">{/* groups */}</select>
+      {groups.map((value: Group, index: number) => {
+        return (
+          <div>
+            <option>{value.name}</option>
+          </div>
+        );
+      })}
+
       <div>
         <br></br>
         <button>Opslaan</button>
