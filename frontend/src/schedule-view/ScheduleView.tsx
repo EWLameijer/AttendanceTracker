@@ -8,7 +8,7 @@ const ScheduleView = () => {
   const [date, setDate] = useState<String>();
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [selectedOption, setSelectedOption] = useState<String>();
+  const [selectedTeacher, setSelectedTeacher] = useState<String>();
 
   useEffect(() => {
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
@@ -22,12 +22,15 @@ const ScheduleView = () => {
     });
   }, []);
 
-  const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  // BUG: initial value not set to teachers[0]
+  const handleSelectedTeacher = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const value = event.target.value;
-    setSelectedOption(value);
+    setSelectedTeacher(value);
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectedDate = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setDate(event.target.value);
   };
 
@@ -41,7 +44,7 @@ const ScheduleView = () => {
       <br />
 
       <p>Kies een leraar:</p>
-      <select id="teacher" onChange={selectChange}>
+      <select id="teacher" onChange={handleSelectedTeacher}>
         {teachers.map((value: Teacher, index: number) => (
           <option key={index}>{value.name}</option>
         ))}
@@ -59,7 +62,7 @@ const ScheduleView = () => {
         <button>Opslaan</button>
       </div>
 
-      <p>{selectedOption}</p>
+      <p>{selectedTeacher}</p>
     </form>
   );
 };
