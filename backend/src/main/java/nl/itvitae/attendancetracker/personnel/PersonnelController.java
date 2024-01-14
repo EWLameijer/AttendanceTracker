@@ -14,9 +14,9 @@ import java.util.stream.StreamSupport;
 public class PersonnelController {
     private final PersonnelRepository PersonnelRepository;
 
-    @GetMapping("/personnel")
+    @GetMapping("/teachers")
     public Iterable<PersonnelDto> getAll() {
         return StreamSupport.stream(PersonnelRepository.findAll().spliterator(), false)
-                .map(PersonnelDto::from).toList();
+                .map(PersonnelDto::from).filter(personnelDto -> personnelDto.role() == ATRole.TEACHER).toList();
     }
 }

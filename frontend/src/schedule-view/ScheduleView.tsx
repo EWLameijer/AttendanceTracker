@@ -17,7 +17,7 @@ const ScheduleView = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/personnel`).then((response) => {
+    axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
     });
   }, []);
