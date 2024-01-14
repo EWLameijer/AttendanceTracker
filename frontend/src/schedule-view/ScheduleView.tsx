@@ -7,8 +7,10 @@ import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
 
 const ScheduleView = () => {
+  const [date, setDate] = useState<Date | undefined>();
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [selectedOption, setSelectedOption] = useState<String>();
 
   useEffect(() => {
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
@@ -22,11 +24,10 @@ const ScheduleView = () => {
     });
   }, []);
 
-  function saveClass() {
-    // let date = document.getElementById("selectedDate");
-    // let teacher = document.getElementById("selectedTeacher");
-    // let group = document.getElementById("selectedGroup");
-  }
+  const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setSelectedOption(value);
+  };
 
   return (
     <form>
@@ -36,8 +37,9 @@ const ScheduleView = () => {
       <p>Kies een datum:</p>
       <input id="inputDate" type="date"></input>
       <br />
+
       <p>Kies een leraar:</p>
-      <select id="teacher">
+      <select id="teacher" onChange={selectChange}>
         {teachers.map((value: Teacher, index: number) => (
           <option value={index}>{value.name}</option>
         ))}
@@ -54,6 +56,8 @@ const ScheduleView = () => {
         <br></br>
         <button>Opslaan</button>
       </div>
+
+      <p>{selectedOption}</p>
     </form>
   );
 };
