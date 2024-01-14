@@ -32,17 +32,15 @@ const ScheduleView = () => {
       <p>Kies een leraar:</p>
       <select id="teacher">
         <option>Kenji</option>
+        <option>Wubbo</option>
       </select>
       <p>Kies een groep:</p>
 
-      <select id="group">{/* groups */}</select>
-      {groups.map((value: Group, index: number) => {
-        return (
-          <div>
-            <option>{value.name}</option>
-          </div>
-        );
-      })}
+      <select id="group">
+        {groups.map((value: Group, index: number) => (
+          <option value={index}>{value.name}</option>
+        ))}
+      </select>
 
       <div>
         <br></br>
