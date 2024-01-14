@@ -1,13 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Attendance, Class, addExtraData } from "../Class";
 import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
-import { ScheduledClass } from "./ScheduledClass";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
 
 const ScheduleView = () => {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = useState<String>();
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [selectedOption, setSelectedOption] = useState<String>();
@@ -29,6 +27,10 @@ const ScheduleView = () => {
     setSelectedOption(value);
   };
 
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setDate(event.target.value);
+  };
+
   return (
     <form>
       <h2>Hallo!</h2>
@@ -41,14 +43,14 @@ const ScheduleView = () => {
       <p>Kies een leraar:</p>
       <select id="teacher" onChange={selectChange}>
         {teachers.map((value: Teacher, index: number) => (
-          <option value={index}>{value.name}</option>
+          <option key={index}>{value.name}</option>
         ))}
       </select>
       <p>Kies een groep:</p>
 
       <select id="group">
         {groups.map((value: Group, index: number) => (
-          <option value={index}>{value.name}</option>
+          <option key={index}>{value.name}</option>
         ))}
       </select>
 
