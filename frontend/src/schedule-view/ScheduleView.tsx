@@ -4,14 +4,21 @@ import { Attendance, Class, addExtraData } from "../Class";
 import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
 import { ScheduledClass } from "./ScheduledClass";
 import { Group } from "../admin-view/Group";
+import { Teacher } from "./Teacher";
 
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
-  // const [teachers, setTeachers] = useState<Teacher[]>({});
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
       setGroups(response.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/personnel`).then((response) => {
+      setTeachers(response.data);
     });
   }, []);
 
@@ -31,8 +38,9 @@ const ScheduleView = () => {
       <br />
       <p>Kies een leraar:</p>
       <select id="teacher">
-        <option>Kenji</option>
-        <option>Wubbo</option>
+        {teachers.map((value: Teacher, index: number) => (
+          <option value={index}>{value.name}</option>
+        ))}
       </select>
       <p>Kies een groep:</p>
 
