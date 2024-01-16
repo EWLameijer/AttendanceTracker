@@ -19,10 +19,10 @@ const ScheduleView = () => {
   useEffect(() => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
+      setSelectedTeacher(response.data[0].name);
     });
   }, []);
 
-  // BUG: initial value not set to teachers[0]
   const handleSelectedTeacher = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {

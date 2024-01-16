@@ -14,6 +14,7 @@ import java.util.stream.StreamSupport;
 public class PersonnelController {
     private final PersonnelRepository PersonnelRepository;
 
+    // Change this to filter first, and then return that data. Rather than getall, then filter
     @GetMapping("/teachers")
     public Iterable<PersonnelDto> getAll() {
         return StreamSupport.stream(PersonnelRepository.findAll().spliterator(), false)
