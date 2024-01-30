@@ -9,10 +9,17 @@ const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [selectedTeacher, setSelectedTeacher] = useState<String>();
+  const [selectedGroup, setSelectedGroup] = useState<String>();
+  const [selectedDate, setSelectedDate] = useState<String>();
+
+  // - Capture selected date in a variable
+  // - Fix selectedGroup to get start value
+  // - Set up API path to save selected data
 
   useEffect(() => {
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
       setGroups(response.data);
+      setSelectedGroup(response.data[0].group);
     });
   }, []);
 
@@ -30,8 +37,19 @@ const ScheduleView = () => {
     setSelectedTeacher(value);
   };
 
-  const selectedDate = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setDate(event.target.value);
+  const handleSelectedGroup = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setSelectedGroup(value);
+  };
+
+  const submit = () => {
+    axios
+      .post(`${BASE_URL}/scheduled_class`, {
+        a: String,
+        b: String,
+      })
+      .then(() => {})
+      .catch(() => {});
   };
 
   return (
@@ -51,7 +69,7 @@ const ScheduleView = () => {
       </select>
       <p>Kies een groep:</p>
 
-      <select id="group">
+      <select id="group" onChange={handleSelectedGroup}>
         {groups.map((value: Group, index: number) => (
           <option key={index}>{value.name}</option>
         ))}
@@ -59,10 +77,11 @@ const ScheduleView = () => {
 
       <div>
         <br></br>
-        <button>Opslaan</button>
+        <button onClick={submit}>Opslaan</button>
       </div>
 
       <p>{selectedTeacher}</p>
+      <p>{selectedGroup}</p>
     </form>
   );
 };
