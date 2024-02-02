@@ -9,7 +9,9 @@ const ScheduleView = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [selectedTeacher, setSelectedTeacher] = useState<String>();
   const [selectedGroup, setSelectedGroup] = useState<String>();
-  // const [selectedDate, setSelectedDate] = useState<String>();
+  const [selectedDate, setSelectedDate] = useState<String>(
+    toYYYYMMDD(new Date())
+  );
 
   // - Capture selected date in a variable
   // - Set up API path to save selected data
@@ -27,6 +29,10 @@ const ScheduleView = () => {
       setSelectedGroup(response.data[0].name);
     });
   }, []);
+
+  const handleDateChanged = (event: any) => {
+    setSelectedDate(event.target.value);
+  };
 
   const handleSelectedTeacher = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -56,7 +62,12 @@ const ScheduleView = () => {
       <h3>Voer nieuwe les in:</h3>
 
       <p>Kies een datum:</p>
-      <input id="inputDate" type="date"></input>
+      <input
+        id="inputDate"
+        type="date"
+        value={selectedDate.toString()}
+        onChange={handleDateChanged}
+      ></input>
       <br />
 
       <p>Kies een leraar:</p>
@@ -80,6 +91,7 @@ const ScheduleView = () => {
 
       <p>{selectedTeacher}</p>
       <p>{selectedGroup}</p>
+      <p>{selectedDate}</p>
     </form>
   );
 };
