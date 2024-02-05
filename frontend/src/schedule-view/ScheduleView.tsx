@@ -13,13 +13,15 @@ const ScheduleView = () => {
     toYYYYMMDD(new Date())
   );
 
-  // - Set up API path to save selected data
+  // - Set up API path to save selected date
+  // - Give feedback of what happened with the submitted date
 
   useEffect(() => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
       setSelectedTeacher(response.data[0].name);
     });
+
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
       setGroups(response.data);
       setSelectedGroup(response.data[0].name);
@@ -44,7 +46,7 @@ const ScheduleView = () => {
 
   const submit = () => {
     axios
-      .post(`${BASE_URL}/scheduled_class`, {
+      .post(`${BASE_URL}/scheduledclass`, {
         selectedDate,
         selectedTeacher,
         selectedGroup,
@@ -55,41 +57,40 @@ const ScheduleView = () => {
 
   return (
     <form>
-      <h2>Hallo!</h2>
-      <h3>Voer nieuwe les in:</h3>
+      <h3>Voeg een nieuwe les toe:</h3>
 
-      <p>Kies een datum:</p>
-      <input
-        id="inputDate"
-        name="date"
-        type="date"
-        value={selectedDate.toString()}
-        onChange={handleDateChanged}
-      ></input>
-      <br />
+      <p>
+        Datum:
+        <input
+          id="inputDate"
+          name="date"
+          type="date"
+          value={selectedDate.toString()}
+          onChange={handleDateChanged}
+        ></input>
+      </p>
 
-      <p>Kies een leraar:</p>
-      <select id="teacher" name="teacher" onChange={handleSelectedTeacher}>
-        {teachers.map((value: Teacher, index: number) => (
-          <option key={index}>{value.name}</option>
-        ))}
-      </select>
+      <p>
+        Leraar:
+        <select id="teacher" name="teacher" onChange={handleSelectedTeacher}>
+          {teachers.map((value: Teacher, index: number) => (
+            <option key={index}>{value.name}</option>
+          ))}
+        </select>
+      </p>
 
-      <p>Kies een groep:</p>
-      <select id="group" name="group" onChange={handleSelectedGroup}>
-        {groups.map((value: Group, index: number) => (
-          <option key={index}>{value.name}</option>
-        ))}
-      </select>
+      <p>
+        Groep:
+        <select id="group" name="group" onChange={handleSelectedGroup}>
+          {groups.map((value: Group, index: number) => (
+            <option key={index}>{value.name}</option>
+          ))}
+        </select>
+      </p>
 
       <div>
-        <br></br>
         <button onClick={submit}>Opslaan</button>
       </div>
-
-      <p>{selectedTeacher}</p>
-      <p>{selectedGroup}</p>
-      <p>{selectedDate}</p>
     </form>
   );
 };
