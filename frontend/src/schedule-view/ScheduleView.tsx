@@ -7,11 +7,6 @@ import { Teacher } from "./Teacher";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [selection, setSelection] = useState({
-    teacher: String,
-    group: String,
-    date: String,
-  });
   const [selectedTeacher, setSelectedTeacher] = useState<String>();
   const [selectedGroup, setSelectedGroup] = useState<String>();
   const [selectedDate, setSelectedDate] = useState<String>(
@@ -30,10 +25,6 @@ const ScheduleView = () => {
       setSelectedGroup(response.data[0].name);
     });
   }, []);
-
-  const handleSelectionChanged = (event: any) => {
-    setSelection({ ...selection, [event.target.name]: event.target.value });
-  };
 
   const handleDateChanged = (event: any) => {
     setSelectedDate(event.target.value);
