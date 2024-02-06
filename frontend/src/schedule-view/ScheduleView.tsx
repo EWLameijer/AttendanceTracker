@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
+import { ScheduledClass } from "./ScheduledClass";
 
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -12,6 +13,8 @@ const ScheduleView = () => {
   const [selectedDate, setSelectedDate] = useState<String>(
     toYYYYMMDD(new Date())
   );
+
+  var apiWerkt = "api werkt niet";
 
   // - Set up API path to save selected date
   // - Give feedback of what happened with the submitted date
@@ -46,12 +49,14 @@ const ScheduleView = () => {
 
   const submit = () => {
     axios
-      .post(`${BASE_URL}/scheduledclass`, {
-        selectedDate,
-        selectedTeacher,
-        selectedGroup,
+      .post<ScheduledClass>(`${BASE_URL}/scheduledclass`, {
+        selectedGroup: String,
+        selectedTeacher: String,
+        selectedDate: String,
       })
-      .then(() => {})
+      .then((response) => {
+        apiWerkt = response.data.groupName;
+      })
       .catch(() => {});
   };
 
@@ -73,8 +78,10 @@ const ScheduleView = () => {
       <p>
         Leraar:
         <select id="teacher" name="teacher" onChange={handleSelectedTeacher}>
-          {teachers.map((value: Teacher, index: number) => (
-            <option key={index}>{value.name}</option>
+          {teachers.map((teacher: Teacher, index: number) => (
+            <option key={index} value={teacher.id}>
+              {teacher.name}
+            </option>
           ))}
         </select>
       </p>
@@ -82,8 +89,10 @@ const ScheduleView = () => {
       <p>
         Groep:
         <select id="group" name="group" onChange={handleSelectedGroup}>
-          {groups.map((value: Group, index: number) => (
-            <option key={index}>{value.name}</option>
+          {groups.map((group: Group, index: number) => (
+            <option key={index} value={group.id}>
+              {group.name}
+            </option>
           ))}
         </select>
       </p>
@@ -91,6 +100,10 @@ const ScheduleView = () => {
       <div>
         <button onClick={submit}>Opslaan</button>
       </div>
+
+      <p>{selectedTeacher}</p>
+      <p>{selectedGroup}</p>
+      <p>{apiWerkt}</p>
     </form>
   );
 };
