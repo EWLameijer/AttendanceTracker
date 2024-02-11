@@ -8,8 +8,8 @@ import { ScheduledClass } from "./ScheduledClass";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [teacherName, setTeacherName] = useState<String>();
-  const [groupName, setGroupName] = useState<String>();
+  const [teacherId, setTeacherId] = useState<String>();
+  const [groupId, setGroupId] = useState<String>();
   const [dateAsString, setDateAsString] = useState<String>(
     toYYYYMMDD(new Date())
   );
@@ -22,12 +22,12 @@ const ScheduleView = () => {
   useEffect(() => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
-      setTeacherName(response.data[0].id);
+      setTeacherId(response.data[0].id);
     });
 
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
       setGroups(response.data);
-      setGroupName(response.data[0].id);
+      setGroupId(response.data[0].id);
     });
   }, []);
 
@@ -39,19 +39,19 @@ const ScheduleView = () => {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const value = event.target.value;
-    setTeacherName(value);
+    setTeacherId(value);
   };
 
   const handleSelectedGroup = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setGroupName(value);
+    setGroupId(value);
   };
 
   const submit = () => {
     axios
       .post<ScheduledClass>(`${BASE_URL}/scheduledclass`, {
-        groupName,
-        teacherName,
+        groupName: groupId,
+        teacherName: teacherId,
         dateAsString,
       })
       .then((response) => {
@@ -101,8 +101,8 @@ const ScheduleView = () => {
         <button onClick={submit}>Opslaan</button>
       </div>
 
-      <p>{teacherName}</p>
-      <p>{groupName}</p>
+      <p>{teacherId}</p>
+      <p>{groupId}</p>
       <p>{dateAsString}</p>
       <p>{apiWerkt}</p>
     </form>

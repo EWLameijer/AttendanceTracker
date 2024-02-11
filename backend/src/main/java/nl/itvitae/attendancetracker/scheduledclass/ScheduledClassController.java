@@ -43,6 +43,5 @@ public class ScheduledClassController {
 
         // tijdelijke 200 status zodat ik kan kijken of het werkt
         return new ResponseEntity<>(HttpStatus.OK);
-        // testen of de namen bestaan? automappen door crudrepository?
     }
 }
