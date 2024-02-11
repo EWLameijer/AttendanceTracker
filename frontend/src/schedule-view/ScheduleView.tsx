@@ -22,12 +22,12 @@ const ScheduleView = () => {
   useEffect(() => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
-      setTeacherName(response.data[0].name);
+      setTeacherName(response.data[0].id);
     });
 
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
       setGroups(response.data);
-      setGroupName(response.data[0].name);
+      setGroupName(response.data[0].id);
     });
   }, []);
 
