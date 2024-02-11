@@ -8,9 +8,9 @@ import { ScheduledClass } from "./ScheduledClass";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [selectedTeacher, setSelectedTeacher] = useState<String>();
-  const [selectedGroup, setSelectedGroup] = useState<String>();
-  const [selectedDate, setSelectedDate] = useState<String>(
+  const [teacherName, setTeacherName] = useState<String>();
+  const [groupName, setGroupName] = useState<String>();
+  const [dateAsString, setDateAsString] = useState<String>(
     toYYYYMMDD(new Date())
   );
 
@@ -22,37 +22,37 @@ const ScheduleView = () => {
   useEffect(() => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
-      setSelectedTeacher(response.data[0].name);
+      setTeacherName(response.data[0].name);
     });
 
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
       setGroups(response.data);
-      setSelectedGroup(response.data[0].name);
+      setGroupName(response.data[0].name);
     });
   }, []);
 
   const handleDateChanged = (event: any) => {
-    setSelectedDate(event.target.value);
+    setDateAsString(event.target.value);
   };
 
   const handleSelectedTeacher = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const value = event.target.value;
-    setSelectedTeacher(value);
+    setTeacherName(value);
   };
 
   const handleSelectedGroup = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setSelectedGroup(value);
+    setGroupName(value);
   };
 
   const submit = () => {
     axios
       .post<ScheduledClass>(`${BASE_URL}/scheduledclass`, {
-        selectedGroup: String,
-        selectedTeacher: String,
-        selectedDate: String,
+        groupName,
+        teacherName,
+        dateAsString,
       })
       .then((response) => {
         apiWerkt = response.data.groupName;
@@ -70,7 +70,7 @@ const ScheduleView = () => {
           id="inputDate"
           name="date"
           type="date"
-          value={selectedDate.toString()}
+          value={dateAsString.toString()}
           onChange={handleDateChanged}
         ></input>
       </p>
@@ -101,8 +101,9 @@ const ScheduleView = () => {
         <button onClick={submit}>Opslaan</button>
       </div>
 
-      <p>{selectedTeacher}</p>
-      <p>{selectedGroup}</p>
+      <p>{teacherName}</p>
+      <p>{groupName}</p>
+      <p>{dateAsString}</p>
       <p>{apiWerkt}</p>
     </form>
   );
