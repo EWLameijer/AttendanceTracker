@@ -23,11 +23,11 @@ public class ScheduledClassController {
 
     @PostMapping("/scheduledclass")
     public ResponseEntity<ScheduledClassDto> createScheduledClass(@RequestBody ScheduledClassDto scheduledClassDto) {
-        UUID groupUUID = UUID.fromString("4175ba32-d13f-41f6-a974-c157514e7cf3");
+        UUID groupUUID = UUID.fromString(scheduledClassDto.groupName());
         var possibleGroup = groupRepository.findById(groupUUID);
         if (possibleGroup.isEmpty()) throw new BadRequestException("Group not found");
 
-        UUID personnelUUID = UUID.fromString("5029653f-1607-47c7-bea9-e5a82597641a");
+        UUID personnelUUID = UUID.fromString(scheduledClassDto.teacherName());
         var possiblePersonnel = personnelRepository.findById(personnelUUID);
         if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
 
