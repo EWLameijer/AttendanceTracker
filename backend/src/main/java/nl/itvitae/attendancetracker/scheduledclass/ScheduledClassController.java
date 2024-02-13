@@ -1,8 +1,10 @@
 package nl.itvitae.attendancetracker.scheduledclass;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.group.GroupRepository;
+import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,20 +43,21 @@ public class ScheduledClassController {
         var possiblePersonnel = personnelRepository.findById(possiblePersonnelUUID);
         if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
 
-        LocalDate date;
+        LocalDate localDate;
         try {
-            date = LocalDate.parse(scheduledClassDto.dateAsString());
+            localDate = LocalDate.parse(scheduledClassDto.dateAsString());
         } catch (Exception e) {
-            throw new BadRequestException("Conversion to LocalDate failed");
+            throw new BadRequestException("Please provide the date in this format: \"YYYY-MM-DD\"");
         }
 
-        ScheduledClass scheduledClass = new ScheduledClass(
+        //if (scheduledClassRepository.findByDateAndTeacher(localDate, possiblePersonnel).isEmpty()) {
+        scheduledClassRepository.save(new ScheduledClass(
                 possibleGroup.get(),
                 possiblePersonnel.get(),
-                date
-        );
+                localDate
+        ));
+        //}
 
-        scheduledClassRepository.save(scheduledClass);
 
         // tijdelijke 200 status zodat ik kan kijken of het werkt
         return new ResponseEntity<>(HttpStatus.OK);
