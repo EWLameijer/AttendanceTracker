@@ -23,23 +23,38 @@ public class ScheduledClassController {
 
     @PostMapping("/scheduledclass")
     public ResponseEntity<ScheduledClassDto> createScheduledClass(@RequestBody ScheduledClassDto scheduledClassDto) {
-        UUID groupUUID = UUID.fromString(scheduledClassDto.groupName());
-        var possibleGroup = groupRepository.findById(groupUUID);
+        UUID possibleGroupUUID;
+        try {
+            possibleGroupUUID = UUID.fromString(scheduledClassDto.groupName());
+        } catch (Exception e) {
+            throw new BadRequestException("Conversion to UUID failed.");
+        }
+        var possibleGroup = groupRepository.findById(possibleGroupUUID);
         if (possibleGroup.isEmpty()) throw new BadRequestException("Group not found");
 
-        UUID personnelUUID = UUID.fromString(scheduledClassDto.teacherName());
-        var possiblePersonnel = personnelRepository.findById(personnelUUID);
+        UUID possiblePersonnelUUID;
+        try {
+            possiblePersonnelUUID = UUID.fromString(scheduledClassDto.teacherName());
+        } catch (Exception e) {
+            throw new BadRequestException("Conversion to UUID failed.");
+        }
+        var possiblePersonnel = personnelRepository.findById(possiblePersonnelUUID);
         if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
 
-        LocalDate ld = LocalDate.parse(scheduledClassDto.dateAsString());
+        LocalDate date;
+        try {
+            date = LocalDate.parse(scheduledClassDto.dateAsString());
+        } catch (Exception e) {
+            throw new BadRequestException("Conversion to LocalDate failed");
+        }
 
-        ScheduledClass sc = new ScheduledClass(
+        ScheduledClass scheduledClass = new ScheduledClass(
                 possibleGroup.get(),
                 possiblePersonnel.get(),
-                ld
+                date
         );
 
-        scheduledClassRepository.save(sc);
+        scheduledClassRepository.save(scheduledClass);
 
         // tijdelijke 200 status zodat ik kan kijken of het werkt
         return new ResponseEntity<>(HttpStatus.OK);
