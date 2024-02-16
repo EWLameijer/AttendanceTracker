@@ -29,7 +29,7 @@ We'll choose UUIDs for now.
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
-Proposed
+Accepted
 
 ## Consequences
 
