@@ -14,11 +14,6 @@ const ScheduleView = () => {
     toYYYYMMDD(new Date())
   );
 
-  var apiWerkt = "api werkt niet";
-
-  // - Set up API path to save selected date
-  // - Give feedback of what happened with the submitted date
-
   useEffect(() => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
@@ -54,9 +49,7 @@ const ScheduleView = () => {
         teacherName: teacherId,
         dateAsString,
       })
-      .then((response) => {
-        apiWerkt = response.data.groupName;
-      })
+      .then(() => {})
       .catch(() => {});
   };
 
@@ -104,7 +97,6 @@ const ScheduleView = () => {
       <p>{teacherId}</p>
       <p>{groupId}</p>
       <p>{dateAsString}</p>
-      <p>{apiWerkt}</p>
     </form>
   );
 };
