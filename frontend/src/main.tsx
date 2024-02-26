@@ -1,14 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import AdminView from './admin-view/AdminView.tsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AdminView from "./admin-view/AdminView.tsx";
 
-import './index.css'
-import CoachView from './coach-view/CoachView.tsx'
-import TeacherView from './TeacherView.tsx'
-import HistoryView from './HistoryView.tsx'
+import "./index.css";
+import CoachView from "./coach-view/CoachView.tsx";
+import TeacherView from "./TeacherView.tsx";
+import HistoryView from "./HistoryView.tsx";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
@@ -18,5 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/students/:name" element={<HistoryView />} />
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

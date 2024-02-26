@@ -1,7 +1,7 @@
 import { Student } from "./Student";
 
 export interface Group {
-    id: string,
-    name: string,
-    members: Student[]
+  id: string;
+  name: string;
+  members: Student[];
 }

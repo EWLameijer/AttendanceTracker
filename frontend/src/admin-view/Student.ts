@@ -1,5 +1,5 @@
 export interface Student {
-    id: string,
-    name: string,
-    groupId: string
+  id: string;
+  name: string;
+  groupId: string;
 }
