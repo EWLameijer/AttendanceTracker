@@ -45,8 +45,8 @@ const ScheduleView = () => {
   const submit = () => {
     axios
       .post<ScheduledClass>(`${BASE_URL}/scheduledclass`, {
-        groupName: groupId,
-        teacherName: teacherId,
+        groupId,
+        teacherId,
         dateAsString,
       })
       .then(() => {})
@@ -93,10 +93,6 @@ const ScheduleView = () => {
       <div>
         <button onClick={submit}>Opslaan</button>
       </div>
-
-      <p>{teacherId}</p>
-      <p>{groupId}</p>
-      <p>{dateAsString}</p>
     </form>
   );
 };

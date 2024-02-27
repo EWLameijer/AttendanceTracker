@@ -22,10 +22,10 @@ public class ScheduledClassController {
     private final PersonnelRepository personnelRepository;
 
     @PostMapping("/scheduledclass")
-    public ResponseEntity<ScheduledClassDto> createScheduledClass(@RequestBody ScheduledClassDto scheduledClassDto) {
+    public ResponseEntity<ScheduledClassInputDto> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
         UUID possibleGroupUUID;
         try {
-            possibleGroupUUID = UUID.fromString(scheduledClassDto.groupName());
+            possibleGroupUUID = UUID.fromString(scheduledClassInputDto.groupId());
         } catch (Exception e) {
             throw new BadRequestException("Conversion to UUID failed.");
         }
@@ -34,7 +34,7 @@ public class ScheduledClassController {
 
         UUID possiblePersonnelUUID;
         try {
-            possiblePersonnelUUID = UUID.fromString(scheduledClassDto.teacherName());
+            possiblePersonnelUUID = UUID.fromString(scheduledClassInputDto.teacherId());
         } catch (Exception e) {
             throw new BadRequestException("Conversion to UUID failed.");
         }
@@ -43,7 +43,7 @@ public class ScheduledClassController {
 
         LocalDate localDate;
         try {
-            localDate = LocalDate.parse(scheduledClassDto.dateAsString());
+            localDate = LocalDate.parse(scheduledClassInputDto.dateAsString());
         } catch (Exception e) {
             throw new BadRequestException("Please provide the date in this format: \"YYYY-MM-DD\"");
         }

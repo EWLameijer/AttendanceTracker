@@ -1,5 +1,5 @@
 export interface ScheduledClass {
-  date: Date;
-  teachers: string[];
-  groupName: string;
+  groupId: String;
+  teacherId: String;
+  dateAsString: String;
 }
