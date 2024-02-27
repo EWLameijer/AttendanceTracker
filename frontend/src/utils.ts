@@ -1,3 +1,5 @@
+import { Status } from "./Class";
+
 export const capitalize = (text: string) =>
   text[0].toUpperCase() + text.substring(1);
 
@@ -10,15 +12,20 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
 
 export const BASE_URL = "http://localhost:8080";
 
-export const toYYYYMMDD = (date: Date) => date.toISOString().substring(0, 10);
+const padToTwoDigits = (number: number) => number.toString().padStart(2, "0");
+
+export const toYYYYMMDD = (date: Date) =>
+  `${date.getFullYear()}-${padToTwoDigits(
+    date.getMonth() + 1
+  )}-${padToTwoDigits(date.getDate())}`;
 
 export const statusToAbbreviation = new Map<string, string>([
-  ["ABSENT_WITH_NOTICE", "am"],
-  ["ABSENT_WITHOUT_NOTICE", "az"],
-  ["NOT REGISTERED YET", ""],
-  ["PRESENT", "p"],
-  ["SICK", "z"],
-  ["WORKING_FROM_HOME", "t"],
+  [Status.ABSENT_WITH_NOTICE, "am"],
+  [Status.ABSENT_WITHOUT_NOTICE, "az"],
+  [Status.NOT_REGISTERED_YET, ""],
+  [Status.PRESENT, "p"],
+  [Status.SICK, "z"],
+  [Status.WORKING_FROM_HOME, "t"],
 ]);
 
 export const toStatusAbbreviation = (statusText: string) =>

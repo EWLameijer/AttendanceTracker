@@ -119,7 +119,7 @@ public class DateController {
                     readableAttendances.stream()
                             .filter(a -> a.studentName().equals(studentName))
                             .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
-                            .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT REGISTERED YET", null, null, null)));
+                            .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT_REGISTERED_YET", null, null, null)));
         }
         return new ScheduledClassDto(groupName, chosenClass.getTeacher().getName(), date.toString(), groupAttendances);
     }
