@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
+import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("${at.cors}")
@@ -28,12 +30,7 @@ public class ScheduledClassController {
         var possiblePersonnel = personnelRepository.findById(scheduledClassInputDto.teacherId());
         if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
 
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse(scheduledClassInputDto.dateAsString());
-        } catch (Exception e) {
-            throw new BadRequestException("Please provide the date in this format: \"YYYY-MM-DD\"");
-        }
+        LocalDate localDate = parseLocalDateOrThrow(scheduledClassInputDto.dateAsString());
 
         if (scheduledClassRepository.findByDateAndTeacher(localDate, possiblePersonnel.get()).isEmpty()) {
             scheduledClassRepository.save(new ScheduledClass(
