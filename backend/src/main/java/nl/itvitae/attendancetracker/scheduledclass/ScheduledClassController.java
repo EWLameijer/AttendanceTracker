@@ -21,7 +21,7 @@ public class ScheduledClassController {
     private final PersonnelRepository personnelRepository;
 
     @PostMapping("/scheduled-class")
-    public ResponseEntity<ScheduledClassInputDto> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
+    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
         var possibleGroup = groupRepository.findById(scheduledClassInputDto.groupId());
         if (possibleGroup.isEmpty()) throw new BadRequestException("Group not found");
 
@@ -41,8 +41,10 @@ public class ScheduledClassController {
                     possiblePersonnel.get(),
                     localDate
             ));
+
+            return new ResponseEntity<>("New lesson added.", HttpStatus.CREATED);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new BadRequestException("Teacher already scheduled for that date.");
     }
 }
