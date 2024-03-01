@@ -21,7 +21,7 @@ public class ScheduledClassController {
 
     private final PersonnelRepository personnelRepository;
 
-    @PostMapping("/scheduledclass")
+    @PostMapping("/scheduled-class")
     public ResponseEntity<ScheduledClassInputDto> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
         UUID possibleGroupUUID;
         try {

@@ -8,9 +8,9 @@ import { ScheduledClass } from "./ScheduledClass";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [teacherId, setTeacherId] = useState<String>();
-  const [groupId, setGroupId] = useState<String>();
-  const [dateAsString, setDateAsString] = useState<String>(
+  const [teacherId, setTeacherId] = useState<string>();
+  const [groupId, setGroupId] = useState<string>();
+  const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
 
@@ -44,7 +44,7 @@ const ScheduleView = () => {
 
   const submit = () => {
     axios
-      .post<ScheduledClass>(`${BASE_URL}/scheduledclass`, {
+      .post<ScheduledClass>(`${BASE_URL}/scheduled-class`, {
         groupId,
         teacherId,
         dateAsString,
