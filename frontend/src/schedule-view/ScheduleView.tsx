@@ -26,8 +26,12 @@ const ScheduleView = () => {
     });
   }, []);
 
-  const handleDateChanged = (event: any) => {
-    setDateAsString(event.target.value);
+  const handleDateChanged = (event: React.FormEvent<HTMLInputElement>) => {
+    const newDateAsString = {
+      dateAsString,
+      [event.currentTarget.name]: event.currentTarget.value,
+    };
+    setDateAsString(newDateAsString.dateAsString);
   };
 
   const handleSelectedTeacher = (
