@@ -10,6 +10,7 @@ const ScheduleView = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [teacherId, setTeacherId] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
+  const [apiWerkt, setApiWerkt] = useState<string>("nee");
   const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
@@ -44,6 +45,9 @@ const ScheduleView = () => {
     setGroupId(value);
   };
 
+  const submitButton = document.getElementById("submitBtn");
+  submitButton?.addEventListener("click", (event) => event.preventDefault());
+
   const submit = () => {
     axios
       .post<ScheduledClass>(`${BASE_URL}/scheduled-class`, {
@@ -51,8 +55,9 @@ const ScheduleView = () => {
         teacherId,
         dateAsString,
       })
-      .then(() => {})
-      .catch(() => {});
+      .then((response) => {
+        setApiWerkt(response.data.groupId.toString());
+      });
   };
 
   return (
@@ -93,8 +98,12 @@ const ScheduleView = () => {
       </p>
 
       <div>
-        <button onClick={submit}>Opslaan</button>
+        <button id="submitBtn" onClick={submit}>
+          Opslaan
+        </button>
       </div>
+
+      <p>{apiWerkt}</p>
     </form>
   );
 };
