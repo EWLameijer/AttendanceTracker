@@ -11,6 +11,7 @@ const ScheduleView = () => {
   const [teacherId, setTeacherId] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
   const [apiWerkt, setApiWerkt] = useState<string>();
+  const [apiWerkt2, setApiWerkt2] = useState<string>();
   const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
@@ -20,6 +21,7 @@ const ScheduleView = () => {
       setTeachers(response.data);
       setTeacherId(response.data[0].id);
       setApiWerkt("nee");
+      setApiWerkt2("nog niets");
     });
 
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
@@ -28,16 +30,9 @@ const ScheduleView = () => {
     });
   }, []);
 
-  const handleDateChange = (event: any) => {
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDateAsString(event.target.value);
   };
-  // const handleDateChange = (event: React.FormEvent<HTMLInputElement>) => {
-  //   const newDateAsString = {
-  //     dateAsString,
-  //     [event.currentTarget.name]: event.currentTarget.value,
-  //   };
-  //   setDateAsString(newDateAsString.dateAsString);
-  // };
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -115,6 +110,7 @@ const ScheduleView = () => {
       </div>
 
       <p>{apiWerkt}</p>
+      <p>{apiWerkt2}</p>
     </form>
   );
 };
