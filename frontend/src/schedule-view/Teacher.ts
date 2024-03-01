@@ -1,5 +1,10 @@
 export interface Teacher {
   id: string;
   name: string;
-  role: string;
+  role: ATRole;
+}
+
+enum ATRole {
+  Coach,
+  Teacher,
 }
