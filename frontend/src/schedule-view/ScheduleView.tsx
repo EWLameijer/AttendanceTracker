@@ -27,13 +27,16 @@ const ScheduleView = () => {
     });
   }, []);
 
-  const handleDateChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const newDateAsString = {
-      dateAsString,
-      [event.currentTarget.name]: event.currentTarget.value,
-    };
-    setDateAsString(newDateAsString.dateAsString);
+  const handleDateChange = (event: any) => {
+    setDateAsString(event.target.value);
   };
+  // const handleDateChange = (event: React.FormEvent<HTMLInputElement>) => {
+  //   const newDateAsString = {
+  //     dateAsString,
+  //     [event.currentTarget.name]: event.currentTarget.value,
+  //   };
+  //   setDateAsString(newDateAsString.dateAsString);
+  // };
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
