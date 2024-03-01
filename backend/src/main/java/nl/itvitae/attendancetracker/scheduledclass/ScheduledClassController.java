@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,14 +22,10 @@ public class ScheduledClassController {
 
     @PostMapping("/scheduled-class")
     public ResponseEntity<ScheduledClassInputDto> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
-        UUID possibleGroupUUID;
-        possibleGroupUUID = scheduledClassInputDto.groupId();
-        var possibleGroup = groupRepository.findById(possibleGroupUUID);
+        var possibleGroup = groupRepository.findById(scheduledClassInputDto.groupId());
         if (possibleGroup.isEmpty()) throw new BadRequestException("Group not found");
 
-        UUID possiblePersonnelUUID;
-        possiblePersonnelUUID = scheduledClassInputDto.teacherId();
-        var possiblePersonnel = personnelRepository.findById(possiblePersonnelUUID);
+        var possiblePersonnel = personnelRepository.findById(scheduledClassInputDto.teacherId());
         if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
 
         LocalDate localDate;
