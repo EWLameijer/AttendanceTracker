@@ -24,18 +24,18 @@ public class ScheduledClassController {
 
     @PostMapping("/scheduled-class")
     public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
-        var possibleGroup = groupRepository.findById(scheduledClassInputDto.groupId());
-        if (possibleGroup.isEmpty()) throw new BadRequestException("Group not found");
+        var group = groupRepository.findById(scheduledClassInputDto.groupId()).orElseThrow(() ->
+                new BadRequestException("Group not found"));
 
-        var possiblePersonnel = personnelRepository.findById(scheduledClassInputDto.teacherId());
-        if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
+        var teacher = personnelRepository.findById(scheduledClassInputDto.teacherId()).orElseThrow(() ->
+                new BadRequestException("Teacher not found"));
 
         LocalDate localDate = parseLocalDateOrThrow(scheduledClassInputDto.dateAsString());
 
-        if (scheduledClassRepository.findByDateAndTeacher(localDate, possiblePersonnel.get()).isEmpty()) {
+        if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isEmpty()) {
             scheduledClassRepository.save(new ScheduledClass(
-                    possibleGroup.get(),
-                    possiblePersonnel.get(),
+                    group,
+                    teacher,
                     localDate
             ));
 
