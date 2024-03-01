@@ -26,7 +26,7 @@ const ScheduleView = () => {
     });
   }, []);
 
-  const handleDateChanged = (event: React.FormEvent<HTMLInputElement>) => {
+  const handleDateChange = (event: React.FormEvent<HTMLInputElement>) => {
     const newDateAsString = {
       dateAsString,
       [event.currentTarget.name]: event.currentTarget.value,
@@ -34,14 +34,12 @@ const ScheduleView = () => {
     setDateAsString(newDateAsString.dateAsString);
   };
 
-  const handleSelectedTeacher = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setTeacherId(value);
   };
 
-  const handleSelectedGroup = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setGroupId(value);
   };
@@ -68,13 +66,13 @@ const ScheduleView = () => {
           name="date"
           type="date"
           value={dateAsString.toString()}
-          onChange={handleDateChanged}
+          onChange={handleDateChange}
         ></input>
       </p>
 
       <p>
         Leraar:
-        <select id="teacher" name="teacher" onChange={handleSelectedTeacher}>
+        <select id="teacher" name="teacher" onChange={handleTeacherChange}>
           {teachers.map((teacher: Teacher, index: number) => (
             <option key={index} value={teacher.id}>
               {teacher.name}
@@ -85,7 +83,7 @@ const ScheduleView = () => {
 
       <p>
         Groep:
-        <select id="group" name="group" onChange={handleSelectedGroup}>
+        <select id="group" name="group" onChange={handleGroupChange}>
           {groups.map((group: Group, index: number) => (
             <option key={index} value={group.id}>
               {group.name}
