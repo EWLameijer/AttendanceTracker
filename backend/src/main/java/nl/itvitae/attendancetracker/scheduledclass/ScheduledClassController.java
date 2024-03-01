@@ -24,20 +24,12 @@ public class ScheduledClassController {
     @PostMapping("/scheduled-class")
     public ResponseEntity<ScheduledClassInputDto> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
         UUID possibleGroupUUID;
-        try {
-            possibleGroupUUID = UUID.fromString(scheduledClassInputDto.groupId());
-        } catch (Exception e) {
-            throw new BadRequestException("Conversion to UUID failed.");
-        }
+        possibleGroupUUID = scheduledClassInputDto.groupId();
         var possibleGroup = groupRepository.findById(possibleGroupUUID);
         if (possibleGroup.isEmpty()) throw new BadRequestException("Group not found");
 
         UUID possiblePersonnelUUID;
-        try {
-            possiblePersonnelUUID = UUID.fromString(scheduledClassInputDto.teacherId());
-        } catch (Exception e) {
-            throw new BadRequestException("Conversion to UUID failed.");
-        }
+        possiblePersonnelUUID = scheduledClassInputDto.teacherId();
         var possiblePersonnel = personnelRepository.findById(possiblePersonnelUUID);
         if (possiblePersonnel.isEmpty()) throw new BadRequestException("Teacher not found");
 
