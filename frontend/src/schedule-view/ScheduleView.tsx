@@ -10,7 +10,7 @@ const ScheduleView = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [teacherId, setTeacherId] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
-  const [apiWerkt, setApiWerkt] = useState<string>("nee");
+  const [apiWerkt, setApiWerkt] = useState<string>();
   const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
@@ -19,6 +19,7 @@ const ScheduleView = () => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
       setTeacherId(response.data[0].id);
+      setApiWerkt("nee");
     });
 
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
@@ -59,7 +60,14 @@ const ScheduleView = () => {
         dateAsString,
       })
       .then((response) => {
-        setApiWerkt(response.data.groupId.toString());
+        const returnedStatus = response.status;
+
+        setApiWerkt(returnedStatus.toString());
+      })
+      .catch((err) => {
+        const returnedError = err.response;
+
+        setApiWerkt(returnedError.status.toString());
       });
   };
 
