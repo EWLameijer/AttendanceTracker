@@ -30,19 +30,14 @@ const ScheduleView = () => {
     });
   }, []);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setDateAsString(event.target.value);
-  };
 
-  const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setTeacherId(value);
-  };
+  const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setTeacherId(event.target.value);
 
-  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setGroupId(value);
-  };
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setGroupId(event.target.value);
 
   const submitButton = document.getElementById("submitBtn");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
