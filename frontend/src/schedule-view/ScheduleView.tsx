@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
 import { useState, useEffect } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
@@ -10,8 +10,6 @@ const ScheduleView = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [teacherId, setTeacherId] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
-  const [apiWerkt, setApiWerkt] = useState<string>();
-  const [apiWerkt2, setApiWerkt2] = useState<string>();
   const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
@@ -20,8 +18,6 @@ const ScheduleView = () => {
     axios.get(`${BASE_URL}/teachers`).then((response) => {
       setTeachers(response.data);
       setTeacherId(response.data[0].id);
-      setApiWerkt("nee");
-      setApiWerkt2("nog niets");
     });
 
     axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
@@ -50,14 +46,13 @@ const ScheduleView = () => {
         dateAsString,
       })
       .then((response) => {
-        const returnedStatus = response.status;
-
-        setApiWerkt(returnedStatus.toString());
+        if (response.status == HttpStatusCode.Created)
+          alert("1 nieuwe les toegevoegd");
       })
-      .catch((err) => {
-        const returnedError = err.response;
-
-        setApiWerkt(returnedError.status.toString());
+      .catch((error) => {
+        if (error.response.status == HttpStatusCode.BadRequest)
+          alert("FOUT: Deze leraar heeft al een groep op deze dag");
+        else alert(error.response.status + " " + error.response.data);
       });
   };
 
@@ -103,9 +98,6 @@ const ScheduleView = () => {
           Opslaan
         </button>
       </div>
-
-      <p>{apiWerkt}</p>
-      <p>{apiWerkt2}</p>
     </form>
   );
 };
