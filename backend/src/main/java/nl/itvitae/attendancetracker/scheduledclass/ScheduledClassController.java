@@ -33,11 +33,7 @@ public class ScheduledClassController {
         LocalDate localDate = parseLocalDateOrThrow(scheduledClassInputDto.dateAsString());
 
         if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isEmpty()) {
-            scheduledClassRepository.save(new ScheduledClass(
-                    group,
-                    teacher,
-                    localDate
-            ));
+            scheduledClassRepository.save(new ScheduledClass(group, teacher, localDate));
 
             return new ResponseEntity<>("New lesson added.", HttpStatus.CREATED);
         }
