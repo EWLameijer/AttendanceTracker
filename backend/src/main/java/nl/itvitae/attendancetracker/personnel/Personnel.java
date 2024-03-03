@@ -1,9 +1,6 @@
 package nl.itvitae.attendancetracker.personnel;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +16,7 @@ public class Personnel {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
     private ATRole role;
 
     public Personnel(String name, ATRole role) {

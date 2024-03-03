@@ -1,6 +1,5 @@
 package nl.itvitae.attendancetracker;
 
-
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
@@ -18,11 +17,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class DateController {
     }
 
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
-        var chosenDate = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateAsString));
+        var chosenDate = parseLocalDateOrThrow(dateAsString);
         var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
         var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
