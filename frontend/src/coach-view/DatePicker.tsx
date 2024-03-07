@@ -62,6 +62,8 @@ const DatePicker = (props: { isCoach: boolean }) => {
         <button onClick={nextLessonDay} disabled={!nextDate}>
           Volgende lesdag
         </button>
+        <p>{previousDate}</p>
+        <p>{nextDate}</p>
       </h3>
       {props.isCoach ? (
         <ol>
