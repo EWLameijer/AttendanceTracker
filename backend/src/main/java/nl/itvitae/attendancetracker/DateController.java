@@ -88,6 +88,8 @@ public class DateController {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
             var attendanceRegistrations = findAttendancesByDateAndPersonnel(dateToInvestigate, personnel);
             if (!attendanceRegistrations.isEmpty()) return Optional.of(dateToInvestigate);
+            //var scheduledClasses = scheduledClassRepository.findAllByDate(dateToInvestigate);
+            //if (!scheduledClasses.isEmpty()) return Optional.of(dateToInvestigate);
         }
         return Optional.empty();
     }
