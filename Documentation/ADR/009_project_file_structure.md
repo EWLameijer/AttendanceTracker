@@ -1,4 +1,4 @@
-# 009_code_formatting
+# 009_project_file_structure
 
 ## Context
 
