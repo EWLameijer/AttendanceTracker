@@ -13,7 +13,7 @@ We'll imitate the "small project" file structure as described in https://www.you
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
-Proposed
+Accepted
 
 ## Consequences
 
