@@ -11,7 +11,12 @@ import { BASE_URL, toYYYYMMDD } from "./utils";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
-  const [dateAsString, setDateAsString] = useState<string>();
+  const [filteredAttendances, setFilteredAttendances] = useState<Attendance[]>(
+    []
+  );
+  const [dateAsString, setDateAsString] = useState<string>(
+    toYYYYMMDD(new Date())
+  );
   const { name } = useParams();
 
   useEffect(() => {
@@ -21,20 +26,29 @@ const HistoryView = () => {
         .get(`${BASE_URL}/coach-view/juan/students/${studentId}`)
         .then((response) => {
           setAttendances(response.data);
+          setFilteredAttendances(response.data);
         });
     });
   }, [name]);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDateAsString(event.target.value);
+    // does sort of work, but does weird stuff
+    // setFilteredAttendances(attendances.filter((a) => a.date > dateAsString));
+
+    // does work
+    // setFilteredAttendances(
+    //   attendances.filter((a) => a.status == Status.ABSENT_WITHOUT_NOTICE)
+    // );
   };
 
-  const late = attendances.filter((attendance) =>
+  const late = filteredAttendances.filter((attendance) =>
     statusIsLate(attendance.status)
   ).length;
 
   const getCount = (status: string) =>
-    attendances.filter((attendance) => attendance.status == status).length;
+    filteredAttendances.filter((attendance) => attendance.status == status)
+      .length;
 
   const timely = getCount(Status.PRESENT);
 
@@ -48,7 +62,7 @@ const HistoryView = () => {
 
   const withNotice = getCount(Status.ABSENT_WITH_NOTICE);
 
-  const total = attendances.length;
+  const total = filteredAttendances.length;
 
   const toPercentage = (part: number, whole: number) =>
     Math.round((part * 100) / whole) + "%";
@@ -79,7 +93,7 @@ const HistoryView = () => {
       <h2>Aanwezigheidsgeschiedenis van {name}</h2>
 
       <p>
-        Vanaf:
+        Vanaf:{dateAsString}
         <input
           id="FromDate"
           name="date"
@@ -91,7 +105,7 @@ const HistoryView = () => {
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
       <ol>
-        {attendances
+        {filteredAttendances
           .sort((a, b) => b.date.localeCompare(a.date))
           .map((attendance) => (
             <li key={attendance.date}>
