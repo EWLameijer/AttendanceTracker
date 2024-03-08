@@ -43,7 +43,7 @@ public class DateController {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
         var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
-        var classes = findClassesByDateAndPersonnel(personnel, chosenDate);
+        var classes = findClassesByDateAndPersonnel(chosenDate, personnel);
         var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
         // if the requested day does not have a schedule, return the most recent lesson date instead
         if (classes.isEmpty()) {
@@ -87,19 +87,19 @@ public class DateController {
         final int maxDaysToInvestigate = 5 * 7;
         for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
-            var classes = findClassesByDateAndPersonnel(personnel, dateToInvestigate);
+            var classes = findClassesByDateAndPersonnel(dateToInvestigate, personnel);
             if (!classes.isEmpty()) return Optional.of(dateToInvestigate);
         }
         return Optional.empty();
     }
 
-    private List<ScheduledClass> findClassesByDateAndPersonnel(Personnel personnel, LocalDate dateToInvestigate) {
+    private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Personnel personnel) {
         return personnel.getRole() == ATRole.COACH ? scheduledClassRepository.findAllByDate(dateToInvestigate) :
                 scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList();
     }
 
     private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Personnel personnel) {
-        var classes = findClassesByDateAndPersonnel(personnel, date);
+        var classes = findClassesByDateAndPersonnel(date, personnel);
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var classDtos = new ArrayList<ScheduledClassDto>();
