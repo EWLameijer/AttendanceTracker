@@ -11,9 +11,7 @@ import { BASE_URL, toYYYYMMDD } from "./utils";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
-  const [dateAsString, setDateAsString] = useState<string>(
-    toYYYYMMDD(new Date())
-  );
+  const [dateAsString, setDateAsString] = useState<string>();
   const { name } = useParams();
 
   useEffect(() => {
@@ -27,8 +25,9 @@ const HistoryView = () => {
     });
   }, [name]);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDateAsString(event.target.value);
+  };
 
   const late = attendances.filter((attendance) =>
     statusIsLate(attendance.status)
@@ -85,7 +84,6 @@ const HistoryView = () => {
           id="FromDate"
           name="date"
           type="date"
-          value={dateAsString.toString()}
           onChange={handleDateChange}
         ></input>
       </p>
