@@ -7,10 +7,13 @@ import {
 } from "./Class";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "./utils";
+import { BASE_URL, toYYYYMMDD } from "./utils";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
+  const [dateAsString, setDateAsString] = useState<string>(
+    toYYYYMMDD(new Date())
+  );
   const { name } = useParams();
 
   useEffect(() => {
@@ -23,6 +26,9 @@ const HistoryView = () => {
         });
     });
   }, [name]);
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setDateAsString(event.target.value);
 
   const late = attendances.filter((attendance) =>
     statusIsLate(attendance.status)
@@ -72,6 +78,18 @@ const HistoryView = () => {
   return (
     <>
       <h2>Aanwezigheidsgeschiedenis van {name}</h2>
+
+      <p>
+        Vanaf:
+        <input
+          id="FromDate"
+          name="date"
+          type="date"
+          value={dateAsString.toString()}
+          onChange={handleDateChange}
+        ></input>
+      </p>
+
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
       <ol>
