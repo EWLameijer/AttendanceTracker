@@ -6,7 +6,7 @@ import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
 import nl.itvitae.attendancetracker.personnel.Personnel;
-import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
+import nl.itvitae.attendancetracker.personnel.PersonnelService;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
@@ -30,7 +30,7 @@ public class Seeder implements CommandLineRunner {
 
     private final AttendanceRegistrationService attendanceRegistrationService;
 
-    private final PersonnelRepository personnelRepository;
+    private final PersonnelService personnelService;
 
     private final ScheduledClassRepository scheduledClassRepository;
 
@@ -53,11 +53,11 @@ public class Seeder implements CommandLineRunner {
             studentRepository.saveAll(List.of(
                     arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
-            var wubbo = new Personnel("Wubbo", ATRole.TEACHER);
-            var niels = new Personnel("Niels", ATRole.TEACHER);
-            var juan = new Personnel("Juan", ATRole.COACH);
-            var dan = new Personnel("Dan", ATRole.TEACHER);
-            personnelRepository.saveAll(List.of(wubbo, niels, dan, juan));
+            var wubbo = personnelService.save("Wubbo", "Wubbo", ATRole.TEACHER);
+            var niels = personnelService.save("Niels", "Niels", ATRole.TEACHER);
+            var juan = personnelService.save("Juan", "Juan", ATRole.COACH);
+            var nouchka = personnelService.save("Nouchka", "Nouchka", ATRole.COACH);
+            var dan = personnelService.save("Dan", "Dan", ATRole.TEACHER);
 
             var scheduledDate = LocalDate.now();
             var javaClass = new ScheduledClass(java, wubbo, scheduledDate);
