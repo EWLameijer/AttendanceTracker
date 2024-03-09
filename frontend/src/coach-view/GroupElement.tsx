@@ -56,7 +56,6 @@ const GroupElement = (props: {
       if (note) newAttendance.note = note;
       return newAttendance;
     });
-    console.log(`Trying to save with ${user.username} and ${user.password}`);
 
     axios
       .post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances, {
