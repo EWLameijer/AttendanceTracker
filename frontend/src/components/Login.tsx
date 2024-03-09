@@ -1,24 +1,32 @@
 import { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Role from "./shared/ATRole";
 //import axios from "axios";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({ username: "", password: "" });
 
-  const loginContext = useContext(UserContext);
+  const user = useContext(UserContext);
   const navigate = useNavigate();
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // axios.post("http://localhost:8080/users/login", {}, {
-    //     auth: {
-    //       username: loginData.username,
-    //       password: loginData.password
-    //     }
-    //   });
-    loginContext.update(loginData.username, loginData.password);
-    navigate(`/teacher-view`);
+    axios
+      .get("http://localhost:8080/login", {
+        auth: {
+          username: loginData.username,
+          password: loginData.password,
+        },
+      })
+      .then((response) => {
+        const role = response.data.role;
+        user.update(loginData.username, loginData.password, role);
+        if (role == Role.TEACHER) navigate("/teacher-view");
+        else navigate("/coach-view");
+      })
+      .catch(() => alert("Gebruikersnaam/wachtwoord-combinatie onbekend!"));
   };
 
   const changeItem = (event: React.FormEvent<HTMLInputElement>) =>

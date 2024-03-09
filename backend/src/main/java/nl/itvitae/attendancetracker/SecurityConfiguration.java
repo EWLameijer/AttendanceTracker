@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +25,15 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/coach-view/**").hasRole("COACH")
+                        requests.requestMatchers("/coach-view/**").hasAnyRole("ADMIN", "COACH")
                                 .requestMatchers("/teacher-view/**").hasRole("TEACHER")
                                 .requestMatchers("/admin-view/**").hasRole("ADMIN")
-                                .requestMatchers("/schedule-view/**").hasRole("ADMIN")
+                                .requestMatchers("/scheduled-class/**").hasRole("ADMIN")
+                                .requestMatchers("/teachers/**").hasRole("ADMIN")
+                                .requestMatchers("/attendances/**").authenticated()
+                                .requestMatchers("/groups/**").authenticated()
                                 .requestMatchers("/**").permitAll())
                 .build();
     }

@@ -35,9 +35,9 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("coach-view/{nameOfCoach}/{dateAsString}")
-    public ScheduledDateDto getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
-        return getDateDtoForDateAndPersonnel(dateAsString, nameOfCoach);
+    @GetMapping("coach-view/{dateAsString}")
+    public ScheduledDateDto getByDate(@PathVariable String dateAsString, Principal principal) {
+        return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
     }
 
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
@@ -58,7 +58,7 @@ public class DateController {
 
     private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Personnel personnel) {
         var attendances = attendanceRegistrationRepository.findByAttendanceDate(date);
-        if (personnel.getRole() == ATRole.COACH) return attendances;
+        if (personnel.getRole() != ATRole.TEACHER) return attendances;
 
         // otherwise: find by teacher
         var possibleScheduledClass = scheduledClassRepository.findByDateAndTeacher(date, personnel);
@@ -95,8 +95,9 @@ public class DateController {
     }
 
     private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Personnel personnel) {
-        return personnel.getRole() == ATRole.COACH ? scheduledClassRepository.findAllByDate(dateToInvestigate) :
-                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList();
+        return personnel.getRole() == ATRole.TEACHER ?
+                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList() :
+                scheduledClassRepository.findAllByDate(dateToInvestigate);
     }
 
     private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Personnel personnel) {

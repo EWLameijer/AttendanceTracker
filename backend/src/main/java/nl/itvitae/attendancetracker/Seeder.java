@@ -58,6 +58,7 @@ public class Seeder implements CommandLineRunner {
             var juan = personnelService.save("Juan", "Juan", ATRole.COACH);
             var nouchka = personnelService.save("Nouchka", "Nouchka", ATRole.COACH);
             var dan = personnelService.save("Dan", "Dan", ATRole.TEACHER);
+            var chantal = personnelService.save("Chantal", "Chantal", ATRole.ADMIN);
 
             var scheduledDate = LocalDate.now();
             var javaClass = new ScheduledClass(java, wubbo, scheduledDate);

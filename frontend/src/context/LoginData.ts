@@ -1,10 +1,12 @@
 class LoginData {
   username: string = "";
   password: string = "";
+  role: string = "";
 
-  update = (newUsername: string, newPassword: string) => {
-    this.username = newUsername;
-    this.password = newPassword;
+  update = (username: string, password: string, role: string) => {
+    this.username = username;
+    this.password = password;
+    this.role = role;
   };
 }
 

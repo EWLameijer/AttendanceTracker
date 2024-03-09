@@ -8,7 +8,8 @@ import {
 } from "../Class.ts";
 import { BASE_URL, format, isValidAbbreviation } from "../utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../context/UserContext.ts";
 
 const GroupElement = (props: {
   chosenClass: Class;
@@ -18,6 +19,7 @@ const GroupElement = (props: {
 }) => {
   const [chosenClass, setChosenClass] = useState(props.chosenClass);
   useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass]);
+  const user = useContext(UserContext);
 
   const updateAttendance = (updatedAttendances: Attendance[]) => {
     const newAttendances = [...chosenClass.attendances];
@@ -54,9 +56,12 @@ const GroupElement = (props: {
       if (note) newAttendance.note = note;
       return newAttendance;
     });
+    console.log(`Trying to save with ${user.username} and ${user.password}`);
 
     axios
-      .post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances)
+      .post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances, {
+        auth: { username: user.username, password: user.password },
+      })
       .then((response) => {
         const basicAttendances = response.data;
         const extendedAttendances = basicAttendances.map((attendance) =>

@@ -1,9 +1,10 @@
 import axios, { HttpStatusCode } from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
 import { ScheduledClass } from "./ScheduledClass";
+import UserContext from "../context/UserContext";
 
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -13,17 +14,32 @@ const ScheduleView = () => {
   const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
+  const user = useContext(UserContext);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/teachers`).then((response) => {
-      setTeachers(response.data);
-      setTeacherId(response.data[0].id);
-    });
+    axios
+      .get(`${BASE_URL}/teachers`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        setTeachers(response.data);
+        setTeacherId(response.data[0].id);
+      });
 
-    axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
-      setGroups(response.data);
-      setGroupId(response.data[0].id);
-    });
+    axios
+      .get(`${BASE_URL}/admin-view/chantal/groups`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        setGroups(response.data);
+        setGroupId(response.data[0].id);
+      });
   }, []);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
