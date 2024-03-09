@@ -9,7 +9,7 @@ import LoginData from "./context/LoginData.ts";
 import Login from "./components/Login.tsx";
 import CoachView from "./coach-view/CoachView.tsx";
 import ScheduleView from "./schedule-view/ScheduleView.tsx";
-import TeacherView from "./TeacherView.tsx";
+import TeacherView from "./components/TeacherView.tsx";
 import HistoryView from "./HistoryView.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

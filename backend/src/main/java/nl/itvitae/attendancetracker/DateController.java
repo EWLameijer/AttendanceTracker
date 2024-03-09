@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,7 +35,7 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
+    @GetMapping("coach-view/{nameOfCoach}/{dateAsString}")
     public ScheduledDateDto getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
         return getDateDtoForDateAndPersonnel(dateAsString, nameOfCoach);
     }
@@ -108,9 +109,9 @@ public class DateController {
         return classDtos;
     }
 
-    @GetMapping("teacher-view/{nameOfTeacher}/dates/{dateAsString}")
-    public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
-        return getDateDtoForDateAndPersonnel(dateAsString, nameOfTeacher);
+    @GetMapping("teacher-view/{dateAsString}")
+    public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, Principal principal) {
+        return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
     }
 
     private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
 import axios from "axios";
 import { Class, addExtraData } from "../Class";
 import GroupElement from "./GroupElement";
+import UserContext from "../context/UserContext";
 
 // there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
 let lastDate = new Date();
@@ -19,15 +20,22 @@ const DatePicker = (props: { isCoach: boolean }) => {
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
 
+  const user = useContext(UserContext);
+
   useEffect(() => {
     const dateAsString = toYYYYMMDD(lastDate);
     loadDate(dateAsString);
   }, []);
 
   function loadDate(dateAsString: string) {
-    const pathStart = props.isCoach ? "coach-view/juan" : "teacher-view/wubbo";
+    const pathStart = props.isCoach ? "coach-view" : "teacher-view";
     axios
-      .get<DateSchedule>(`${BASE_URL}/${pathStart}/dates/${dateAsString}`)
+      .get<DateSchedule>(`${BASE_URL}/${pathStart}/${dateAsString}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
       .then((response) => {
         const schedule = response.data;
         setPreviousDate(schedule.previousDate);

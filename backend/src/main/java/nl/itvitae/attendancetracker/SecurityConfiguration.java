@@ -25,8 +25,10 @@ public class SecurityConfiguration {
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(requests ->
-                        requests //.requestMatchers("/admin").hasRole("ADMIN")
-                                //.requestMatchers("/user").hasRole("USER")
+                        requests.requestMatchers("/coach-view/**").hasRole("COACH")
+                                .requestMatchers("/teacher-view/**").hasRole("TEACHER")
+                                .requestMatchers("/admin-view/**").hasRole("ADMIN")
+                                .requestMatchers("/schedule-view/**").hasRole("ADMIN")
                                 .requestMatchers("/**").permitAll())
                 .build();
     }
