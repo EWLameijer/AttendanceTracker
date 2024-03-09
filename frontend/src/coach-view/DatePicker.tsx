@@ -79,7 +79,7 @@ const DatePicker = (props: { isCoach: boolean }) => {
               <li key={currentClass.groupName}>
                 <GroupElement
                   chosenClass={currentClass}
-                  personnelName="Juan"
+                  personnelName={user.username}
                   isCoach={true}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
@@ -89,7 +89,7 @@ const DatePicker = (props: { isCoach: boolean }) => {
       ) : (
         <GroupElement
           chosenClass={classes[0]}
-          personnelName="Wubbo"
+          personnelName={user.username}
           isCoach={false}
           dateAsString={toYYYYMMDD(lastDate)}
         />

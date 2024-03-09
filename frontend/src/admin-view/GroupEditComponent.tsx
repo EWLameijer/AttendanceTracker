@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Group } from "./Group";
 import MemberEditComponent from "./MemberEditComponent";
 import axios from "axios";
 import { BASE_URL } from "../utils";
+import UserContext from "../context/UserContext";
 
 const GroupEditComponent = (props: {
   group: Group;
@@ -11,17 +12,29 @@ const GroupEditComponent = (props: {
   const [students, setStudents] = useState(props.group.members);
   const [newStudentName, setNewStudentName] = useState("");
   const group = props.group;
+  const user = useContext(UserContext);
 
   const remove = (studentId: string) =>
     setStudents(students.filter((student) => student.id != studentId));
 
-  const submit = () => {
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const trimmedName = newStudentName.trim();
+    console.log(`Trying to add student as user ${user.username}`);
     axios
-      .post(`${BASE_URL}/students`, {
-        name: trimmedName,
-        groupId: props.group.id,
-      })
+      .post(
+        `${BASE_URL}/students`,
+        {
+          name: trimmedName,
+          groupId: props.group.id,
+        },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
       .then((response) => {
         setStudents([...students, response.data]);
         setNewStudentName("");

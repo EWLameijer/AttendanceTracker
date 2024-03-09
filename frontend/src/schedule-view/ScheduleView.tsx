@@ -30,7 +30,7 @@ const ScheduleView = () => {
       });
 
     axios
-      .get(`${BASE_URL}/admin-view/chantal/groups`, {
+      .get(`${BASE_URL}/admin-view`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -56,11 +56,20 @@ const ScheduleView = () => {
 
   const submit = () => {
     axios
-      .post<ScheduledClass>(`${BASE_URL}/scheduled-class`, {
-        groupId,
-        teacherId,
-        dateAsString,
-      })
+      .post<ScheduledClass>(
+        `${BASE_URL}/scheduled-class`,
+        {
+          groupId,
+          teacherId,
+          dateAsString,
+        },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
       .then((response) => {
         if (response.status == HttpStatusCode.Created)
           alert("1 nieuwe les toegevoegd");
