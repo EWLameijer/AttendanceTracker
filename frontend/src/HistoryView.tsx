@@ -7,7 +7,7 @@ import {
 } from "./Class";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "./utils";
+import { BASE_URL, toYYYYMMDD } from "./utils";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
@@ -31,6 +31,21 @@ const HistoryView = () => {
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilteredAttendances(
       attendances.filter((attendance) => attendance.date >= event.target.value)
+    );
+  };
+
+  const handleClickShowAll = () => {
+    setFilteredAttendances(attendances);
+  };
+
+  const handleClickShowPastThreeMonths = () => {
+    const today = new Date();
+    const monthToLookFor = today.getMonth() - 3;
+    const threeMonthsAgo = new Date(today.setMonth(monthToLookFor));
+    const isoDate = toYYYYMMDD(threeMonthsAgo);
+
+    setFilteredAttendances(
+      attendances.filter((attendance) => attendance.date >= isoDate)
     );
   };
 
@@ -88,6 +103,12 @@ const HistoryView = () => {
         Vanaf:
         <input type="date" onChange={handleDateChange}></input>
       </p>
+
+      <button onClick={handleClickShowAll}>Toon alles</button>
+
+      <button onClick={handleClickShowPastThreeMonths}>
+        Toon laatste 3 maanden
+      </button>
 
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
