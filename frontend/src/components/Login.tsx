@@ -46,7 +46,7 @@ const Login = () => {
       <br></br>
       <label htmlFor="password">Wachtwoord:</label>
       <input
-        type="text"
+        type="password"
         id="password"
         value={loginData.password}
         onChange={changeItem}
