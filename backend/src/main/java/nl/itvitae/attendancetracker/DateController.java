@@ -43,9 +43,10 @@ public class DateController {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
         var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
+        var classes = findClassesByDateAndPersonnel(chosenDate, personnel);
         var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
         // if the requested day does not have a schedule, return the most recent lesson date instead
-        if (attendances.isEmpty()) {
+        if (classes.isEmpty()) {
             chosenDate = findPreviousDate(LocalDate.now(), personnel).orElseThrow(() -> new BadRequestException("No nearby lesson date!"));
             attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
         }
@@ -86,16 +87,19 @@ public class DateController {
         final int maxDaysToInvestigate = 5 * 7;
         for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
-            var attendanceRegistrations = findAttendancesByDateAndPersonnel(dateToInvestigate, personnel);
-            if (!attendanceRegistrations.isEmpty()) return Optional.of(dateToInvestigate);
+            var classes = findClassesByDateAndPersonnel(dateToInvestigate, personnel);
+            if (!classes.isEmpty()) return Optional.of(dateToInvestigate);
         }
         return Optional.empty();
     }
 
+    private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Personnel personnel) {
+        return personnel.getRole() == ATRole.COACH ? scheduledClassRepository.findAllByDate(dateToInvestigate) :
+                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList();
+    }
+
     private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Personnel personnel) {
-        var classes = personnel.getRole() == ATRole.COACH
-                ? scheduledClassRepository.findAllByDate(date)
-                : scheduledClassRepository.findByDateAndTeacher(date, personnel).stream().toList();
+        var classes = findClassesByDateAndPersonnel(date, personnel);
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var classDtos = new ArrayList<ScheduledClassDto>();
