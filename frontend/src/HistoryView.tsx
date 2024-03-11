@@ -34,15 +34,12 @@ const HistoryView = () => {
     );
   };
 
-  const handleClickShowAll = () => {
-    setFilteredAttendances(attendances);
-  };
+  const handleClickShowAll = () => setFilteredAttendances(attendances);
 
-  const handleClickShowPastThreeMonths = () => {
+  const handleClickShowPastEightyFourDays = () => {
     const today = new Date();
-    const monthToLookFor = today.getMonth() - 3;
-    const threeMonthsAgo = new Date(today.setMonth(monthToLookFor));
-    const isoDate = toYYYYMMDD(threeMonthsAgo);
+    const priorDate = new Date(new Date().setDate(today.getDate() - 84));
+    const isoDate = toYYYYMMDD(priorDate);
 
     setFilteredAttendances(
       attendances.filter((attendance) => attendance.date >= isoDate)
@@ -106,7 +103,7 @@ const HistoryView = () => {
 
       <button onClick={handleClickShowAll}>Toon alles</button>
 
-      <button onClick={handleClickShowPastThreeMonths}>
+      <button onClick={handleClickShowPastEightyFourDays}>
         Toon laatste 3 maanden
       </button>
 
