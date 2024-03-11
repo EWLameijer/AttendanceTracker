@@ -28,11 +28,10 @@ const HistoryView = () => {
     });
   }, [name]);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setFilteredAttendances(
       attendances.filter((attendance) => attendance.date >= event.target.value)
     );
-  };
 
   const handleClickShowAll = () => setFilteredAttendances(attendances);
 
