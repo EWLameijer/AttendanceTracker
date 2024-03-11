@@ -104,7 +104,7 @@ const HistoryView = () => {
       <button onClick={handleClickShowAll}>Toon alles</button>
 
       <button onClick={handleClickShowPastEightyFourDays}>
-        Toon laatste 3 maanden
+        Toon laatste 84 dagen
       </button>
 
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
