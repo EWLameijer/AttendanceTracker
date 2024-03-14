@@ -10,9 +10,6 @@ const AdminView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const user = useContext(UserContext);
   useEffect(() => {
-    console.log(
-      `Trying to get groups with ${user.username} and ${user.password}`
-    );
     axios
       .get(`${BASE_URL}/admin-view`, {
         auth: {

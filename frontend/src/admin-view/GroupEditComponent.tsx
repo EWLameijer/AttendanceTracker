@@ -20,7 +20,6 @@ const GroupEditComponent = (props: {
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmedName = newStudentName.trim();
-    console.log(`Trying to add student as user ${user.username}`);
     axios
       .post(
         `${BASE_URL}/students`,
