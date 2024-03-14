@@ -7,10 +7,13 @@ import {
 } from "./Class";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "./utils";
+import { BASE_URL, toYYYYMMDD } from "./utils";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
+  const [filteredAttendances, setFilteredAttendances] = useState<Attendance[]>(
+    []
+  );
   const { name } = useParams();
 
   useEffect(() => {
@@ -20,16 +23,38 @@ const HistoryView = () => {
         .get(`${BASE_URL}/coach-view/juan/students/${studentId}`)
         .then((response) => {
           setAttendances(response.data);
+          setFilteredAttendances(response.data);
         });
     });
   }, [name]);
 
-  const late = attendances.filter((attendance) =>
+  const showAttendancesFromDateOnwards = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) =>
+    setFilteredAttendances(
+      attendances.filter((attendance) => attendance.date >= event.target.value)
+    );
+
+  const showAllAttendances = () => setFilteredAttendances(attendances);
+
+  /* ITvitae schedules classes in periods of 12 weeks, which is 84 days. */
+  const showAttendancesOfPastQuarter = () => {
+    const today = new Date();
+    const priorDate = new Date(new Date().setDate(today.getDate() - 84));
+    const isoDate = toYYYYMMDD(priorDate);
+
+    setFilteredAttendances(
+      attendances.filter((attendance) => attendance.date >= isoDate)
+    );
+  };
+
+  const late = filteredAttendances.filter((attendance) =>
     statusIsLate(attendance.status)
   ).length;
 
   const getCount = (status: string) =>
-    attendances.filter((attendance) => attendance.status == status).length;
+    filteredAttendances.filter((attendance) => attendance.status == status)
+      .length;
 
   const timely = getCount(Status.PRESENT);
 
@@ -43,7 +68,7 @@ const HistoryView = () => {
 
   const withNotice = getCount(Status.ABSENT_WITH_NOTICE);
 
-  const total = attendances.length;
+  const total = filteredAttendances.length;
 
   const toPercentage = (part: number, whole: number) =>
     Math.round((part * 100) / whole) + "%";
@@ -72,10 +97,22 @@ const HistoryView = () => {
   return (
     <>
       <h2>Aanwezigheidsgeschiedenis van {name}</h2>
+
+      <p>
+        Vanaf:
+        <input type="date" onChange={showAttendancesFromDateOnwards}></input>
+      </p>
+
+      <button onClick={showAllAttendances}>Toon alles</button>
+
+      <button onClick={showAttendancesOfPastQuarter}>
+        Toon laatste 12 weken
+      </button>
+
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
       <ol>
-        {attendances
+        {filteredAttendances
           .sort((a, b) => b.date.localeCompare(a.date))
           .map((attendance) => (
             <li key={attendance.date}>
