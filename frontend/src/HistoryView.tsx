@@ -28,15 +28,17 @@ const HistoryView = () => {
     });
   }, [name]);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+  const ShowAttendancesFromDateOnwards = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) =>
     setFilteredAttendances(
       attendances.filter((attendance) => attendance.date >= event.target.value)
     );
 
-  const handleClickShowAll = () => setFilteredAttendances(attendances);
+  const ShowAllAttendances = () => setFilteredAttendances(attendances);
 
   /* ITvitae schedules classes in periods of 12 weeks, which is 84 days. */
-  const handleCLickShowPastQuarter = () => {
+  const ShowAttendancesOfPastQuarter = () => {
     const today = new Date();
     const priorDate = new Date(new Date().setDate(today.getDate() - 84));
     const isoDate = toYYYYMMDD(priorDate);
@@ -98,12 +100,12 @@ const HistoryView = () => {
 
       <p>
         Vanaf:
-        <input type="date" onChange={handleDateChange}></input>
+        <input type="date" onChange={ShowAttendancesFromDateOnwards}></input>
       </p>
 
-      <button onClick={handleClickShowAll}>Toon alles</button>
+      <button onClick={ShowAllAttendances}>Toon alles</button>
 
-      <button onClick={handleCLickShowPastQuarter}>
+      <button onClick={ShowAttendancesOfPastQuarter}>
         Toon laatste 12 weken
       </button>
 
