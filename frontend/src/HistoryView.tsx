@@ -35,7 +35,8 @@ const HistoryView = () => {
 
   const handleClickShowAll = () => setFilteredAttendances(attendances);
 
-  const handleClickShowPastEightyFourDays = () => {
+  /* ITvitae schedules classes in periods of 12 weeks, which is 84 days. */
+  const handleCLickShowPastQuarter = () => {
     const today = new Date();
     const priorDate = new Date(new Date().setDate(today.getDate() - 84));
     const isoDate = toYYYYMMDD(priorDate);
@@ -102,8 +103,8 @@ const HistoryView = () => {
 
       <button onClick={handleClickShowAll}>Toon alles</button>
 
-      <button onClick={handleClickShowPastEightyFourDays}>
-        Toon laatste 84 dagen
+      <button onClick={handleCLickShowPastQuarter}>
+        Toon laatste 12 weken
       </button>
 
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
