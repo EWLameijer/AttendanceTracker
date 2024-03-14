@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Entity(name = "users")
+
+// NOTE: This table "doubles" as users table for Spring Security
+@Entity
 @NoArgsConstructor
 @Getter
 public class Personnel {
@@ -14,7 +16,7 @@ public class Personnel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String username;
+    private String name;
 
     private String password;
 
@@ -23,13 +25,8 @@ public class Personnel {
     @Enumerated(EnumType.STRING)
     private ATRole role;
 
-    public String getName() {
-        // ideally: find out how I can rename username to name and still make JDBC work!
-        return username;
-    }
-
     public Personnel(String name, String password, ATRole role) {
-        this.username = name;
+        this.name = name;
         this.password = password;
         this.role = role;
     }

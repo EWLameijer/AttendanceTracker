@@ -6,11 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PersonnelRepository extends CrudRepository<Personnel, UUID> {
-    default Optional<Personnel> findByNameIgnoringCase(String name) {
-        return findByUsernameIgnoringCase(name);
-    }
-
-    Optional<Personnel> findByUsernameIgnoringCase(String name);
+    Optional<Personnel> findByNameIgnoringCase(String name);
 
     Iterable<Personnel> findAllByRole(ATRole role);
 }
