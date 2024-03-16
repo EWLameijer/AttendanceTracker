@@ -1,3 +1,5 @@
+import Role from "../components/shared/Role";
+
 class LoginData {
   username: string = "";
   password: string = "";
@@ -23,6 +25,8 @@ class LoginData {
     this.role = role;
     localStorage.setItem("role", role);
   };
+
+  isTeacher = () => this.role == Role.TEACHER;
 }
 
 export default LoginData;

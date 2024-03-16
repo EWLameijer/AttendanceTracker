@@ -8,7 +8,7 @@ const TeacherView = () => {
   return (
     <>
       <h2>Hallo {loginData.username}!</h2>
-      <DatePicker isCoach={false} />
+      <DatePicker />
     </>
   );
 };

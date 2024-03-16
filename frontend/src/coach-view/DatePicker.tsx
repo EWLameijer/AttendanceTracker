@@ -15,7 +15,7 @@ interface DateSchedule {
   classes: Class[];
 }
 
-const DatePicker = (props: { isCoach: boolean }) => {
+const DatePicker = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
@@ -28,7 +28,7 @@ const DatePicker = (props: { isCoach: boolean }) => {
   }, []);
 
   function loadDate(dateAsString: string) {
-    const pathStart = props.isCoach ? "coach-view" : "teacher-view";
+    const pathStart = user.isTeacher() ? "teacher-view" : "coach-view";
     axios
       .get<DateSchedule>(`${BASE_URL}/${pathStart}/${dateAsString}`, {
         auth: {
@@ -71,7 +71,12 @@ const DatePicker = (props: { isCoach: boolean }) => {
           Volgende lesdag
         </button>
       </h3>
-      {props.isCoach ? (
+      {user.isTeacher() ? (
+        <GroupElement
+          chosenClass={classes[0]}
+          dateAsString={toYYYYMMDD(lastDate)}
+        />
+      ) : (
         <ol>
           {classes
             .sort((a, b) => a.groupName.localeCompare(b.groupName))
@@ -80,19 +85,11 @@ const DatePicker = (props: { isCoach: boolean }) => {
                 <GroupElement
                   chosenClass={currentClass}
                   personnelName={user.username}
-                  isCoach={true}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
               </li>
             ))}
         </ol>
-      ) : (
-        <GroupElement
-          chosenClass={classes[0]}
-          personnelName={user.username}
-          isCoach={false}
-          dateAsString={toYYYYMMDD(lastDate)}
-        />
       )}
     </>
   );

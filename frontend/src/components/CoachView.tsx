@@ -22,7 +22,7 @@ const CoachView = () => {
       ) : (
         <></>
       )}
-      <DatePicker isCoach={true} />
+      <DatePicker />
     </>
   );
 };
