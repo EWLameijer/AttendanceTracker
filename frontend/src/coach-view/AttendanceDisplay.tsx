@@ -59,14 +59,12 @@ const AttendanceDisplay = (props: {
       <div className="left-box">
         <form onSubmit={submit}>
           <input
-            type="text"
             className={setAttendanceStyle(attendance.status)}
             value={attendance.currentStatusAbbreviation}
             name="currentStatusAbbreviation"
             onChange={changeItem}
           />
           <input
-            type="text"
             value={attendance.note}
             name="note"
             onChange={changeItem}

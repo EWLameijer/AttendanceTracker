@@ -84,7 +84,6 @@ const DatePicker = () => {
               <li key={currentClass.groupName}>
                 <GroupElement
                   chosenClass={currentClass}
-                  personnelName={user.username}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
               </li>
