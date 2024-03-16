@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Attendance,
   Status,
@@ -7,17 +7,18 @@ import {
   statusIsLate,
 } from "../Class.ts";
 import { useNavigate } from "react-router-dom";
+
 import "../styles.css";
+import UserContext from "../context/UserContext.ts";
 
 const AttendanceDisplay = (props: {
   attendance: Attendance;
-  personnelName: string;
-  isCoach: boolean;
   updateAttendance: (attendances: Attendance[]) => void;
   saveAttendances: (attendance: Attendance[]) => void;
 }) => {
   const [attendance, setAttendance] = useState<Attendance>(props.attendance);
   const navigate = useNavigate();
+  const user = useContext(UserContext);
 
   useEffect(() => setAttendance(props.attendance), [props.attendance]);
 
@@ -77,7 +78,7 @@ const AttendanceDisplay = (props: {
             value="Opslaan"
           ></input>
         </form>
-        {props.isCoach ? (
+        {!user.isTeacher() ? (
           <button onClick={showHistory}>Geschiedenis</button>
         ) : (
           <></>

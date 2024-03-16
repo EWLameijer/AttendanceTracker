@@ -11,6 +11,16 @@ I agree, it seems most suitable.
 
 We'll imitate the "small project" file structure as described in https://www.youtube.com/watch?v=QhSXNY8sy_0
 
+Main folders (in src)
+- components
+	+ home // page 
+	+ login // page 
+	+ shared // shared components
+- context
+- hooks
+- services
+- utils
+
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
 Accepted

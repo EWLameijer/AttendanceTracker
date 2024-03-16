@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,9 +35,9 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("coach-view/{nameOfCoach}/dates/{dateAsString}")
-    public ScheduledDateDto getByDate(@PathVariable String dateAsString, @PathVariable String nameOfCoach) {
-        return getDateDtoForDateAndPersonnel(dateAsString, nameOfCoach);
+    @GetMapping("coach-view/{dateAsString}")
+    public ScheduledDateDto getByDate(@PathVariable String dateAsString, Principal principal) {
+        return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
     }
 
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
@@ -57,7 +58,7 @@ public class DateController {
 
     private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Personnel personnel) {
         var attendances = attendanceRegistrationRepository.findByAttendanceDate(date);
-        if (personnel.getRole() == ATRole.COACH) return attendances;
+        if (personnel.getRole() != ATRole.TEACHER) return attendances;
 
         // otherwise: find by teacher
         var possibleScheduledClass = scheduledClassRepository.findByDateAndTeacher(date, personnel);
@@ -94,8 +95,9 @@ public class DateController {
     }
 
     private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Personnel personnel) {
-        return personnel.getRole() == ATRole.COACH ? scheduledClassRepository.findAllByDate(dateToInvestigate) :
-                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList();
+        return personnel.getRole() == ATRole.TEACHER ?
+                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList() :
+                scheduledClassRepository.findAllByDate(dateToInvestigate);
     }
 
     private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Personnel personnel) {
@@ -108,9 +110,9 @@ public class DateController {
         return classDtos;
     }
 
-    @GetMapping("teacher-view/{nameOfTeacher}/dates/{dateAsString}")
-    public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, @PathVariable String nameOfTeacher) {
-        return getDateDtoForDateAndPersonnel(dateAsString, nameOfTeacher);
+    @GetMapping("teacher-view/{dateAsString}")
+    public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, Principal principal) {
+        return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
     }
 
     private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {

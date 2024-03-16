@@ -4,21 +4,64 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminView from "./admin-view/AdminView.tsx";
 
 import "./index.css";
-import CoachView from "./coach-view/CoachView.tsx";
+import UserContext from "./context/UserContext.ts";
+import LoginData from "./context/LoginData.ts";
+import Login from "./components/Login.tsx";
+import CoachView from "./components/CoachView.tsx";
 import ScheduleView from "./schedule-view/ScheduleView.tsx";
-import TeacherView from "./TeacherView.tsx";
+import TeacherView from "./components/TeacherView.tsx";
 import HistoryView from "./HistoryView.tsx";
+import Role from "./components/shared/Role.ts";
+import Authorized from "./components/shared/Authorized.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/admin-view" element={<AdminView />} />
-        <Route path="/coach-view" element={<CoachView />} />
-        <Route path="/schedule-view" element={<ScheduleView />} />
-        <Route path="/teacher-view" element={<TeacherView />} />
-        <Route path="/students/:name" element={<HistoryView />} />
-      </Routes>
-    </BrowserRouter>
+    <UserContext.Provider value={new LoginData()}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="" element={<Login />} />
+          <Route
+            path="/admin-view"
+            element={
+              <Authorized roles={[Role.ADMIN]}>
+                <AdminView />
+              </Authorized>
+            }
+          />
+          <Route
+            path="/coach-view"
+            element={
+              <Authorized roles={[Role.ADMIN, Role.COACH]}>
+                <CoachView />
+              </Authorized>
+            }
+          />
+          <Route
+            path="/schedule-view"
+            element={
+              <Authorized roles={[Role.ADMIN]}>
+                <ScheduleView />
+              </Authorized>
+            }
+          />
+          <Route
+            path="/teacher-view"
+            element={
+              <Authorized roles={[Role.TEACHER]}>
+                <TeacherView />
+              </Authorized>
+            }
+          />
+          <Route
+            path="/students/:name"
+            element={
+              <Authorized roles={[Role.ADMIN, Role.COACH]}>
+                <HistoryView />
+              </Authorized>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </UserContext.Provider>
   </React.StrictMode>
 );

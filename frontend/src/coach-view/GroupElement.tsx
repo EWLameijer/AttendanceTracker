@@ -8,16 +8,13 @@ import {
 } from "../Class.ts";
 import { BASE_URL, format, isValidAbbreviation } from "../utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../context/UserContext.ts";
 
-const GroupElement = (props: {
-  chosenClass: Class;
-  personnelName: string;
-  isCoach: boolean;
-  dateAsString: string;
-}) => {
+const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   const [chosenClass, setChosenClass] = useState(props.chosenClass);
   useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass]);
+  const user = useContext(UserContext);
 
   const updateAttendance = (updatedAttendances: Attendance[]) => {
     const newAttendances = [...chosenClass.attendances];
@@ -47,7 +44,7 @@ const GroupElement = (props: {
       const newAttendance: Attendance = {
         studentName: attendance.studentName,
         status: formattedStatus,
-        personnelName: props.personnelName,
+        personnelName: user.username,
         date: props.dateAsString,
       };
       const note = attendance.note;
@@ -56,7 +53,9 @@ const GroupElement = (props: {
     });
 
     axios
-      .post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances)
+      .post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances, {
+        auth: { username: user.username, password: user.password },
+      })
       .then((response) => {
         const basicAttendances = response.data;
         const extendedAttendances = basicAttendances.map((attendance) =>
@@ -95,11 +94,9 @@ const GroupElement = (props: {
     <>
       <h3>
         {chosenClass.groupName}
-        {chosenClass.teacherName != props.personnelName
-          ? ` (${chosenClass.teacherName})`
-          : ""}
+        {user.isTeacher() ? "" : ` (${chosenClass.teacherName})`}
       </h3>
-      {!props.isCoach ? (
+      {user.isTeacher() ? (
         <button
           onClick={setAllUnregisteredAsPresent}
           disabled={!unregisteredAttendancesExist()}
@@ -116,14 +113,12 @@ const GroupElement = (props: {
             <AttendanceDisplay
               key={attendance.studentName}
               attendance={attendance}
-              personnelName={props.personnelName}
-              isCoach={props.isCoach}
               updateAttendance={updateAttendance}
               saveAttendances={saveAttendances}
             />
           ))}
       </ol>
-      {!props.isCoach ? (
+      {user.isTeacher() ? (
         <button
           onClick={saveAllNewentries}
           disabled={!unsavedAttendancesExist(chosenClass)}

@@ -1,21 +1,39 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import GroupEditComponent from "./GroupEditComponent";
 import { Group } from "./Group";
 import { BASE_URL } from "../utils";
 import AddGroup from "./AddGroup";
+import UserContext from "../context/UserContext";
 
 const AdminView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
+  const user = useContext(UserContext);
   useEffect(() => {
-    axios.get(`${BASE_URL}/admin-view/chantal/groups`).then((response) => {
-      setGroups(response.data);
-    });
+    axios
+      .get(`${BASE_URL}/admin-view`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        setGroups(response.data);
+      });
   }, []);
 
   const addGroup = (groupName: string) => {
     axios
-      .post<Group>(`${BASE_URL}/admin-view/chantal/groups`, { name: groupName })
+      .post<Group>(
+        `${BASE_URL}/admin-view`,
+        { name: groupName },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
       .then((response) => {
         const newGroup = response.data;
         setGroups([...groups, newGroup]);
@@ -24,7 +42,12 @@ const AdminView = () => {
 
   const removeGroup = (groupId: string) => {
     axios
-      .delete(`${BASE_URL}/admin-view/chantal/groups/${groupId}`)
+      .delete(`${BASE_URL}/admin-view/${groupId}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
       .then(() => {
         setGroups(groups.filter((group) => group.id != groupId));
       });

@@ -5,9 +5,10 @@ import {
   statusIsLate,
   translateAttendanceStatus,
 } from "./Class";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL, toYYYYMMDD } from "./utils";
+import UserContext from "./context/UserContext";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
@@ -15,18 +16,31 @@ const HistoryView = () => {
     []
   );
   const { name } = useParams();
+  const user = useContext(UserContext);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/students/${name}`).then((response) => {
-      const studentId = response.data.id;
-      axios
-        .get(`${BASE_URL}/coach-view/juan/students/${studentId}`)
-        .then((response) => {
-          setAttendances(response.data);
-          setFilteredAttendances(response.data);
-        });
-    });
-  }, [name]);
+    axios
+      .get(`${BASE_URL}/students/${name}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        const studentId = response.data.id;
+        axios
+          .get(`${BASE_URL}/coach-view/students/${studentId}`, {
+            auth: {
+              username: user.username,
+              password: user.password,
+            },
+          })
+          .then((response) => {
+            setAttendances(response.data);
+            setFilteredAttendances(response.data);
+          });
+      });
+  }, []);
 
   const showAttendancesFromDateOnwards = (
     event: React.ChangeEvent<HTMLInputElement>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
 import axios from "axios";
 import { Class, addExtraData } from "../Class";
 import GroupElement from "./GroupElement";
+import UserContext from "../context/UserContext";
 
 // there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
 let lastDate = new Date();
@@ -14,10 +15,12 @@ interface DateSchedule {
   classes: Class[];
 }
 
-const DatePicker = (props: { isCoach: boolean }) => {
+const DatePicker = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
+
+  const user = useContext(UserContext);
 
   useEffect(() => {
     const dateAsString = toYYYYMMDD(lastDate);
@@ -25,9 +28,14 @@ const DatePicker = (props: { isCoach: boolean }) => {
   }, []);
 
   function loadDate(dateAsString: string) {
-    const pathStart = props.isCoach ? "coach-view/juan" : "teacher-view/wubbo";
+    const pathStart = user.isTeacher() ? "teacher-view" : "coach-view";
     axios
-      .get<DateSchedule>(`${BASE_URL}/${pathStart}/dates/${dateAsString}`)
+      .get<DateSchedule>(`${BASE_URL}/${pathStart}/${dateAsString}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
       .then((response) => {
         const schedule = response.data;
         setPreviousDate(schedule.previousDate);
@@ -63,7 +71,12 @@ const DatePicker = (props: { isCoach: boolean }) => {
           Volgende lesdag
         </button>
       </h3>
-      {props.isCoach ? (
+      {user.isTeacher() ? (
+        <GroupElement
+          chosenClass={classes[0]}
+          dateAsString={toYYYYMMDD(lastDate)}
+        />
+      ) : (
         <ol>
           {classes
             .sort((a, b) => a.groupName.localeCompare(b.groupName))
@@ -71,20 +84,12 @@ const DatePicker = (props: { isCoach: boolean }) => {
               <li key={currentClass.groupName}>
                 <GroupElement
                   chosenClass={currentClass}
-                  personnelName="Juan"
-                  isCoach={true}
+                  personnelName={user.username}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
               </li>
             ))}
         </ol>
-      ) : (
-        <GroupElement
-          chosenClass={classes[0]}
-          personnelName="Wubbo"
-          isCoach={false}
-          dateAsString={toYYYYMMDD(lastDate)}
-        />
       )}
     </>
   );

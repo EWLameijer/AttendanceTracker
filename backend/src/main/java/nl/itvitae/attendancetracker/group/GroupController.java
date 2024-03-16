@@ -14,17 +14,18 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("${at.cors}")
+@RequestMapping("admin-view")
 public class GroupController {
     private final GroupRepository groupRepository;
 
     private final ScheduledClassRepository scheduledClassRepository;
 
-    @GetMapping("/admin-view/{adminName}/groups")
+    @GetMapping
     public Iterable<GroupDto> getAll() {
         return groupRepository.findAllActive().stream().map(GroupDto::from).toList();
     }
 
-    @PostMapping("/admin-view/{adminName}/groups")
+    @PostMapping
     public ResponseEntity<GroupDto> createGroup(@RequestBody GroupDto groupDto, UriComponentsBuilder ucb) {
         var name = groupDto.name();
         if (name == null || name.isBlank()) throw new BadRequestException("A group requires a name!");
@@ -36,13 +37,13 @@ public class GroupController {
         return ResponseEntity.created(uri).body(GroupDto.from(newGroup));
     }
 
-    @GetMapping("groups/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<GroupDto> getById(@PathVariable UUID id) {
         var possibleGroup = groupRepository.findById(id);
         return possibleGroup.map(group -> ResponseEntity.ok(GroupDto.from(group))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/admin-view/{adminName}/groups/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteGroup(@PathVariable UUID id) {
         var groupToDelete = groupRepository.findById(id).orElseThrow();
 

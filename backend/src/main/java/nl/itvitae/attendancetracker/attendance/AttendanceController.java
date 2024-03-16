@@ -28,9 +28,8 @@ public class AttendanceController {
 
     private final PersonnelRepository personnelRepository;
 
-    @GetMapping("coach-view/{nameOfCoach}/students/{studentId}")
-    public List<AttendanceRegistrationDto> getByStudent(@PathVariable String nameOfCoach, @PathVariable UUID studentId) {
-        System.out.println("Get by student called! " + studentId);
+    @GetMapping("coach-view/students/{studentId}")
+    public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceStudentId(studentId);
         var attendances = attendanceRegistrations.stream().map(AttendanceRegistration::getAttendance).distinct();
         return attendances.map(
