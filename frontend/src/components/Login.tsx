@@ -37,17 +37,12 @@ const Login = () => {
   return (
     <form onSubmit={submit}>
       <label htmlFor="username">Gebruikersnaam:</label>
-      <input
-        id="username"
-        type="text"
-        value={loginData.username}
-        onChange={changeItem}
-      />
+      <input id="username" value={loginData.username} onChange={changeItem} />
       <br></br>
       <label htmlFor="password">Wachtwoord:</label>
       <input
-        type="password"
         id="password"
+        type="password"
         value={loginData.password}
         onChange={changeItem}
       />

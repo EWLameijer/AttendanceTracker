@@ -69,7 +69,7 @@ const GroupEditComponent = (props: {
           ))}
       </ul>
       <form onSubmit={submit}>
-        <input type="text" value={newStudentName} onChange={change} />
+        <input value={newStudentName} onChange={change} />
         <input
           type="submit"
           value="Voeg toe"
