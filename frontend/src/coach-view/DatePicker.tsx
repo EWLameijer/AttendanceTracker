@@ -27,7 +27,7 @@ const DatePicker = () => {
 
   const latestUpdateChecker = () =>
     axios
-      .get<string>(`${BASE_URL}/attendances/current-version`, {
+      .get<string>(`${BASE_URL}/attendances/latest-update`, {
         auth: {
           username: user.username,
           password: user.password,

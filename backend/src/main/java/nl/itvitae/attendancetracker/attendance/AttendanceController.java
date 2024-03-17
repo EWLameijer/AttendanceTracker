@@ -19,6 +19,7 @@ import java.util.*;
 @RestController
 @CrossOrigin("${at.cors}")
 @RequiredArgsConstructor
+@RequestMapping("attendances")
 public class AttendanceController {
 
     private final AttendanceRegistrationService attendanceRegistrationService;
@@ -31,7 +32,7 @@ public class AttendanceController {
 
     private final AttendanceVersionService attendanceVersionService;
 
-    @GetMapping("coach-view/students/{studentId}")
+    @GetMapping("{studentId}")
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceStudentId(studentId);
         var attendances = attendanceRegistrations.stream().map(AttendanceRegistration::getAttendance).distinct();
@@ -43,7 +44,7 @@ public class AttendanceController {
     }
 
     @Transactional
-    @PostMapping("attendances")
+    @PostMapping
     public ResponseEntity<List<AttendanceRegistrationDto>> register(
             @RequestBody AttendanceRegistrationDto[] attendanceRegistrationDtos,
             UriComponentsBuilder ucb
@@ -72,7 +73,7 @@ public class AttendanceController {
         return ResponseEntity.created(URI.create("")).body(resultingRegistrations.stream().map(AttendanceRegistrationDto::from).toList());
     }
 
-    @GetMapping("/attendances/current-version")
+    @GetMapping("latest-update")
     public LocalDateTime getVersion() {
         return attendanceVersionService.getTimeOfLatestUpdate();
     }
