@@ -56,7 +56,7 @@ public class DateController {
         }
         var previousDate = findPreviousDate(chosenDate, personnel);
         var nextDate = findNextDate(chosenDate, personnel);
-        var attendanceVersion = attendanceVersionService.getAttendanceVersionUUID();
+        var attendanceVersion = attendanceVersionService.getTimeOfLatestUpdate();
         var scheduledclassDtos = getScheduledClassDtos(chosenDate, attendances, personnel);
         return new ScheduledDateDto(attendanceVersion, previousDate, chosenDate, nextDate, scheduledclassDtos);
     }

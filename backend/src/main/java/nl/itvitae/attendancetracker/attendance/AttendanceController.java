@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -72,8 +73,8 @@ public class AttendanceController {
     }
 
     @GetMapping("/attendances/current-version")
-    public UUID getVersion() {
-        return attendanceVersionService.getAttendanceVersionUUID();
+    public LocalDateTime getVersion() {
+        return attendanceVersionService.getTimeOfLatestUpdate();
     }
 
     private AttendanceStatus toStatus(String status) {

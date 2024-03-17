@@ -9,7 +9,7 @@ import UserContext from "../context/UserContext";
 let lastDate = new Date();
 
 interface DateSchedule {
-  attendanceUpdateVersion: string;
+  timeOfLatestUpdate: string;
   previousDate?: string;
   currentDate: string;
   nextDate?: string;
@@ -23,9 +23,9 @@ const DatePicker = () => {
 
   const user = useContext(UserContext);
 
-  let attendanceDatabaseVersion = "";
+  let latestUpdateProcessed = "";
 
-  const versionChecker = () =>
+  const latestUpdateChecker = () =>
     axios
       .get<string>(`${BASE_URL}/attendances/current-version`, {
         auth: {
@@ -34,15 +34,18 @@ const DatePicker = () => {
         },
       })
       .then((response) => {
-        if (attendanceDatabaseVersion !== response.data) {
+        if (latestUpdateProcessed !== response.data)
           loadDate(toYYYYMMDD(lastDate));
-        }
       });
 
   useEffect(() => {
     const dateAsString = toYYYYMMDD(lastDate);
     loadDate(dateAsString);
-    const heartbeat = setInterval(versionChecker, 1000);
+
+    // websockets would be nicer, but I could not get those working within reasonable time. This could be a future feature, though
+    // with a maximum of about 9 users I don't expect that the server will need unreasonable amounts of resources, security or features
+    // may be a more valuable issue.
+    const heartbeat = setInterval(latestUpdateChecker, 1000);
     return () => clearInterval(heartbeat);
   }, []);
 
@@ -57,7 +60,7 @@ const DatePicker = () => {
       })
       .then((response) => {
         const schedule = response.data;
-        attendanceDatabaseVersion = schedule.attendanceUpdateVersion;
+        latestUpdateProcessed = schedule.timeOfLatestUpdate;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
         lastDate = new Date(Date.parse(schedule.currentDate));

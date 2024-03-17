@@ -3,14 +3,14 @@ package nl.itvitae.attendancetracker.attendance;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Service
 @Getter
 public class AttendanceVersionService {
-    private UUID attendanceVersionUUID = UUID.randomUUID();
+    private LocalDateTime timeOfLatestUpdate = LocalDateTime.now();
 
     public void update() {
-        attendanceVersionUUID = UUID.randomUUID();
+        timeOfLatestUpdate = LocalDateTime.now();
     }
 }
