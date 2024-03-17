@@ -9,6 +9,7 @@ import UserContext from "../context/UserContext";
 let lastDate = new Date();
 
 interface DateSchedule {
+  attendanceUpdateVersion: string;
   previousDate?: string;
   currentDate: string;
   nextDate?: string;
@@ -22,9 +23,27 @@ const DatePicker = () => {
 
   const user = useContext(UserContext);
 
+  let attendanceDatabaseVersion = "";
+
+  const versionChecker = () =>
+    axios
+      .get<string>(`${BASE_URL}/attendances/current-version`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        if (attendanceDatabaseVersion !== response.data) {
+          loadDate(toYYYYMMDD(lastDate));
+        }
+      });
+
   useEffect(() => {
     const dateAsString = toYYYYMMDD(lastDate);
     loadDate(dateAsString);
+    const heartbeat = setInterval(versionChecker, 1000);
+    return () => clearInterval(heartbeat);
   }, []);
 
   function loadDate(dateAsString: string) {
@@ -38,6 +57,7 @@ const DatePicker = () => {
       })
       .then((response) => {
         const schedule = response.data;
+        attendanceDatabaseVersion = schedule.attendanceUpdateVersion;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
         lastDate = new Date(Date.parse(schedule.currentDate));

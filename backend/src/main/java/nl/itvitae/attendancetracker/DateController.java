@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationRepository;
+import nl.itvitae.attendancetracker.attendance.AttendanceVersionService;
 import nl.itvitae.attendancetracker.personnel.ATRole;
 import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
@@ -35,6 +36,8 @@ public class DateController {
 
     private final PersonnelRepository personnelRepository;
 
+    private final AttendanceVersionService attendanceVersionService;
+
     @GetMapping("coach-view/{dateAsString}")
     public ScheduledDateDto getByDate(@PathVariable String dateAsString, Principal principal) {
         return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
@@ -53,7 +56,9 @@ public class DateController {
         }
         var previousDate = findPreviousDate(chosenDate, personnel);
         var nextDate = findNextDate(chosenDate, personnel);
-        return new ScheduledDateDto(previousDate, chosenDate, nextDate, getScheduledClassDtos(chosenDate, attendances, personnel));
+        var attendanceVersion = attendanceVersionService.getAttendanceVersionUUID();
+        var scheduledclassDtos = getScheduledClassDtos(chosenDate, attendances, personnel);
+        return new ScheduledDateDto(attendanceVersion, previousDate, chosenDate, nextDate, scheduledclassDtos);
     }
 
     private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Personnel personnel) {
