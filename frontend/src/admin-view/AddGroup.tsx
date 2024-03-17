@@ -18,7 +18,7 @@ const AddGroup = (props: { add: (groupName: string) => void }) => {
 
   return (
     <form onSubmit={submit}>
-      <input type="text" value={groupName} onChange={updateGroupName}></input>
+      <input value={groupName} onChange={updateGroupName}></input>
       <input type="submit" value="Maak groep aan"></input>
     </form>
   );

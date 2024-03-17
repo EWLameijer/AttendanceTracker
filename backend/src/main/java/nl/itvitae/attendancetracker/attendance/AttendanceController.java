@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -27,6 +28,8 @@ public class AttendanceController {
     private final StudentRepository studentRepository;
 
     private final PersonnelRepository personnelRepository;
+
+    private final AttendanceVersionService attendanceVersionService;
 
     @GetMapping("coach-view/students/{studentId}")
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
@@ -64,7 +67,14 @@ public class AttendanceController {
             attendanceRegistrationService.save(attendanceRegistration);
             resultingRegistrations.add(attendanceRegistration);
         }
+        if (!resultingRegistrations.isEmpty()) attendanceVersionService.update();
+
         return ResponseEntity.created(URI.create("")).body(resultingRegistrations.stream().map(AttendanceRegistrationDto::from).toList());
+    }
+
+    @GetMapping("/attendances/current-version")
+    public LocalDateTime getVersion() {
+        return attendanceVersionService.getTimeOfLatestUpdate();
     }
 
     private AttendanceStatus toStatus(String status) {

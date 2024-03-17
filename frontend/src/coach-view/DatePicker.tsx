@@ -9,6 +9,7 @@ import UserContext from "../context/UserContext";
 let lastDate = new Date();
 
 interface DateSchedule {
+  timeOfLatestUpdate: string;
   previousDate?: string;
   currentDate: string;
   nextDate?: string;
@@ -22,9 +23,30 @@ const DatePicker = () => {
 
   const user = useContext(UserContext);
 
+  let latestUpdateProcessed = "";
+
+  const latestUpdateChecker = () =>
+    axios
+      .get<string>(`${BASE_URL}/attendances/current-version`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        if (latestUpdateProcessed !== response.data)
+          loadDate(toYYYYMMDD(lastDate));
+      });
+
   useEffect(() => {
     const dateAsString = toYYYYMMDD(lastDate);
     loadDate(dateAsString);
+
+    // websockets would be nicer, but I could not get those working within reasonable time. This could be a future feature, though
+    // with a maximum of about 9 users I don't expect that the server will need unreasonable amounts of resources, security or features
+    // may be a more valuable issue.
+    const heartbeat = setInterval(latestUpdateChecker, 1000);
+    return () => clearInterval(heartbeat);
   }, []);
 
   function loadDate(dateAsString: string) {
@@ -38,6 +60,7 @@ const DatePicker = () => {
       })
       .then((response) => {
         const schedule = response.data;
+        latestUpdateProcessed = schedule.timeOfLatestUpdate;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
         lastDate = new Date(Date.parse(schedule.currentDate));
@@ -84,7 +107,6 @@ const DatePicker = () => {
               <li key={currentClass.groupName}>
                 <GroupElement
                   chosenClass={currentClass}
-                  personnelName={user.username}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
               </li>
