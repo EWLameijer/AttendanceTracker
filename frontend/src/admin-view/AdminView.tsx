@@ -44,7 +44,7 @@ const AdminView = () => {
 
   const removeGroup = (groupId: string) => {
     axios
-      .delete(`${BASE_URL}/admin-view/${groupId}`, {
+      .delete(`${groupUrl}/${groupId}`, {
         auth: {
           username: user.username,
           password: user.password,

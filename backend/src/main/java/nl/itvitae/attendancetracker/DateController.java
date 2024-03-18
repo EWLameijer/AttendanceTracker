@@ -38,11 +38,6 @@ public class DateController {
 
     private final AttendanceVersionService attendanceVersionService;
 
-    @GetMapping("coach-view/{dateAsString}")
-    public ScheduledDateDto getByDate(@PathVariable String dateAsString, Principal principal) {
-        return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
-    }
-
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
         var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
@@ -115,7 +110,7 @@ public class DateController {
         return classDtos;
     }
 
-    @GetMapping("teacher-view/{dateAsString}")
+    @GetMapping("dates/{dateAsString}")
     public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, Principal principal) {
         return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
     }

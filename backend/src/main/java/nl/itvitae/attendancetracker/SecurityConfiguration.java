@@ -32,14 +32,12 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/coach-view/**").hasAnyRole("ADMIN", "COACH")
+                        requests.requestMatchers("/dates/**").hasAnyRole("ADMIN", "COACH", "TEACHER")
                                 .requestMatchers("/students/**").hasAnyRole("ADMIN", "COACH")
-                                .requestMatchers("/teacher-view/**").hasRole("TEACHER")
-                                .requestMatchers("/admin-view/**").hasRole("ADMIN")
-                                .requestMatchers("/scheduled-class/**").hasRole("ADMIN")
-                                .requestMatchers("/teachers/**").hasRole("ADMIN")
+                                .requestMatchers("/groups/**").hasRole("ADMIN")
+                                .requestMatchers("/scheduled-classes/**").hasRole("ADMIN")
+                                .requestMatchers("/personnel/teachers/**").hasRole("ADMIN")
                                 .requestMatchers("/attendances/**").authenticated()
-                                .requestMatchers("/groups/**").authenticated()
                                 .requestMatchers("/**").permitAll())
                 .build();
     }

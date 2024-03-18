@@ -3,6 +3,7 @@ package nl.itvitae.attendancetracker.personnel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -11,6 +12,7 @@ import java.util.stream.StreamSupport;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("${at.cors}")
+@RequestMapping("personnel")
 public class PersonnelController {
     private final PersonnelRepository personnelRepository;
 

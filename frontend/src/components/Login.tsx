@@ -12,7 +12,7 @@ const Login = () => {
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     axios
-      .get("http://localhost:8080/login", {
+      .get("http://localhost:8080/personnel/login", {
         auth: {
           username: loginData.username,
           password: loginData.password,

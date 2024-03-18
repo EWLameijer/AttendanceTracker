@@ -50,9 +50,8 @@ const DatePicker = () => {
   }, []);
 
   function loadDate(dateAsString: string) {
-    const pathStart = user.isTeacher() ? "teacher-view" : "coach-view";
     axios
-      .get<DateSchedule>(`${BASE_URL}/${pathStart}/${dateAsString}`, {
+      .get<DateSchedule>(`${BASE_URL}/dates/${dateAsString}`, {
         auth: {
           username: user.username,
           password: user.password,
