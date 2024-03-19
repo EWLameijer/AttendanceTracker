@@ -51,7 +51,7 @@ const DatePicker = () => {
 
   function loadDate(dateAsString: string) {
     axios
-      .get<DateSchedule>(`${BASE_URL}/dates/${dateAsString}`, {
+      .get<DateSchedule>(`${BASE_URL}/attendances/by-date/${dateAsString}`, {
         auth: {
           username: user.username,
           password: user.password,

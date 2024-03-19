@@ -32,8 +32,7 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/dates/**").hasAnyRole("ADMIN", "COACH", "TEACHER")
-                                .requestMatchers("/students/**").hasAnyRole("ADMIN", "COACH")
+                        requests.requestMatchers("/students/**").hasAnyRole("ADMIN", "COACH")
                                 .requestMatchers("/groups/**").hasRole("ADMIN")
                                 .requestMatchers("/scheduled-classes/**").hasRole("ADMIN")
                                 .requestMatchers("/personnel/teachers/**").hasRole("ADMIN")
