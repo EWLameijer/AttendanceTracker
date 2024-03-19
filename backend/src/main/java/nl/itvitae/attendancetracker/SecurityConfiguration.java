@@ -1,5 +1,6 @@
 package nl.itvitae.attendancetracker;
 
+import nl.itvitae.attendancetracker.personnel.ATRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -32,10 +33,10 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/students/**").hasAnyRole("ADMIN", "COACH")
-                                .requestMatchers("/groups/**").hasRole("ADMIN")
-                                .requestMatchers("/scheduled-classes/**").hasRole("ADMIN")
-                                .requestMatchers("/personnel/teachers/**").hasRole("ADMIN")
+                        requests.requestMatchers("/students/**").hasAnyRole(ATRole.ADMIN.name())
+                                .requestMatchers("/groups/**").hasRole(ATRole.ADMIN.name())
+                                .requestMatchers("/scheduled-classes/**").hasRole(ATRole.ADMIN.name())
+                                .requestMatchers("/personnel/teachers/**").hasRole(ATRole.ADMIN.name())
                                 .requestMatchers("/attendances/**").authenticated()
                                 .requestMatchers("/**").permitAll())
                 .build();

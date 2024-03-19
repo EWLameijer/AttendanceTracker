@@ -57,7 +57,7 @@ const AdminView = () => {
 
   return (
     <>
-      <h2>Hallo Chantal!</h2>
+      <h2>Hallo {user.username}!</h2>
       <AddGroup add={addGroup} />
       <ol>
         {groups

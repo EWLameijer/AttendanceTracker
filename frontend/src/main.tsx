@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route
             path="/coach-view"
             element={
-              <Authorized roles={[Role.ADMIN, Role.COACH]}>
+              <Authorized roles={[Role.ADMIN]}>
                 <CoachView />
               </Authorized>
             }
@@ -55,7 +55,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route
             path="/students/:name"
             element={
-              <Authorized roles={[Role.ADMIN, Role.COACH]}>
+              <Authorized roles={[Role.ADMIN]}>
                 <HistoryView />
               </Authorized>
             }
