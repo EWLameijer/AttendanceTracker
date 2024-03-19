@@ -29,15 +29,15 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        String adminRole = ATRole.ADMIN.name();
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/students/**").hasRole(adminRole)
-                                .requestMatchers("/groups/**").hasRole(adminRole)
-                                .requestMatchers("/scheduled-classes/**").hasRole(adminRole)
-                                .requestMatchers("/personnel/teachers/**").hasRole(adminRole)
+                        requests.requestMatchers(
+                                        "/students/**",
+                                        "/groups/**",
+                                        "/scheduled-classes/**",
+                                        "/personnel/teachers/**").hasRole(ATRole.ADMIN.name())
                                 .requestMatchers("/attendances/**").authenticated()
                                 .requestMatchers("/**").permitAll())
                 .build();
