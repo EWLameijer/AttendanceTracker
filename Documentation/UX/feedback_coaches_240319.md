@@ -12,3 +12,5 @@ Wensen voor aanpassingen:
   Mogelijke oplossing: laten we dan COACH als rol weghalen en Nouchka enzo de ADMIN-rol geven.
 - Leraren de mogelijkheid geven, om met een opt-in (bijv. een toggle) ook de attendance van andere groepen dan hun eigen groep te zien en te bewerken.
 - De melding op de schedule-view pagina dat er een nieuwe les is toegevoegd (of al bestond) willen ze liever als toast message hebben in groen (gelukt) & rood (bestaat al).
+- Schedule-view pagina heeft een soort upgrade nodig, zodat er een List met classes gescheduled kan worden.
+- De invoer bij Schedule-view kan ook fout gaan, dus we moeten iets maken om classes te kunnen deleten.
