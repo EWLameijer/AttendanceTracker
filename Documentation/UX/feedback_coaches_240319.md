@@ -14,3 +14,6 @@ Wensen voor aanpassingen:
 - De melding op de schedule-view pagina dat er een nieuwe les is toegevoegd (of al bestond) willen ze liever als toast message hebben in groen (gelukt) & rood (bestaat al).
 - Schedule-view pagina heeft een soort upgrade nodig, zodat er een List met classes gescheduled kan worden.
 - De invoer bij Schedule-view kan ook fout gaan, dus we moeten iets maken om classes te kunnen deleten.
+- Gebruikers moeten automatisch uitgelogd worden bij bijvoorbeeld het sluiten van de browser. Wubbo denkt dat SessionStorage hier misschien iets voor is.
+- Binnenkort graag deployen. Waarschijnlijk is het handig als Olivier's hulp hierbij wordt ingeschakeld. Wubbo denkt dat we het binnen 2-3 weken live kunnen zetten.
+- Een manier toevoegen waarop gebruikers hun eigen wachtwoord kunnen wijzigen is wel praktisch. Wubbo had het idee om iets met One Time Passwords te doen, zodat eenmalig ingelogd kan worden, waarna gebruikers hun eigen wachtwoord moeten kiezen.
