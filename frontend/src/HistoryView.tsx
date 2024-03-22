@@ -29,7 +29,7 @@ const HistoryView = () => {
       .then((response) => {
         const studentId = response.data.id;
         axios
-          .get(`${BASE_URL}/coach-view/students/${studentId}`, {
+          .get(`${BASE_URL}/attendances/by-student/${studentId}`, {
             auth: {
               username: user.username,
               password: user.password,

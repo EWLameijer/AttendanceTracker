@@ -6,7 +6,10 @@ import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
@@ -22,7 +25,7 @@ public class ScheduledClassController {
 
     private final PersonnelRepository personnelRepository;
 
-    @PostMapping("/scheduled-class")
+    @PostMapping("/scheduled-classes")
     public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
         var group = groupRepository.findById(scheduledClassInputDto.groupId()).orElseThrow(() ->
                 new BadRequestException("Group not found"));

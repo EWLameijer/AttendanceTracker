@@ -18,7 +18,7 @@ const ScheduleView = () => {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/teachers`, {
+      .get(`${BASE_URL}/personnel/teachers`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -30,7 +30,7 @@ const ScheduleView = () => {
       });
 
     axios
-      .get(`${BASE_URL}/admin-view`, {
+      .get(`${BASE_URL}/groups`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -57,7 +57,7 @@ const ScheduleView = () => {
   const submit = () => {
     axios
       .post<ScheduledClass>(
-        `${BASE_URL}/scheduled-class`,
+        `${BASE_URL}/scheduled-classes`,
         {
           groupId,
           teacherId,

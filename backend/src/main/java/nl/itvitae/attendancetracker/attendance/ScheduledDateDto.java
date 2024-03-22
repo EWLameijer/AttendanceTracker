@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker;
+package nl.itvitae.attendancetracker.attendance;
 
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
 

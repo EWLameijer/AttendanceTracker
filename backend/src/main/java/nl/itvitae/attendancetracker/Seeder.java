@@ -55,8 +55,8 @@ public class Seeder implements CommandLineRunner {
             ));
             var wubbo = personnelService.save("Wubbo", "Wubbo", ATRole.TEACHER);
             var niels = personnelService.save("Niels", "Niels", ATRole.TEACHER);
-            var juan = personnelService.save("Juan", "Juan", ATRole.COACH);
-            var nouchka = personnelService.save("Nouchka", "Nouchka", ATRole.COACH);
+            var juan = personnelService.save("Juan", "Juan", ATRole.ADMIN);
+            var nouchka = personnelService.save("Nouchka", "Nouchka", ATRole.ADMIN);
             var dan = personnelService.save("Dan", "Dan", ATRole.TEACHER);
             var chantal = personnelService.save("Chantal", "Chantal", ATRole.ADMIN);
 

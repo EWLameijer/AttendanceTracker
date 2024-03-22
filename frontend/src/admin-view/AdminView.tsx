@@ -6,12 +6,14 @@ import { BASE_URL } from "../utils";
 import AddGroup from "./AddGroup";
 import UserContext from "../context/UserContext";
 
+const groupUrl = `${BASE_URL}/groups`;
+
 const AdminView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const user = useContext(UserContext);
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/admin-view`, {
+      .get(groupUrl, {
         auth: {
           username: user.username,
           password: user.password,
@@ -25,7 +27,7 @@ const AdminView = () => {
   const addGroup = (groupName: string) => {
     axios
       .post<Group>(
-        `${BASE_URL}/admin-view`,
+        groupUrl,
         { name: groupName },
         {
           auth: {
@@ -42,7 +44,7 @@ const AdminView = () => {
 
   const removeGroup = (groupId: string) => {
     axios
-      .delete(`${BASE_URL}/admin-view/${groupId}`, {
+      .delete(`${groupUrl}/${groupId}`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -55,7 +57,7 @@ const AdminView = () => {
 
   return (
     <>
-      <h2>Hallo Chantal!</h2>
+      <h2>Hallo {user.username}!</h2>
       <AddGroup add={addGroup} />
       <ol>
         {groups

@@ -14,7 +14,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("${at.cors}")
-@RequestMapping("admin-view")
+@RequestMapping("groups")
 public class GroupController {
     private final GroupRepository groupRepository;
 

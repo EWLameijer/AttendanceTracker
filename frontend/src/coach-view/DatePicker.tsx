@@ -27,7 +27,7 @@ const DatePicker = () => {
 
   const latestUpdateChecker = () =>
     axios
-      .get<string>(`${BASE_URL}/attendances/current-version`, {
+      .get<string>(`${BASE_URL}/attendances/latest-update`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -50,9 +50,8 @@ const DatePicker = () => {
   }, []);
 
   function loadDate(dateAsString: string) {
-    const pathStart = user.isTeacher() ? "teacher-view" : "coach-view";
     axios
-      .get<DateSchedule>(`${BASE_URL}/${pathStart}/${dateAsString}`, {
+      .get<DateSchedule>(`${BASE_URL}/attendances/by-date/${dateAsString}`, {
         auth: {
           username: user.username,
           password: user.password,
