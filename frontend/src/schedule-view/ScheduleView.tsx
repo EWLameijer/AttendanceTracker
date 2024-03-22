@@ -126,10 +126,12 @@ const ScheduleView = () => {
 
       <div>
         <p>Kies een groep:</p>
-        <select>
-          <option>51 C#</option>
-          <option>52 Java</option>
-          <option>53 CyberSecurity</option>
+        <select id="group" name="group" onChange={handleGroupChange}>
+          {groups.map((group: Group, index: number) => (
+            <option key={index} value={group.id}>
+              {group.name}
+            </option>
+          ))}
         </select>
       </div>
 
