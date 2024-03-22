@@ -83,6 +83,8 @@ const ScheduleView = () => {
 
   return (
     <form>
+      {/* Old ScheduleView below this */}
+
       <h3>Voeg een nieuwe les toe:</h3>
 
       <p>
@@ -134,6 +136,8 @@ const ScheduleView = () => {
           ))}
         </select>
       </div>
+
+      {/* Upgraded ScheduleView below this */}
 
       <div>
         <p>Kies een begin- en einddatum:</p>
@@ -224,16 +228,6 @@ const ScheduleView = () => {
       </div>
 
       <div>
-        <p>
-          Eventueel kunnen we nog een aparte invoerpagina maken om vakantiedagen
-          in AT te kunnen opslaan. Want die zijn waarschijnlijk hetzelfde voor
-          heel ITvitae. Vervolgens kun je met deze knop de hele fase en/of de
-          gehele opleiding opslaan per groep. Het valt vast te regelen dat op
-          basis hiervan roosters, lokaaloverzichten en dergelijke automatisch
-          gegenereerd kunnen worden door Attendance Tracker. Op deze manier hoef
-          je dan niet meer al die Excelbestanden te maken, plus al die variaties
-          per groep.
-        </p>
         <button>Sla periode op.</button>
       </div>
     </form>
