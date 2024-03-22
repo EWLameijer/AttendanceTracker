@@ -126,6 +126,8 @@ const ScheduleView = () => {
         </button>
       </div>
 
+      {/* Upgraded ScheduleView below this */}
+
       <div>
         <p>Kies een groep:</p>
         <select id="group" name="group" onChange={handleGroupChange}>
@@ -136,8 +138,6 @@ const ScheduleView = () => {
           ))}
         </select>
       </div>
-
-      {/* Upgraded ScheduleView below this */}
 
       <div>
         <p>Kies een begin- en einddatum:</p>
