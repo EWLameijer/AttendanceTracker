@@ -6,9 +6,9 @@ class LoginData {
   role: string = "";
 
   constructor() {
-    this.username = localStorage.getItem("username") ?? "";
-    this.password = localStorage.getItem("password") ?? "";
-    this.role = localStorage.getItem("role") ?? "";
+    this.username = sessionStorage.getItem("username") ?? "";
+    this.password = sessionStorage.getItem("password") ?? "";
+    this.role = sessionStorage.getItem("role") ?? "";
 
     if (!this.username || !this.password || !this.role) {
       this.username = "";
@@ -19,11 +19,11 @@ class LoginData {
 
   update = (username: string, password: string, role: string) => {
     this.username = username;
-    localStorage.setItem("username", username);
+    sessionStorage.setItem("username", username);
     this.password = password;
-    localStorage.setItem("password", password);
+    sessionStorage.setItem("password", password);
     this.role = role;
-    localStorage.setItem("role", role);
+    sessionStorage.setItem("role", role);
   };
 
   isTeacher = () => this.role == Role.TEACHER;
