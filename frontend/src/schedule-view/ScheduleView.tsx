@@ -99,7 +99,12 @@ const ScheduleView = () => {
   const submitButton = document.getElementById("submitBtn");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
 
-  const submit = () => {
+  const generateClasses = () => {
+    // generate classes based on radio buttons set to true
+    //
+  };
+
+  const submitClasses = () => {
     // axios
     //   .post<ScheduledClass>(
     //     `${BASE_URL}/scheduled-classes`,
@@ -298,8 +303,8 @@ const ScheduleView = () => {
       </div>
 
       <div>
-        <button id="submitBtn" onClick={submit}>
-          Opslaan
+        <button id="submitBtn" onClick={generateClasses}>
+          Genereer periode
         </button>
       </div>
 
