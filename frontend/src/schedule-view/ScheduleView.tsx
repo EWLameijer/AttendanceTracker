@@ -11,7 +11,10 @@ const ScheduleView = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [teacherId, setTeacherId] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
-  const [dateAsString, setDateAsString] = useState<string>(
+  const [startDateAsString, setStartDateAsString] = useState<string>(
+    toYYYYMMDD(new Date())
+  );
+  const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
   const user = useContext(UserContext);
@@ -42,8 +45,11 @@ const ScheduleView = () => {
       });
   }, []);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setDateAsString(event.target.value);
+  const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setStartDateAsString(event.target.value);
+
+  const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setEndDateAsString(event.target.value);
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setTeacherId(event.target.value);
@@ -143,13 +149,25 @@ const ScheduleView = () => {
         <p>Kies een begin- en einddatum:</p>
         <table>
           <tr>
-            <td>Begindatum</td>
+            <td>Begindatum:</td>
             <td>
-              <input type="date" />
+              <input
+                id="inputStartDate"
+                name="date"
+                type="date"
+                value={startDateAsString.toString()}
+                onChange={handleStartDateChange}
+              ></input>
             </td>
-            <td>Einddatum</td>
+            <td>Einddatum:</td>
             <td>
-              <input type="date" />
+              <input
+                id="inputEndDate"
+                name="date"
+                type="date"
+                value={endDateAsString.toString()}
+                onChange={handleEndDateChange}
+              ></input>
             </td>
           </tr>
         </table>
