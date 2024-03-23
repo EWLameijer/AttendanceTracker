@@ -93,7 +93,7 @@ const ScheduleView = () => {
 
       <h3>Voeg een nieuwe les toe:</h3>
 
-      <p>
+      {/* <p>
         Datum:
         <input
           id="inputDate"
@@ -102,7 +102,7 @@ const ScheduleView = () => {
           value={dateAsString.toString()}
           onChange={handleDateChange}
         ></input>
-      </p>
+      </p> */}
 
       <p>
         Leraar:
@@ -115,7 +115,7 @@ const ScheduleView = () => {
         </select>
       </p>
 
-      <p>
+      {/* <p>
         Groep:
         <select id="group" name="group" onChange={handleGroupChange}>
           {groups.map((group: Group, index: number) => (
@@ -124,7 +124,7 @@ const ScheduleView = () => {
             </option>
           ))}
         </select>
-      </p>
+      </p> */}
 
       <div>
         <button id="submitBtn" onClick={submit}>
