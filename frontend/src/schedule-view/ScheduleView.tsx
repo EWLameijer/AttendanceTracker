@@ -9,11 +9,6 @@ import UserContext from "../context/UserContext";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
-  const [teacherIdTuesday, setTeacherIdTuesday] = useState<string>();
-  const [teacherIdWednesday, setTeacherIdWednesday] = useState<string>();
-  const [teacherIdThursday, setTeacherIdThursday] = useState<string>();
-  const [teacherIdFriday, setTeacherIdFriday] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
   const [startDateAsString, setStartDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
@@ -21,6 +16,17 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
+  const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
+  const [teacherIdTuesday, setTeacherIdTuesday] = useState<string>();
+  const [teacherIdWednesday, setTeacherIdWednesday] = useState<string>();
+  const [teacherIdThursday, setTeacherIdThursday] = useState<string>();
+  const [teacherIdFriday, setTeacherIdFriday] = useState<string>();
+  const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
+    useState<string>(toYYYYMMDD(new Date()));
+  const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
+    toYYYYMMDD(new Date())
+  );
+
   const user = useContext(UserContext);
 
   useEffect(() => {
@@ -34,6 +40,10 @@ const ScheduleView = () => {
       .then((response) => {
         setTeachers(response.data);
         setTeacherIdMonday(response.data[0].id);
+        setTeacherIdTuesday(response.data[0].id);
+        setTeacherIdWednesday(response.data[0].id);
+        setTeacherIdThursday(response.data[0].id);
+        setTeacherIdFriday(response.data[0].id);
       });
 
     axios
@@ -77,6 +87,14 @@ const ScheduleView = () => {
   const handleTeacherChangeFriday = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => setTeacherIdFriday(event.target.value);
+
+  const handleExcludeStartDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setExcludeStartDateAsString(event.target.value);
+
+  const handleExcludeEndDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setExcludeEndDateAsString(event.target.value);
 
   const submitButton = document.getElementById("submitBtn");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
@@ -155,7 +173,11 @@ const ScheduleView = () => {
 
       {/* Upgraded ScheduleView below this */}
 
-      {/* {teacherIdMonday}
+      {startDateAsString}
+      <br></br>
+      {endDateAsString}
+      <br></br>
+      {teacherIdMonday}
       <br></br>
       {teacherIdTuesday}
       <br></br>
@@ -164,7 +186,12 @@ const ScheduleView = () => {
       {teacherIdThursday}
       <br></br>
       {teacherIdFriday}
-      <br></br> */}
+      <br></br>
+      <br></br>
+      {ExcludeStartDateAsString}
+      <br></br>
+      {ExcludeEndDateAsString}
+      <br></br>
 
       <div>
         <p>Kies een groep:</p>
@@ -178,7 +205,7 @@ const ScheduleView = () => {
       </div>
 
       <div>
-        <p>Kies een begin- en einddatum:</p>
+        <p>Kies een begin- en einddatum van de in te voeren periode:</p>
         Begindatum:
         <input
           id="inputStartDate"
@@ -274,6 +301,30 @@ const ScheduleView = () => {
         <button id="submitBtn" onClick={submit}>
           Opslaan
         </button>
+      </div>
+
+      <div>
+        <p>Gekozen data hier</p>
+      </div>
+
+      <div>
+        <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
+        Begindatum:
+        <input
+          id="inputExcludeStartDate"
+          name="date"
+          type="date"
+          value={ExcludeStartDateAsString.toString()}
+          onChange={handleExcludeStartDateChange}
+        ></input>
+        Einddatum:
+        <input
+          id="inputExcludeEndDate"
+          name="date"
+          type="date"
+          value={ExcludeEndDateAsString.toString()}
+          onChange={handleExcludeEndDateChange}
+        ></input>
       </div>
     </form>
   );
