@@ -33,7 +33,7 @@ const AttendanceDisplay = (props: {
     setAttendance(newAttendance);
   };
 
-  const setAttendanceStyle = (status: string) => attendanceStyle.get(status);
+  const getAttendanceStyle = (status: string) => attendanceStyle.get(status);
 
   const attendanceStyle = new Map<string, string>([
     [Status.ABSENT_WITH_NOTICE, "input-attendance-absent-with-notice"],
@@ -50,7 +50,7 @@ const AttendanceDisplay = (props: {
       <div className="left-box">
         <form onSubmit={submit}>
           <input
-            className={setAttendanceStyle(attendance.status)}
+            className={getAttendanceStyle(attendance.status)}
             value={attendance.currentStatusAbbreviation}
             name="currentStatusAbbreviation"
             onChange={changeItem}

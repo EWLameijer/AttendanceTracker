@@ -110,7 +110,7 @@ public class Seeder implements CommandLineRunner {
             Personnel registrar,
             AttendanceRegistration currentAttendanceRegistration) {
         if (rand.nextInt(100) < 70)
-            return new AttendanceRegistration(student, dateToAssess, registrar, currentAttendanceRegistration.getStatus());
+            return new AttendanceRegistration(student, dateToAssess, registrar, currentAttendanceRegistration.getStatus(), currentAttendanceRegistration.getNote());
         var nextRand = rand.nextInt(100);
         if (nextRand < 20)
             return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.LATE, "10:20");
