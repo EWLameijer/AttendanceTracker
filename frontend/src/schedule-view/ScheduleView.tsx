@@ -33,7 +33,7 @@ const ScheduleView = () => {
       })
       .then((response) => {
         setTeachers(response.data);
-        setTeacherId(response.data[0].id);
+        setTeacherIdMonday(response.data[0].id);
       });
 
     axios
@@ -58,37 +58,54 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
-  const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setTeacherId(event.target.value);
+  const handleTeacherChangeMonday = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => setTeacherIdMonday(event.target.value);
+
+  const handleTeacherChangeTuesday = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => setTeacherIdTuesday(event.target.value);
+
+  const handleTeacherChangeWednesday = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => setTeacherIdWednesday(event.target.value);
+
+  const handleTeacherChangeThursday = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => setTeacherIdThursday(event.target.value);
+
+  const handleTeacherChangeFriday = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => setTeacherIdFriday(event.target.value);
 
   const submitButton = document.getElementById("submitBtn");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
 
   const submit = () => {
-    axios
-      .post<ScheduledClass>(
-        `${BASE_URL}/scheduled-classes`,
-        {
-          groupId,
-          teacherId,
-          dateAsString,
-        },
-        {
-          auth: {
-            username: user.username,
-            password: user.password,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status == HttpStatusCode.Created)
-          alert("1 nieuwe les toegevoegd");
-      })
-      .catch((error) => {
-        if (error.response.status == HttpStatusCode.BadRequest)
-          alert("FOUT: Deze leraar heeft al een groep op deze dag");
-        else alert(error.response.status + " " + error.response.data);
-      });
+    // axios
+    //   .post<ScheduledClass>(
+    //     `${BASE_URL}/scheduled-classes`,
+    //     {
+    //       groupId,
+    //       teacherId,
+    //       dateAsString,
+    //     },
+    //     {
+    //       auth: {
+    //         username: user.username,
+    //         password: user.password,
+    //       },
+    //     }
+    //   )
+    //   .then((response) => {
+    //     if (response.status == HttpStatusCode.Created)
+    //       alert("1 nieuwe les toegevoegd");
+    //   })
+    //   .catch((error) => {
+    //     if (error.response.status == HttpStatusCode.BadRequest)
+    //       alert("FOUT: Deze leraar heeft al een groep op deze dag");
+    //     else alert(error.response.status + " " + error.response.data);
+    //   });
   };
 
   return (
@@ -108,7 +125,7 @@ const ScheduleView = () => {
         ></input>
       </p> */}
 
-      <p>
+      {/* <p>
         Leraar:
         <select id="teacher" name="teacher" onChange={handleTeacherChange}>
           {teachers.map((teacher: Teacher, index: number) => (
@@ -117,7 +134,7 @@ const ScheduleView = () => {
             </option>
           ))}
         </select>
-      </p>
+      </p> */}
 
       {/* <p>
         Groep:
@@ -138,6 +155,17 @@ const ScheduleView = () => {
 
       {/* Upgraded ScheduleView below this */}
 
+      {/* {teacherIdMonday}
+      <br></br>
+      {teacherIdTuesday}
+      <br></br>
+      {teacherIdWednesday}
+      <br></br>
+      {teacherIdThursday}
+      <br></br>
+      {teacherIdFriday}
+      <br></br> */}
+
       <div>
         <p>Kies een groep:</p>
         <select id="group" name="group" onChange={handleGroupChange}>
@@ -151,81 +179,95 @@ const ScheduleView = () => {
 
       <div>
         <p>Kies een begin- en einddatum:</p>
-        <table>
-          <tr>
-            <td>Begindatum:</td>
-            <td>
-              <input
-                id="inputStartDate"
-                name="date"
-                type="date"
-                value={startDateAsString.toString()}
-                onChange={handleStartDateChange}
-              ></input>
-            </td>
-            <td>Einddatum:</td>
-            <td>
-              <input
-                id="inputEndDate"
-                name="date"
-                type="date"
-                value={endDateAsString.toString()}
-                onChange={handleEndDateChange}
-              ></input>
-            </td>
-          </tr>
-        </table>
+        Begindatum:
+        <input
+          id="inputStartDate"
+          name="date"
+          type="date"
+          value={startDateAsString.toString()}
+          onChange={handleStartDateChange}
+        ></input>
+        Einddatum:
+        <input
+          id="inputEndDate"
+          name="date"
+          type="date"
+          value={endDateAsString.toString()}
+          onChange={handleEndDateChange}
+        ></input>
       </div>
 
       <div>
         <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-        <table>
-          <tr>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>Maandag</td>
-            <td>
-              <select></select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>Dinsdag</td>
-            <td>
-              <select></select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>Woensdag</td>
-            <td>
-              <select></select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>Donderdag</td>
-            <td>
-              <select></select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>Vrijdag</td>
-            <td>
-              <select></select>
-            </td>
-          </tr>
-        </table>
+        <input type="checkbox" />
+        Maandag
+        <select
+          id="teacher"
+          name="teacher"
+          onChange={handleTeacherChangeMonday}
+        >
+          {teachers.map((teacher: Teacher, index: number) => (
+            <option key={index} value={teacher.id}>
+              {teacher.name}
+            </option>
+          ))}
+        </select>
+        <br />
+        <input type="checkbox" />
+        Dinsdag
+        <select
+          id="teacher"
+          name="teacher"
+          onChange={handleTeacherChangeTuesday}
+        >
+          {teachers.map((teacher: Teacher, index: number) => (
+            <option key={index} value={teacher.id}>
+              {teacher.name}
+            </option>
+          ))}
+        </select>
+        <br />
+        <input type="checkbox" />
+        Woensdag
+        <select
+          id="teacher"
+          name="teacher"
+          onChange={handleTeacherChangeWednesday}
+        >
+          {teachers.map((teacher: Teacher, index: number) => (
+            <option key={index} value={teacher.id}>
+              {teacher.name}
+            </option>
+          ))}
+        </select>
+        <br />
+        <input type="checkbox" />
+        Donderdag
+        <select
+          id="teacher"
+          name="teacher"
+          onChange={handleTeacherChangeThursday}
+        >
+          {teachers.map((teacher: Teacher, index: number) => (
+            <option key={index} value={teacher.id}>
+              {teacher.name}
+            </option>
+          ))}
+        </select>
+        <br />
+        <input type="checkbox" />
+        Vrijdag
+        <select
+          id="teacher"
+          name="teacher"
+          onChange={handleTeacherChangeFriday}
+        >
+          {teachers.map((teacher: Teacher, index: number) => (
+            <option key={index} value={teacher.id}>
+              {teacher.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
