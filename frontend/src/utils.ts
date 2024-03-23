@@ -22,6 +22,7 @@ export const toYYYYMMDD = (date: Date) =>
 export const statusToAbbreviation = new Map<string, string>([
   [Status.ABSENT_WITH_NOTICE, "am"],
   [Status.ABSENT_WITHOUT_NOTICE, "az"],
+  [Status.LATE, "tl"],
   [Status.NOT_REGISTERED_YET, ""],
   [Status.PRESENT, "p"],
   [Status.SICK, "z"],
@@ -33,28 +34,10 @@ export const toStatusAbbreviation = (statusText: string) =>
 
 const standardize = (text: string) => text.trim().toLocaleLowerCase();
 
-const extractDigits = (text: string) =>
-  text.split("").filter((a) => a >= "0" && a <= "9");
+export const isValidAbbreviation = (abbreviation: string) =>
+  [...statusToAbbreviation.values()].includes(standardize(abbreviation));
 
-export const isValidAbbreviation = (abbreviation: string) => {
-  const statusAbbreviations = statusToAbbreviation.values();
-  if ([...statusAbbreviations].includes(standardize(abbreviation))) return true;
-  const digits = extractDigits(abbreviation);
-  return (
-    digits.length == 4 &&
-    digits[0] == "1" &&
-    digits[1] <= "5" &&
-    digits[2] <= "5"
-  );
-};
-
-export const format = (abbreviation: string) => {
-  const digits = extractDigits(abbreviation);
-  if (digits.length == 4) {
-    digits.splice(2, 0, ":"); // as of 20231126, toSpliced not available in current TypeScript version
-    return digits.join("");
-  }
-  return [...statusToAbbreviation.entries()].find(
+export const format = (abbreviation: string) =>
+  [...statusToAbbreviation.entries()].find(
     (entry) => entry[1] == standardize(abbreviation)
   )![0];
-};

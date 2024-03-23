@@ -15,6 +15,7 @@ export interface Attendance {
 export const Status = {
   ABSENT_WITH_NOTICE: "ABSENT_WITH_NOTICE",
   ABSENT_WITHOUT_NOTICE: "ABSENT_WITHOUT_NOTICE",
+  LATE: "LATE",
   NOT_REGISTERED_YET: "NOT_REGISTERED_YET",
   PRESENT: "PRESENT",
   SICK: "SICK",
@@ -24,16 +25,15 @@ export const Status = {
 const statusTranslations = new Map<string, string>([
   [Status.ABSENT_WITH_NOTICE, "afwezig met bericht"],
   [Status.ABSENT_WITHOUT_NOTICE, "AFWEZIG ZONDER BERICHT"],
+  [Status.LATE, "te laat"],
   [Status.NOT_REGISTERED_YET, "NOG NIET GEREGISTREERD"],
   [Status.PRESENT, "aanwezig"],
   [Status.SICK, "ziek"],
   [Status.WORKING_FROM_HOME, "werkt thuis"],
 ]);
 
-export const statusIsLate = (text: string) => text.includes(":");
-
 export const translateAttendanceStatus = (status: string) =>
-  statusTranslations.get(status) ?? "TE LAAT - " + status;
+  statusTranslations.get(status);
 
 export const displayAttendance = (attendance: Attendance) =>
   `${attendance.studentName}: ${translateAttendanceStatus(attendance.status)}` +
