@@ -9,7 +9,11 @@ import UserContext from "../context/UserContext";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [teacherId, setTeacherId] = useState<string>();
+  const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
+  const [teacherIdTuesday, setTeacherIdTuesday] = useState<string>();
+  const [teacherIdWednesday, setTeacherIdWednesday] = useState<string>();
+  const [teacherIdThursday, setTeacherIdThursday] = useState<string>();
+  const [teacherIdFriday, setTeacherIdFriday] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
   const [startDateAsString, setStartDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
@@ -45,6 +49,9 @@ const ScheduleView = () => {
       });
   }, []);
 
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setGroupId(event.target.value);
+
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setStartDateAsString(event.target.value);
 
@@ -53,9 +60,6 @@ const ScheduleView = () => {
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setTeacherId(event.target.value);
-
-  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setGroupId(event.target.value);
 
   const submitButton = document.getElementById("submitBtn");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
@@ -180,66 +184,45 @@ const ScheduleView = () => {
             <td>
               <input type="checkbox" />
             </td>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>
-              <input type="checkbox" />
-            </td>
-          </tr>
-          <tr>
             <td>Maandag</td>
-            <td>Dinsdag</td>
-            <td>Woensdag</td>
-            <td>Donderdag</td>
-            <td>Vrijdag</td>
+            <td>
+              <select></select>
+            </td>
           </tr>
           <tr>
             <td>
-              <select>
-                <option></option>
-                <option>Wubbo</option>
-                <option>Kenji</option>
-                <option>Mathijs</option>
-              </select>
+              <input type="checkbox" />
             </td>
+            <td>Dinsdag</td>
             <td>
-              <select>
-                <option></option>
-                <option>Wubbo</option>
-                <option>Kenji</option>
-                <option>Mathijs</option>
-              </select>
+              <select></select>
             </td>
+          </tr>
+          <tr>
             <td>
-              <select>
-                <option></option>
-                <option>Wubbo</option>
-                <option>Kenji</option>
-                <option>Mathijs</option>
-              </select>
+              <input type="checkbox" />
             </td>
+            <td>Woensdag</td>
             <td>
-              <select>
-                <option></option>
-                <option>Wubbo</option>
-                <option>Kenji</option>
-                <option>Mathijs</option>
-              </select>
+              <select></select>
             </td>
+          </tr>
+          <tr>
             <td>
-              <select>
-                <option></option>
-                <option>Wubbo</option>
-                <option>Kenji</option>
-                <option>Mathijs</option>
-              </select>
+              <input type="checkbox" />
+            </td>
+            <td>Donderdag</td>
+            <td>
+              <select></select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" />
+            </td>
+            <td>Vrijdag</td>
+            <td>
+              <select></select>
             </td>
           </tr>
         </table>
