@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
-public abstract class AttendanceRegistration {
+public class AttendanceRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -28,16 +28,24 @@ public abstract class AttendanceRegistration {
     @Setter
     private Attendance attendance;
 
+    @Enumerated(EnumType.STRING)
+    private AttendanceStatus status;
+
     private String note;
 
-    private AttendanceRegistration(Personnel personnel, Attendance attendance, String note) {
+    private AttendanceRegistration(Personnel personnel, Attendance attendance, AttendanceStatus status, String note) {
         this.personnel = personnel;
         this.dateTime = LocalDateTime.now();
         this.attendance = attendance;
+        this.status = status;
         this.note = note;
     }
 
-    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, String note) {
-        this(personnel, new Attendance(student, date), note);
+    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status, String note) {
+        this(personnel, new Attendance(student, date), status, note);
+    }
+
+    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status) {
+        this(personnel, new Attendance(student, date), status, null);
     }
 }

@@ -1,11 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Attendance,
-  Status,
-  displayAttendance,
-  isUnsaved,
-  statusIsLate,
-} from "../Class.ts";
+import { Attendance, Status, displayAttendance, isUnsaved } from "../Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
@@ -39,15 +33,12 @@ const AttendanceDisplay = (props: {
     setAttendance(newAttendance);
   };
 
-  function setAttendanceStyle(status: string) {
-    return statusIsLate(status)
-      ? "input-attendance-late"
-      : attendanceStyle.get(status);
-  }
+  const getAttendanceStyle = (status: string) => attendanceStyle.get(status);
 
   const attendanceStyle = new Map<string, string>([
     [Status.ABSENT_WITH_NOTICE, "input-attendance-absent-with-notice"],
     [Status.ABSENT_WITHOUT_NOTICE, "input-attendance-absent-without-notice"],
+    [Status.LATE, "input-attendance-late"],
     [Status.PRESENT, "input-attendance-present"],
     [Status.WORKING_FROM_HOME, "input-attendance-working-from-home"],
     [Status.SICK, "input-attendance-sick"],
@@ -59,7 +50,7 @@ const AttendanceDisplay = (props: {
       <div className="left-box">
         <form onSubmit={submit}>
           <input
-            className={setAttendanceStyle(attendance.status)}
+            className={getAttendanceStyle(attendance.status)}
             value={attendance.currentStatusAbbreviation}
             name="currentStatusAbbreviation"
             onChange={changeItem}

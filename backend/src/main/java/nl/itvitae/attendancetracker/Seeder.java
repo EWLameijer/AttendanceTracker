@@ -1,7 +1,9 @@
 package nl.itvitae.attendancetracker;
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.attendance.*;
+import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
+import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationService;
+import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -67,12 +68,12 @@ public class Seeder implements CommandLineRunner {
             scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
 
             //var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
-            var basAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
+            var basAttendance = new AttendanceRegistration(bas, scheduledDate, wubbo, AttendanceStatus.LATE, "10:30 (trein)");
             //var zebeAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
-            var celiasAttendance = new TypeOfAttendanceRegistration(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
-            var davidsAttendance = new TypeOfAttendanceRegistration(david, scheduledDate, dan, AttendanceStatus.PRESENT);
-            var eduardsAttendance = new TypeOfAttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
-            var filippasAttendance = new TypeOfAttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
+            var celiasAttendance = new AttendanceRegistration(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+            var davidsAttendance = new AttendanceRegistration(david, scheduledDate, dan, AttendanceStatus.PRESENT);
+            var eduardsAttendance = new AttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
+            var filippasAttendance = new AttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
             attendanceRegistrationService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
             createHistory(java, 90, wubbo, juan);
@@ -86,7 +87,7 @@ public class Seeder implements CommandLineRunner {
         var today = LocalDate.now().minusDays(1);
         var nextDaysPerformance = new HashMap<Student, AttendanceRegistration>();
         for (Student student : group.getMembers()) {
-            nextDaysPerformance.put(student, new TypeOfAttendanceRegistration(student, today, registrar, AttendanceStatus.PRESENT));
+            nextDaysPerformance.put(student, new AttendanceRegistration(student, today, registrar, AttendanceStatus.PRESENT));
         }
         for (int day = 1; day < days; day++) {
             var dateToAssess = today.minusDays(day);
@@ -108,25 +109,20 @@ public class Seeder implements CommandLineRunner {
             LocalDate dateToAssess,
             Personnel registrar,
             AttendanceRegistration currentAttendanceRegistration) {
-        if (rand.nextInt(100) < 70) {
-            if (currentAttendanceRegistration instanceof TypeOfAttendanceRegistration typeOfAttendanceRegistration) {
-                return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, typeOfAttendanceRegistration.getStatus());
-            } else {
-                return new LateAttendanceRegistration(student, dateToAssess, registrar, LocalTime.of(10, 30));
-            }
-        }
+        if (rand.nextInt(100) < 70)
+            return new AttendanceRegistration(student, dateToAssess, registrar, currentAttendanceRegistration.getStatus(), currentAttendanceRegistration.getNote());
         var nextRand = rand.nextInt(100);
         if (nextRand < 20)
-            return new LateAttendanceRegistration(student, dateToAssess, registrar, LocalTime.of(10, 15));
+            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.LATE, "10:20");
         else if (nextRand < 23)
-            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.WORKING_FROM_HOME);
+            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.WORKING_FROM_HOME);
         else if (nextRand < 27)
-            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITH_NOTICE);
+            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITH_NOTICE);
         else if (nextRand < 30)
-            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
         else if (nextRand < 90)
-            return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.PRESENT);
-        else return new TypeOfAttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.SICK);
+            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.PRESENT);
+        else return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.SICK);
     }
 
     private boolean isStudyDay(DayOfWeek dayOfWeek) {

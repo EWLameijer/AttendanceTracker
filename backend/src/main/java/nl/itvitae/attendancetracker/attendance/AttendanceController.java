@@ -20,7 +20,6 @@ import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -74,9 +73,7 @@ public class AttendanceController {
             var personnel = possiblePersonnel.get();
 
             var status = attendanceRegistrationDto.status();
-            var attendanceRegistration = status.contains(":") ?
-                    new LateAttendanceRegistration(student, date, personnel, toLocalTime(status), attendanceRegistrationDto.note()) :
-                    new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
+            var attendanceRegistration = new AttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
             attendanceRegistrationService.save(attendanceRegistration);
             resultingRegistrations.add(attendanceRegistration);
         }
@@ -94,11 +91,6 @@ public class AttendanceController {
         return Arrays.stream(AttendanceStatus.values())
                 .filter(attendanceStatus -> attendanceStatus.name().equals(status)).findFirst().orElseThrow();
     }
-
-    private LocalTime toLocalTime(String status) {
-        return LocalTime.from(DateTimeFormatter.ISO_LOCAL_TIME.parse(status + ":00"));
-    }
-
 
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
