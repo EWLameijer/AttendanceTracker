@@ -126,11 +126,11 @@ const ScheduleView = () => {
         </select>
       </p> */}
 
-      <div>
+      {/* <div>
         <button id="submitBtn" onClick={submit}>
           Opslaan
         </button>
-      </div>
+      </div> */}
 
       {/* Upgraded ScheduleView below this */}
 
@@ -246,7 +246,9 @@ const ScheduleView = () => {
       </div>
 
       <div>
-        <button>Sla periode op.</button>
+        <button id="submitBtn" onClick={submit}>
+          Opslaan
+        </button>
       </div>
     </form>
   );
