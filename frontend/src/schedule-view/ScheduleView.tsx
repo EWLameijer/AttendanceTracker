@@ -26,6 +26,7 @@ const ScheduleView = () => {
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
+  const [classes, setClasses] = useState<string[]>();
 
   const user = useContext(UserContext);
 
@@ -100,6 +101,7 @@ const ScheduleView = () => {
   submitButton?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
+    setClasses(["a", "b", "c"]);
     // generate classes based on radio buttons set to true
     //
   };
@@ -134,9 +136,7 @@ const ScheduleView = () => {
   return (
     <form>
       {/* Old ScheduleView below this */}
-
       <h3>Voeg een nieuwe les toe:</h3>
-
       {/* <p>
         Datum:
         <input
@@ -147,7 +147,6 @@ const ScheduleView = () => {
           onChange={handleDateChange}
         ></input>
       </p> */}
-
       {/* <p>
         Leraar:
         <select id="teacher" name="teacher" onChange={handleTeacherChange}>
@@ -158,7 +157,6 @@ const ScheduleView = () => {
           ))}
         </select>
       </p> */}
-
       {/* <p>
         Groep:
         <select id="group" name="group" onChange={handleGroupChange}>
@@ -169,15 +167,12 @@ const ScheduleView = () => {
           ))}
         </select>
       </p> */}
-
       {/* <div>
         <button id="submitBtn" onClick={submit}>
           Opslaan
         </button>
       </div> */}
-
       {/* Upgraded ScheduleView below this */}
-
       {startDateAsString}
       <br></br>
       {endDateAsString}
@@ -197,7 +192,8 @@ const ScheduleView = () => {
       <br></br>
       {ExcludeEndDateAsString}
       <br></br>
-
+      {classes}
+      <br></br>
       <div>
         <p>Kies een groep:</p>
         <select id="group" name="group" onChange={handleGroupChange}>
@@ -208,7 +204,6 @@ const ScheduleView = () => {
           ))}
         </select>
       </div>
-
       <div>
         <p>Kies een begin- en einddatum van de in te voeren periode:</p>
         Begindatum:
@@ -228,7 +223,6 @@ const ScheduleView = () => {
           onChange={handleEndDateChange}
         ></input>
       </div>
-
       <div>
         <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
         <input type="checkbox" />
@@ -301,17 +295,14 @@ const ScheduleView = () => {
           ))}
         </select>
       </div>
-
       <div>
         <button id="submitBtn" onClick={generateClasses}>
           Genereer periode
         </button>
       </div>
-
       <div>
-        <p>Gekozen data hier</p>
+        <p>{classes}</p>
       </div>
-
       <div>
         <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
         Begindatum:
