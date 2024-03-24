@@ -102,6 +102,7 @@ const ScheduleView = () => {
 
   const generateClasses = () => {
     setClasses(["a", "b", "c"]);
+
     // generate classes based on radio buttons set to true
     //
   };
@@ -135,44 +136,8 @@ const ScheduleView = () => {
 
   return (
     <form>
-      {/* Old ScheduleView below this */}
       <h3>Voeg een nieuwe les toe:</h3>
-      {/* <p>
-        Datum:
-        <input
-          id="inputDate"
-          name="date"
-          type="date"
-          value={dateAsString.toString()}
-          onChange={handleDateChange}
-        ></input>
-      </p> */}
-      {/* <p>
-        Leraar:
-        <select id="teacher" name="teacher" onChange={handleTeacherChange}>
-          {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
-      </p> */}
-      {/* <p>
-        Groep:
-        <select id="group" name="group" onChange={handleGroupChange}>
-          {groups.map((group: Group, index: number) => (
-            <option key={index} value={group.id}>
-              {group.name}
-            </option>
-          ))}
-        </select>
-      </p> */}
-      {/* <div>
-        <button id="submitBtn" onClick={submit}>
-          Opslaan
-        </button>
-      </div> */}
-      {/* Upgraded ScheduleView below this */}
+
       {startDateAsString}
       <br></br>
       {endDateAsString}
@@ -194,6 +159,7 @@ const ScheduleView = () => {
       <br></br>
       {classes}
       <br></br>
+
       <div>
         <p>Kies een groep:</p>
         <select id="group" name="group" onChange={handleGroupChange}>
