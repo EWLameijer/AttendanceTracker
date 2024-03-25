@@ -9,7 +9,9 @@ The last few issues I (WL) made (240322) I often put the entire description of t
 Next time, after we write down a PBI, when we convert it to an issue we will copy-paste the text of the current title to the body, and make up a short title (not more than one line in the PBI card) as title of the issue.
 
 
-## Status: Proposed
+## Status [Proposed, Accepted, Deprecated, Superseded]
+
+Proposed
 
 
 ## Consequences
