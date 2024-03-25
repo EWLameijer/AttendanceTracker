@@ -1,5 +1,5 @@
 import axios, { HttpStatusCode } from "axios";
-import { useState, useEffect, useContext } from "react";
+import { forwardRef, useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
@@ -18,22 +18,14 @@ const ScheduleView = () => {
     toYYYYMMDD(new Date())
   );
   const [checkboxMonday, setCheckboxMonday] = useState<boolean>();
-  // const [checkboxTuesday, setCheckboxTuesday] = useState<boolean>();
-  // const [checkboxWednesday, setCheckboxWednesday] = useState<boolean>();
-  // const [checkboxThursday, setCheckboxThursday] = useState<boolean>();
-  // const [checkboxFriday, setCheckboxFriday] = useState<boolean>();
-  const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
-  const [teacherIdTuesday, setTeacherIdTuesday] = useState<string>();
-  const [teacherIdWednesday, setTeacherIdWednesday] = useState<string>();
-  const [teacherIdThursday, setTeacherIdThursday] = useState<string>();
-  const [teacherIdFriday, setTeacherIdFriday] = useState<string>();
+  // const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
   const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
   const [classes, setClasses] = useState<string[]>();
-  const days = ["Maandag"];
+  const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
 
   const user = useContext(UserContext);
 
@@ -47,11 +39,6 @@ const ScheduleView = () => {
       })
       .then((response) => {
         setTeachers(response.data);
-        setTeacherIdMonday(response.data[0].id);
-        setTeacherIdTuesday(response.data[0].id);
-        setTeacherIdWednesday(response.data[0].id);
-        setTeacherIdThursday(response.data[0].id);
-        setTeacherIdFriday(response.data[0].id);
       });
 
     axios
@@ -76,27 +63,25 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
-  const handleCheckboxChange = () => setCheckboxMonday(!checkboxMonday);
+  const createDayTeacher = (option) => {
+    <DayTeacher
+      day={option.day}
+      // handleTeacherChange={forwardRef(handleTeacherChange)}
+      // isSelected={option.isSelected}
+      // onCheckboxChange={forwardRef(handleCheckboxChange)}
+      // teachers={teachers}
+    />;
+  };
 
-  const handleTeacherChangeMonday = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => setTeacherIdMonday(event.target.value);
+  const createDayTeachers = weekdays.map(createDayTeacher);
 
-  const handleTeacherChangeTuesday = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => setTeacherIdTuesday(event.target.value);
+  // const handleCheckboxChange = () => {
+  //   setCheckboxMonday(!checkboxMonday);
+  // };
 
-  const handleTeacherChangeWednesday = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => setTeacherIdWednesday(event.target.value);
-
-  const handleTeacherChangeThursday = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => setTeacherIdThursday(event.target.value);
-
-  const handleTeacherChangeFriday = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => setTeacherIdFriday(event.target.value);
+  // const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setTeacherIdMonday(event.target.value);
+  // };
 
   const handleExcludeStartDateChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -151,16 +136,9 @@ const ScheduleView = () => {
       <br></br>
       {endDateAsString}
       <br></br>
-      {teacherIdMonday}
+      {/* {teacherIdMonday} */}
       <br></br>
-      {teacherIdTuesday}
-      <br></br>
-      {teacherIdWednesday}
-      <br></br>
-      {teacherIdThursday}
-      <br></br>
-      {teacherIdFriday}
-      <br></br>
+
       <br></br>
       {ExcludeStartDateAsString}
       <br></br>
@@ -168,7 +146,7 @@ const ScheduleView = () => {
       <br></br>
       {classes}
       <br></br>
-      {checkboxMonday ? "true" : "false"}
+      {/* {checkboxMonday ? "true" : "false"} */}
 
       <div>
         <p>Kies een groep:</p>
@@ -201,75 +179,7 @@ const ScheduleView = () => {
       </div>
       <div>
         <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-        <input type="checkbox" onChange={handleCheckboxChange} />
-        Maandag
-        <select
-          id="teacher"
-          name="teacher"
-          onChange={handleTeacherChangeMonday}
-        >
-          {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
-        <br />
-        <input type="checkbox" />
-        Dinsdag
-        <select
-          id="teacher"
-          name="teacher"
-          onChange={handleTeacherChangeTuesday}
-        >
-          {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
-        <br />
-        <input type="checkbox" />
-        Woensdag
-        <select
-          id="teacher"
-          name="teacher"
-          onChange={handleTeacherChangeWednesday}
-        >
-          {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
-        <br />
-        <input type="checkbox" />
-        Donderdag
-        <select
-          id="teacher"
-          name="teacher"
-          onChange={handleTeacherChangeThursday}
-        >
-          {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
-        <br />
-        <input type="checkbox" />
-        Vrijdag
-        <select
-          id="teacher"
-          name="teacher"
-          onChange={handleTeacherChangeFriday}
-        >
-          {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
+        {createDayTeachers}
       </div>
       <div>
         <button id="submitBtn" onClick={generateClasses}>
