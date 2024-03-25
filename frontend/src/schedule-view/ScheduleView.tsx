@@ -5,6 +5,7 @@ import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
 import { ScheduledClass } from "./ScheduledClass";
 import UserContext from "../context/UserContext";
+import DayTeacher from "./DayTeacher";
 
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -16,6 +17,11 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
+  const [checkboxMonday, setCheckboxMonday] = useState<boolean>();
+  // const [checkboxTuesday, setCheckboxTuesday] = useState<boolean>();
+  // const [checkboxWednesday, setCheckboxWednesday] = useState<boolean>();
+  // const [checkboxThursday, setCheckboxThursday] = useState<boolean>();
+  // const [checkboxFriday, setCheckboxFriday] = useState<boolean>();
   const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
   const [teacherIdTuesday, setTeacherIdTuesday] = useState<string>();
   const [teacherIdWednesday, setTeacherIdWednesday] = useState<string>();
@@ -27,6 +33,7 @@ const ScheduleView = () => {
     toYYYYMMDD(new Date())
   );
   const [classes, setClasses] = useState<string[]>();
+  const days = ["Maandag"];
 
   const user = useContext(UserContext);
 
@@ -68,6 +75,8 @@ const ScheduleView = () => {
 
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
+
+  const handleCheckboxChange = () => setCheckboxMonday(!checkboxMonday);
 
   const handleTeacherChangeMonday = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -159,6 +168,7 @@ const ScheduleView = () => {
       <br></br>
       {classes}
       <br></br>
+      {checkboxMonday ? "true" : "false"}
 
       <div>
         <p>Kies een groep:</p>
@@ -191,7 +201,7 @@ const ScheduleView = () => {
       </div>
       <div>
         <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-        <input type="checkbox" />
+        <input type="checkbox" onChange={handleCheckboxChange} />
         Maandag
         <select
           id="teacher"
