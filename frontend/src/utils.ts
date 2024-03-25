@@ -10,6 +10,8 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
+export const FRONTEND_URL = "http://localhost:5173"; // when in production, need to get this from some kind of settings?
+
 export const BASE_URL = "http://localhost:8080";
 
 const padToTwoDigits = (number: number) => number.toString().padStart(2, "0");

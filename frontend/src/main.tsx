@@ -13,6 +13,8 @@ import TeacherView from "./components/TeacherView.tsx";
 import HistoryView from "./HistoryView.tsx";
 import Role from "./components/shared/Role.ts";
 import Authorized from "./components/shared/Authorized.tsx";
+import PersonnelView from "./components/PersonnelView.tsx";
+import RegistrationView from "./components/RegistrationView.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -33,6 +35,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             element={
               <Authorized roles={[Role.ADMIN]}>
                 <CoachView />
+              </Authorized>
+            }
+          />
+          <Route
+            path="/personnel-view"
+            element={
+              <Authorized roles={[Role.ADMIN]}>
+                <PersonnelView />
               </Authorized>
             }
           />
@@ -59,6 +69,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <HistoryView />
               </Authorized>
             }
+          />
+          <Route
+            path="/registration-view/:invitationId"
+            element={<RegistrationView />}
           />
         </Routes>
       </BrowserRouter>
