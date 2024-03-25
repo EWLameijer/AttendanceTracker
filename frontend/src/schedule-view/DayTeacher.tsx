@@ -4,9 +4,9 @@ import { Teacher } from "./Teacher";
 const DayTeacher = (props: {
   day: string;
   isSelected: boolean;
-  onCheckboxChange: any;
+  onCheckboxChange: React.ChangeEventHandler<HTMLInputElement>;
   teachers: Teacher[];
-  handleTeacherChange: any;
+  handleTeacherChange: React.ChangeEventHandler<HTMLSelectElement>;
 }) => (
   <div>
     <label>
