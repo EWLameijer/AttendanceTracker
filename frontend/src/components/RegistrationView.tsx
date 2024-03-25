@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ const RegistrationView = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [repeatedPassword, setRepeatedPassword] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -35,11 +36,12 @@ const RegistrationView = () => {
         invitationId,
         password,
       })
-      .then(() =>
+      .then(() => {
         alert(
           "Je bent geregistreerd! Log in met je gebruikersnaam en wachtwoord!"
-        )
-      );
+        );
+        navigate("/");
+      });
   };
 
   return name ? (
