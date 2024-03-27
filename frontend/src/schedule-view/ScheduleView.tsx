@@ -17,8 +17,8 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [checkboxMonday, setCheckboxMonday] = useState<boolean>();
-  // const [teacherIdMonday, setTeacherIdMonday] = useState<string>();
+  const [checkbox, setCheckbox] = useState<boolean>();
+  const [teacherId, setTeacherId] = useState<string>();
   const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
@@ -63,25 +63,35 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
-  const createDayTeacher = (option) => {
-    <DayTeacher
-      day={option.day}
-      // handleTeacherChange={forwardRef(handleTeacherChange)}
-      // isSelected={option.isSelected}
-      // onCheckboxChange={forwardRef(handleCheckboxChange)}
-      // teachers={teachers}
-    />;
+  const handleCheckboxChange = () => {
+    setCheckbox(!checkbox);
   };
 
-  const createDayTeachers = weekdays.map(createDayTeacher);
+  const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setTeacherId(event.target.value);
+  };
 
-  // const handleCheckboxChange = () => {
-  //   setCheckboxMonday(!checkboxMonday);
+  // const createDayTeacher = (value: string) => {
+  //   <DayTeacher
+  //     key={value}
+  //     day={value}
+  //     isSelected={value.isSelected} // This doesn't work yet
+  //     onCheckboxChange={handleCheckboxChange}
+  //     handleTeacherChange={handleTeacherChange}
+  //     teachers={teachers}
+  //   />;
   // };
 
-  // const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   setTeacherIdMonday(event.target.value);
-  // };
+  const createDayTeachers = weekdays.map((value) => (
+    <DayTeacher
+      key={value}
+      day={value}
+      isSelected={value.isSelected} // This doesn't work yet
+      onCheckboxChange={handleCheckboxChange}
+      handleTeacherChange={handleTeacherChange}
+      teachers={teachers}
+    />
+  ));
 
   const handleExcludeStartDateChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -98,7 +108,7 @@ const ScheduleView = () => {
     setClasses(["a", "b", "c"]);
 
     // generate classes based on radio buttons set to true
-    //
+    // capture settings in state?
   };
 
   const submitClasses = () => {
@@ -136,17 +146,12 @@ const ScheduleView = () => {
       <br></br>
       {endDateAsString}
       <br></br>
-      {/* {teacherIdMonday} */}
-      <br></br>
-
-      <br></br>
       {ExcludeStartDateAsString}
       <br></br>
       {ExcludeEndDateAsString}
       <br></br>
       {classes}
       <br></br>
-      {/* {checkboxMonday ? "true" : "false"} */}
 
       <div>
         <p>Kies een groep:</p>
