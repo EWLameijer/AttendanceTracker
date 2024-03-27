@@ -105,10 +105,14 @@ const ScheduleView = () => {
   submitButton?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
-    setClasses(["a", "b", "c"]);
+    const startDate = new Date(startDateAsString); // convert to a date, gives 1 for monday, 2 for tuesday, etc
+    // if() // if bool monday is checked, etc
+    // {
+
+    // }
 
     // generate classes based on radio buttons set to true
-    // capture settings in state?
+    // capture this in state?
   };
 
   const submitClasses = () => {
@@ -142,6 +146,7 @@ const ScheduleView = () => {
     <form>
       <h3>Voeg een nieuwe les toe:</h3>
 
+      <br></br>
       {startDateAsString}
       <br></br>
       {endDateAsString}
