@@ -1,5 +1,5 @@
 import axios, { HttpStatusCode } from "axios";
-import { forwardRef, useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
@@ -24,7 +24,8 @@ const ScheduleView = () => {
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [classes, setClasses] = useState<string[]>();
+  const [classes, setClasses] = useState<string[]>(new Array<string>());
+
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const dayTeacher = ["", "", "", "", ""];
 
@@ -38,6 +39,7 @@ const ScheduleView = () => {
     if (isActive) dayTeacher[day] = teacherId;
     else dayTeacher[day] = "";
 
+    console.log("update day teacher");
     console.table(dayTeacher);
   };
 
@@ -98,18 +100,28 @@ const ScheduleView = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setExcludeEndDateAsString(event.target.value);
 
-  const submitButton = document.getElementById("submitBtn");
+  const submitButton = document.getElementById("genClasses");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
-    const startDate = new Date(startDateAsString); // convert to a date, gives 1 for monday, 2 for tuesday, etc
-    // if() // if bool monday is checked, etc
-    // {
+    const startDate = new Date(startDateAsString);
+    const endDate = new Date(endDateAsString);
+    const datesOfClasses = new Array<string>();
 
-    // }
-
-    // generate classes based on radio buttons set to true
-    // capture this in state?
+    while (startDate < endDate) {
+      startDate.setDate(startDate.getDate() + 1);
+      if (
+        (dayTeacher[0] != "" && startDate.getDay() == 1) || // dayTeacher[] is zero based, getDay has 0 for sunday.
+        (dayTeacher[1] != "" && startDate.getDay() == 2) ||
+        (dayTeacher[2] != "" && startDate.getDay() == 3) ||
+        (dayTeacher[3] != "" && startDate.getDay() == 4) ||
+        (dayTeacher[4] != "" && startDate.getDay() == 5)
+      ) {
+        datesOfClasses.push(toYYYYMMDD(startDate));
+      }
+    }
+    setClasses(datesOfClasses);
+    // This button resets dayTeacher[] if clicked twice
   };
 
   const submitClasses = () => {
@@ -144,15 +156,6 @@ const ScheduleView = () => {
       <form>
         <h3>Voeg een nieuwe les toe:</h3>
 
-        <br></br>
-        {startDateAsString}
-        <br></br>
-        {endDateAsString}
-        <br></br>
-        {ExcludeStartDateAsString}
-        <br></br>
-        {ExcludeEndDateAsString}
-        <br></br>
         {classes}
         <br></br>
 
@@ -193,7 +196,7 @@ const ScheduleView = () => {
         </div>
 
         <div>
-          <button id="submitBtn" onClick={generateClasses}>
+          <button id="genClasses" onClick={generateClasses}>
             Genereer periode
           </button>
         </div>
@@ -220,6 +223,10 @@ const ScheduleView = () => {
             value={ExcludeEndDateAsString.toString()}
             onChange={handleExcludeEndDateChange}
           ></input>
+        </div>
+
+        <div>
+          <button onClick={submitClasses}>Sla alle lessen op.</button>
         </div>
       </form>
     )
