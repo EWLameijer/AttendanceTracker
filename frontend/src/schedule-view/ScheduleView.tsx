@@ -35,12 +35,8 @@ const ScheduleView = () => {
     teacher: string,
     isActive: boolean
   ) => {
-    console.log("teacher" + teacher);
-    console.log("day" + day);
     if (isActive) dayTeacher[day] = teacher;
     else dayTeacher[day] = "";
-    console.log("day" + day);
-    console.log(dayTeacher);
   };
 
   useEffect(() => {
@@ -80,17 +76,6 @@ const ScheduleView = () => {
   const handleCheckboxChange = () => {
     setCheckbox(!checkbox);
   };
-
-  // const createDayTeacher = (value: string) => {
-  //   <DayTeacher
-  //     key={value}
-  //     day={value}
-  //     isSelected={value.isSelected} // This doesn't work yet
-  //     onCheckboxChange={handleCheckboxChange}
-  //     handleTeacherChange={handleTeacherChange}
-  //     teachers={teachers}
-  //   />;
-  // };
 
   const createDayTeachers = weekdays.map((value, index) => (
     <DayTeacher
@@ -152,9 +137,6 @@ const ScheduleView = () => {
     //   });
   };
 
-  console.log("teachers in scheduleview" + typeof teachers);
-  // console.table(teachers);
-
   return (
     teachers.length > 0 && (
       <form>
@@ -182,6 +164,7 @@ const ScheduleView = () => {
             ))}
           </select>
         </div>
+
         <div>
           <p>Kies een begin- en einddatum van de in te voeren periode:</p>
           Begindatum:
@@ -201,18 +184,22 @@ const ScheduleView = () => {
             onChange={handleEndDateChange}
           ></input>
         </div>
+
         <div>
           <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
           {createDayTeachers}
         </div>
+
         <div>
           <button id="submitBtn" onClick={generateClasses}>
             Genereer periode
           </button>
         </div>
+
         <div>
           <p>{classes}</p>
         </div>
+
         <div>
           <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
           Begindatum:
