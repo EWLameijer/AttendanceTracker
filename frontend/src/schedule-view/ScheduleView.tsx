@@ -18,7 +18,7 @@ const ScheduleView = () => {
     toYYYYMMDD(new Date())
   );
   const [checkbox, setCheckbox] = useState<boolean>();
-  const [teacherId, setTeacherId] = useState<string>();
+
   const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
@@ -26,8 +26,22 @@ const ScheduleView = () => {
   );
   const [classes, setClasses] = useState<string[]>();
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
+  const dayTeacher = ["", "", "", "", ""];
 
   const user = useContext(UserContext);
+
+  const updateDayTeacher = (
+    day: number,
+    teacher: string,
+    isActive: boolean
+  ) => {
+    console.log("teacher" + teacher);
+    console.log("day" + day);
+    if (isActive) dayTeacher[day] = teacher;
+    else dayTeacher[day] = "";
+    console.log("day" + day);
+    console.log(dayTeacher);
+  };
 
   useEffect(() => {
     axios
@@ -67,10 +81,6 @@ const ScheduleView = () => {
     setCheckbox(!checkbox);
   };
 
-  const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setTeacherId(event.target.value);
-  };
-
   // const createDayTeacher = (value: string) => {
   //   <DayTeacher
   //     key={value}
@@ -82,13 +92,13 @@ const ScheduleView = () => {
   //   />;
   // };
 
-  const createDayTeachers = weekdays.map((value) => (
+  const createDayTeachers = weekdays.map((value, index) => (
     <DayTeacher
+      updateDayTeacher={updateDayTeacher}
+      dayIndex={index}
       key={value}
       day={value}
-      isSelected={value.isSelected} // This doesn't work yet
       onCheckboxChange={handleCheckboxChange}
-      handleTeacherChange={handleTeacherChange}
       teachers={teachers}
     />
   ));
@@ -142,83 +152,88 @@ const ScheduleView = () => {
     //   });
   };
 
+  console.log("teachers in scheduleview" + typeof teachers);
+  // console.table(teachers);
+
   return (
-    <form>
-      <h3>Voeg een nieuwe les toe:</h3>
+    teachers.length > 0 && (
+      <form>
+        <h3>Voeg een nieuwe les toe:</h3>
 
-      <br></br>
-      {startDateAsString}
-      <br></br>
-      {endDateAsString}
-      <br></br>
-      {ExcludeStartDateAsString}
-      <br></br>
-      {ExcludeEndDateAsString}
-      <br></br>
-      {classes}
-      <br></br>
+        <br></br>
+        {startDateAsString}
+        <br></br>
+        {endDateAsString}
+        <br></br>
+        {ExcludeStartDateAsString}
+        <br></br>
+        {ExcludeEndDateAsString}
+        <br></br>
+        {classes}
+        <br></br>
 
-      <div>
-        <p>Kies een groep:</p>
-        <select id="group" name="group" onChange={handleGroupChange}>
-          {groups.map((group: Group, index: number) => (
-            <option key={index} value={group.id}>
-              {group.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <p>Kies een begin- en einddatum van de in te voeren periode:</p>
-        Begindatum:
-        <input
-          id="inputStartDate"
-          name="date"
-          type="date"
-          value={startDateAsString.toString()}
-          onChange={handleStartDateChange}
-        ></input>
-        Einddatum:
-        <input
-          id="inputEndDate"
-          name="date"
-          type="date"
-          value={endDateAsString.toString()}
-          onChange={handleEndDateChange}
-        ></input>
-      </div>
-      <div>
-        <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-        {createDayTeachers}
-      </div>
-      <div>
-        <button id="submitBtn" onClick={generateClasses}>
-          Genereer periode
-        </button>
-      </div>
-      <div>
-        <p>{classes}</p>
-      </div>
-      <div>
-        <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
-        Begindatum:
-        <input
-          id="inputExcludeStartDate"
-          name="date"
-          type="date"
-          value={ExcludeStartDateAsString.toString()}
-          onChange={handleExcludeStartDateChange}
-        ></input>
-        Einddatum:
-        <input
-          id="inputExcludeEndDate"
-          name="date"
-          type="date"
-          value={ExcludeEndDateAsString.toString()}
-          onChange={handleExcludeEndDateChange}
-        ></input>
-      </div>
-    </form>
+        <div>
+          <p>Kies een groep:</p>
+          <select id="group" name="group" onChange={handleGroupChange}>
+            {groups.map((group: Group, index: number) => (
+              <option key={index} value={group.id}>
+                {group.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <p>Kies een begin- en einddatum van de in te voeren periode:</p>
+          Begindatum:
+          <input
+            id="inputStartDate"
+            name="date"
+            type="date"
+            value={startDateAsString.toString()}
+            onChange={handleStartDateChange}
+          ></input>
+          Einddatum:
+          <input
+            id="inputEndDate"
+            name="date"
+            type="date"
+            value={endDateAsString.toString()}
+            onChange={handleEndDateChange}
+          ></input>
+        </div>
+        <div>
+          <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
+          {createDayTeachers}
+        </div>
+        <div>
+          <button id="submitBtn" onClick={generateClasses}>
+            Genereer periode
+          </button>
+        </div>
+        <div>
+          <p>{classes}</p>
+        </div>
+        <div>
+          <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
+          Begindatum:
+          <input
+            id="inputExcludeStartDate"
+            name="date"
+            type="date"
+            value={ExcludeStartDateAsString.toString()}
+            onChange={handleExcludeStartDateChange}
+          ></input>
+          Einddatum:
+          <input
+            id="inputExcludeEndDate"
+            name="date"
+            type="date"
+            value={ExcludeEndDateAsString.toString()}
+            onChange={handleExcludeEndDateChange}
+          ></input>
+        </div>
+      </form>
+    )
   );
 };
 
