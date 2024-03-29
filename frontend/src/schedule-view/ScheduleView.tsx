@@ -17,7 +17,7 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [checkbox, setCheckbox] = useState<boolean>();
+  //const [checkbox, setCheckbox] = useState<boolean>();
 
   const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
@@ -32,11 +32,13 @@ const ScheduleView = () => {
 
   const updateDayTeacher = (
     day: number,
-    teacher: string,
+    teacherId: string,
     isActive: boolean
   ) => {
-    if (isActive) dayTeacher[day] = teacher;
+    if (isActive) dayTeacher[day] = teacherId;
     else dayTeacher[day] = "";
+
+    console.table(dayTeacher);
   };
 
   useEffect(() => {
@@ -73,9 +75,9 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
-  const handleCheckboxChange = () => {
-    setCheckbox(!checkbox);
-  };
+  // const handleCheckboxChange = () => {
+  //   setCheckbox(!checkbox);
+  // };
 
   const createDayTeachers = weekdays.map((value, index) => (
     <DayTeacher
@@ -83,7 +85,7 @@ const ScheduleView = () => {
       dayIndex={index}
       key={value}
       day={value}
-      onCheckboxChange={handleCheckboxChange}
+      //onCheckboxChange={handleCheckboxChange}
       teachers={teachers}
     />
   ));
