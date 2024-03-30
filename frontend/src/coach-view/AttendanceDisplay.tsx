@@ -32,7 +32,6 @@ const AttendanceDisplay = (props: {
   const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
     const newAttendance = { ...attendance, note: event.currentTarget.value };
     props.updateAttendance([newAttendance]);
-    setAttendance(newAttendance);
   };
 
   const getAttendanceStyle = (status: string) => attendanceStyle.get(status);
@@ -51,7 +50,6 @@ const AttendanceDisplay = (props: {
   ) => {
     const newAttendance = { ...attendance, status: event.currentTarget.value };
     props.updateAttendance([newAttendance]);
-    setAttendance(newAttendance);
   };
 
   const sortedStatuses = Object.keys(Status)
