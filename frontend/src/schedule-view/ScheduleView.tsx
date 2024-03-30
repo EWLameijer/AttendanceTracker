@@ -24,7 +24,7 @@ const ScheduleView = () => {
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [classes, setClasses] = useState<string[]>(new Array<string>());
+  const [classes, setClasses] = useState<Array<string>>();
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const dayTeacher = ["", "", "", "", ""];
@@ -38,9 +38,6 @@ const ScheduleView = () => {
   ) => {
     if (isActive) dayTeacher[day] = teacherId;
     else dayTeacher[day] = "";
-
-    console.log("update day teacher");
-    console.table(dayTeacher);
   };
 
   useEffect(() => {
@@ -106,7 +103,7 @@ const ScheduleView = () => {
   const generateClasses = () => {
     const startDate = new Date(startDateAsString);
     const endDate = new Date(endDateAsString);
-    const datesOfClasses = new Array<string>();
+    const classesOfSelectedPeriod = [];
 
     while (startDate < endDate) {
       startDate.setDate(startDate.getDate() + 1);
@@ -117,10 +114,10 @@ const ScheduleView = () => {
         (dayTeacher[3] != "" && startDate.getDay() == 4) ||
         (dayTeacher[4] != "" && startDate.getDay() == 5)
       ) {
-        datesOfClasses.push(toYYYYMMDD(startDate));
+        classesOfSelectedPeriod.push(); // build ScheduledClasses
       }
     }
-    setClasses(datesOfClasses);
+    // setClasses(classesOfSelectedPeriod);
     // This button resets dayTeacher[] if clicked twice
   };
 
@@ -156,7 +153,7 @@ const ScheduleView = () => {
       <form>
         <h3>Voeg een nieuwe les toe:</h3>
 
-        {classes}
+        {classes?.toString()}
         <br></br>
 
         <div>
@@ -202,7 +199,7 @@ const ScheduleView = () => {
         </div>
 
         <div>
-          <p>{classes}</p>
+          <p>{classes?.forEach.toString()}</p>
         </div>
 
         <div>
