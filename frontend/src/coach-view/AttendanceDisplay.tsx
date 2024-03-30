@@ -27,7 +27,7 @@ const AttendanceDisplay = (props: {
     navigate(`/students/${props.attendance.studentName}`);
 
   const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
-    const newAttendance = {
+    const newAttendance: Attendance = {
       ...props.attendance,
       note: event.currentTarget.value,
     };
