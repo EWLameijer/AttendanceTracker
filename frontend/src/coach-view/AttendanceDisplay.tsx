@@ -1,5 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { Attendance, Status, displayAttendance, isUnsaved } from "../Class.ts";
+import {
+  Attendance,
+  Status,
+  displayAttendance,
+  isUnsaved,
+  translateAttendanceStatus,
+} from "../Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
@@ -44,17 +50,33 @@ const AttendanceDisplay = (props: {
     [Status.SICK, "input-attendance-sick"],
   ]);
 
+  const updateAttendanceFromDropdown = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newAttendance = { ...attendance, status: event.currentTarget.value };
+    props.updateAttendance([newAttendance]);
+    setAttendance(newAttendance);
+  };
+
+  const sortedStatuses = Object.keys(Status)
+    .map((key) => [key, translateAttendanceStatus(key)])
+    .sort((a, b) => a[1]!.localeCompare(b[1]!));
+
   return (
     <li>
-      {displayAttendance(attendance)}
       <div className="left-box">
         <form onSubmit={submit}>
-          <input
+          <select
+            value={attendance.status}
+            onChange={updateAttendanceFromDropdown}
             className={getAttendanceStyle(attendance.status)}
-            value={attendance.currentStatusAbbreviation}
-            name="currentStatusAbbreviation"
-            onChange={changeItem}
-          />
+          >
+            {sortedStatuses.map((ss) => (
+              <option key={ss[0]} value={ss[0]}>
+                {ss[1]}
+              </option>
+            ))}
+          </select>
           <input
             value={attendance.note}
             name="note"

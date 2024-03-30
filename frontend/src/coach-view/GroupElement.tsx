@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   Attendance,
   Class,
+  Status,
   addExtraData,
   isUnsaved,
   unsavedAttendancesExist,
@@ -28,22 +29,17 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   };
 
   const saveAttendances = (attendances: Attendance[]) => {
-    for (const attendance of attendances) {
-      const statusAbbreviation = attendance.currentStatusAbbreviation ?? "";
-      if (!attendance.currentStatusAbbreviation) return;
-      if (!isValidAbbreviation(statusAbbreviation)) {
-        alert(`Afkorting '${statusAbbreviation}' is onbekend.`);
-        return;
-      }
-    }
+    if (
+      attendances.some(
+        (attendance) => attendance.status == Status.NOT_REGISTERED_YET
+      )
+    )
+      return;
 
     const formattedAttendances = attendances.map((attendance) => {
-      const formattedStatus = format(
-        attendance.currentStatusAbbreviation ?? ""
-      );
       const newAttendance: Attendance = {
         studentName: attendance.studentName,
-        status: formattedStatus,
+        status: attendance.status,
         personnelName: user.username,
         date: props.dateAsString,
       };
@@ -67,9 +63,8 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
 
   const setUnregisteredAsPresent = (attendance: Attendance): Attendance => {
     const newAttendance = { ...attendance };
-    if (!newAttendance.savedStatusAbbreviation!()) {
-      newAttendance.currentStatusAbbreviation = "p";
-    }
+    if (newAttendance.savedStatus === Status.NOT_REGISTERED_YET)
+      newAttendance.status = Status.PRESENT;
     return newAttendance;
   };
 
@@ -87,7 +82,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
 
   const unregisteredAttendancesExist = () =>
     chosenClass!.attendances.some(
-      (attendance) => !attendance.currentStatusAbbreviation
+      (attendance) => attendance.status == Status.NOT_REGISTERED_YET
     );
 
   return (

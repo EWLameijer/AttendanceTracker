@@ -7,8 +7,7 @@ export interface Attendance {
   personnelName: string;
   timeOfRegistration?: string;
   note?: string;
-  currentStatusAbbreviation?: string;
-  savedStatusAbbreviation?: () => string;
+  savedStatus?: string;
   savedNote?: string;
 }
 
@@ -65,16 +64,14 @@ export function addExtraData(attendance: Attendance): Attendance {
     timeOfRegistration: attendance.timeOfRegistration,
     note: attendance.note || "",
     savedNote: attendance.note || "",
-    currentStatusAbbreviation: toStatusAbbreviation(attendance.status),
-    savedStatusAbbreviation: () => toStatusAbbreviation(attendance.status),
+    savedStatus: attendance.status,
   };
 }
 
 export const isUnsaved = (attendance: Attendance) =>
-  attendance.currentStatusAbbreviation &&
+  attendance.status != Status.NOT_REGISTERED_YET &&
   (attendance.note != attendance.savedNote ||
-    attendance.currentStatusAbbreviation !=
-      attendance.savedStatusAbbreviation!());
+    attendance.status != attendance.savedStatus);
 
 export const unsavedAttendancesExist = (chosenClass: Class) =>
   chosenClass.attendances.some((attendance) => isUnsaved(attendance));
