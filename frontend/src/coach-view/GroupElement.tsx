@@ -7,7 +7,7 @@ import {
   isUnsaved,
   unsavedAttendancesExist,
 } from "../Class.ts";
-import { BASE_URL, format, isValidAbbreviation } from "../utils.ts";
+import { BASE_URL } from "../utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../context/UserContext.ts";

@@ -1,5 +1,3 @@
-import { toStatusAbbreviation } from "./utils";
-
 export interface Attendance {
   studentName: string;
   status: string;

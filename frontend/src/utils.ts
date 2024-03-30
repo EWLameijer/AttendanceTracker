@@ -30,16 +30,3 @@ export const statusToAbbreviation = new Map<string, string>([
   [Status.SICK, "z"],
   [Status.WORKING_FROM_HOME, "t"],
 ]);
-
-export const toStatusAbbreviation = (statusText: string) =>
-  statusToAbbreviation.get(statusText) ?? statusText;
-
-const standardize = (text: string) => text.trim().toLocaleLowerCase();
-
-export const isValidAbbreviation = (abbreviation: string) =>
-  [...statusToAbbreviation.values()].includes(standardize(abbreviation));
-
-export const format = (abbreviation: string) =>
-  [...statusToAbbreviation.entries()].find(
-    (entry) => entry[1] == standardize(abbreviation)
-  )![0];
