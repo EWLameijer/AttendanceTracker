@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import {
   Attendance,
   Status,
-  displayAttendance,
   isUnsaved,
   translateAttendanceStatus,
 } from "../Class.ts";
@@ -31,7 +30,7 @@ const AttendanceDisplay = (props: {
     navigate(`/students/${props.attendance.studentName}`);
 
   const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
-    const newAttendance = { ...attendance, notes: event.currentTarget.value };
+    const newAttendance = { ...attendance, note: event.currentTarget.value };
     props.updateAttendance([newAttendance]);
     setAttendance(newAttendance);
   };
