@@ -30,11 +30,8 @@ const AttendanceDisplay = (props: {
   const showHistory = () =>
     navigate(`/students/${props.attendance.studentName}`);
 
-  const changeItem = (event: React.FormEvent<HTMLInputElement>) => {
-    const newAttendance = {
-      ...attendance,
-      [event.currentTarget.name]: event.currentTarget.value,
-    };
+  const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
+    const newAttendance = { ...attendance, notes: event.currentTarget.value };
     props.updateAttendance([newAttendance]);
     setAttendance(newAttendance);
   };
@@ -50,7 +47,7 @@ const AttendanceDisplay = (props: {
     [Status.SICK, "input-attendance-sick"],
   ]);
 
-  const updateAttendanceFromDropdown = (
+  const updateAttendanceType = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const newAttendance = { ...attendance, status: event.currentTarget.value };
@@ -68,7 +65,7 @@ const AttendanceDisplay = (props: {
         <form onSubmit={submit}>
           <select
             value={attendance.status}
-            onChange={updateAttendanceFromDropdown}
+            onChange={updateAttendanceType}
             className={getAttendanceStyle(attendance.status)}
           >
             {sortedStatuses.map((ss) => (
@@ -79,8 +76,7 @@ const AttendanceDisplay = (props: {
           </select>
           <input
             value={attendance.note}
-            name="note"
-            onChange={changeItem}
+            onChange={updateNotes}
             placeholder="aantekeningen"
           />
           <input
