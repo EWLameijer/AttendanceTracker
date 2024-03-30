@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import {
   Attendance,
   Status,
@@ -15,22 +15,22 @@ const AttendanceDisplay = (props: {
   updateAttendance: (attendances: Attendance[]) => void;
   saveAttendances: (attendance: Attendance[]) => void;
 }) => {
-  const [attendance, setAttendance] = useState<Attendance>(props.attendance);
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
-  useEffect(() => setAttendance(props.attendance), [props.attendance]);
-
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    props.saveAttendances([attendance]);
+    props.saveAttendances([props.attendance]);
   };
 
   const showHistory = () =>
     navigate(`/students/${props.attendance.studentName}`);
 
   const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
-    const newAttendance = { ...attendance, note: event.currentTarget.value };
+    const newAttendance = {
+      ...props.attendance,
+      note: event.currentTarget.value,
+    };
     props.updateAttendance([newAttendance]);
   };
 
@@ -48,7 +48,10 @@ const AttendanceDisplay = (props: {
   const updateAttendanceType = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const newAttendance = { ...attendance, status: event.currentTarget.value };
+    const newAttendance = {
+      ...props.attendance,
+      status: event.currentTarget.value,
+    };
     props.updateAttendance([newAttendance]);
   };
 
@@ -61,9 +64,9 @@ const AttendanceDisplay = (props: {
       <div className="left-box">
         <form onSubmit={submit}>
           <select
-            value={attendance.status}
+            value={props.attendance.status}
             onChange={updateAttendanceType}
-            className={getAttendanceStyle(attendance.status)}
+            className={getAttendanceStyle(props.attendance.status)}
           >
             {sortedStatuses.map((ss) => (
               <option key={ss[0]} value={ss[0]}>
@@ -72,13 +75,13 @@ const AttendanceDisplay = (props: {
             ))}
           </select>
           <input
-            value={attendance.note}
+            value={props.attendance.note}
             onChange={updateNotes}
             placeholder="aantekeningen"
           />
           <input
             type="submit"
-            disabled={!isUnsaved(attendance)}
+            disabled={!isUnsaved(props.attendance)}
             value="Opslaan"
           ></input>
         </form>
