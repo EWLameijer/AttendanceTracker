@@ -1,5 +1,3 @@
-import { Status } from "./Class";
-
 export const capitalize = (text: string) =>
   text[0].toUpperCase() + text.substring(1);
 
@@ -20,13 +18,3 @@ export const toYYYYMMDD = (date: Date) =>
   `${date.getFullYear()}-${padToTwoDigits(
     date.getMonth() + 1
   )}-${padToTwoDigits(date.getDate())}`;
-
-export const statusToAbbreviation = new Map<string, string>([
-  [Status.ABSENT_WITH_NOTICE, "am"],
-  [Status.ABSENT_WITHOUT_NOTICE, "az"],
-  [Status.LATE, "tl"],
-  [Status.NOT_REGISTERED_YET, ""],
-  [Status.PRESENT, "p"],
-  [Status.SICK, "z"],
-  [Status.WORKING_FROM_HOME, "t"],
-]);

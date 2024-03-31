@@ -56,6 +56,11 @@ const AttendanceDisplay = (props: {
   };
 
   const sortedStatuses = Object.keys(Status)
+    .filter(
+      (key) =>
+        key !== Status.NOT_REGISTERED_YET ||
+        props.attendance.savedStatus === Status.NOT_REGISTERED_YET
+    )
     .map((key) => [key, translateAttendanceStatus(key)])
     .sort((a, b) => a[1]!.localeCompare(b[1]!));
 
@@ -69,7 +74,11 @@ const AttendanceDisplay = (props: {
             className={getAttendanceStyle(props.attendance.status)}
           >
             {sortedStatuses.map(([status, dutchTranslation]) => (
-              <option key={status} value={status}>
+              <option
+                key={status}
+                value={status}
+                className={getAttendanceStyle(status!)}
+              >
                 {dutchTranslation}
               </option>
             ))}
