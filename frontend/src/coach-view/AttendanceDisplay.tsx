@@ -68,9 +68,9 @@ const AttendanceDisplay = (props: {
             onChange={updateAttendanceType}
             className={getAttendanceStyle(props.attendance.status)}
           >
-            {sortedStatuses.map((ss) => (
-              <option key={ss[0]} value={ss[0]}>
-                {ss[1]}
+            {sortedStatuses.map(([status, dutchTranslation]) => (
+              <option key={status} value={status}>
+                {dutchTranslation}
               </option>
             ))}
           </select>
