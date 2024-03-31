@@ -1,5 +1,10 @@
-import { useContext, useEffect, useState } from "react";
-import { Attendance, Status, displayAttendance, isUnsaved } from "../Class.ts";
+import { useContext } from "react";
+import {
+  Attendance,
+  Status,
+  isUnsaved,
+  translateAttendanceStatus,
+} from "../Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
@@ -10,27 +15,23 @@ const AttendanceDisplay = (props: {
   updateAttendance: (attendances: Attendance[]) => void;
   saveAttendances: (attendance: Attendance[]) => void;
 }) => {
-  const [attendance, setAttendance] = useState<Attendance>(props.attendance);
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
-  useEffect(() => setAttendance(props.attendance), [props.attendance]);
-
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    props.saveAttendances([attendance]);
+    props.saveAttendances([props.attendance]);
   };
 
   const showHistory = () =>
     navigate(`/students/${props.attendance.studentName}`);
 
-  const changeItem = (event: React.FormEvent<HTMLInputElement>) => {
-    const newAttendance = {
-      ...attendance,
-      [event.currentTarget.name]: event.currentTarget.value,
+  const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
+    const newAttendance: Attendance = {
+      ...props.attendance,
+      note: event.currentTarget.value,
     };
     props.updateAttendance([newAttendance]);
-    setAttendance(newAttendance);
   };
 
   const getAttendanceStyle = (status: string) => attendanceStyle.get(status);
@@ -44,26 +45,52 @@ const AttendanceDisplay = (props: {
     [Status.SICK, "input-attendance-sick"],
   ]);
 
+  const updateAttendanceType = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newAttendance = {
+      ...props.attendance,
+      status: event.currentTarget.value,
+    };
+    props.updateAttendance([newAttendance]);
+  };
+
+  const sortedStatuses = Object.keys(Status)
+    .filter(
+      (key) =>
+        key !== Status.NOT_REGISTERED_YET ||
+        props.attendance.savedStatus === Status.NOT_REGISTERED_YET
+    )
+    .map((key) => [key, translateAttendanceStatus(key)])
+    .sort((a, b) => a[1]!.localeCompare(b[1]!));
+
   return (
     <li>
-      {displayAttendance(attendance)}
       <div className="left-box">
         <form onSubmit={submit}>
+          <select
+            value={props.attendance.status}
+            onChange={updateAttendanceType}
+            className={getAttendanceStyle(props.attendance.status)}
+          >
+            {sortedStatuses.map(([status, dutchTranslation]) => (
+              <option
+                key={status}
+                value={status}
+                className={getAttendanceStyle(status!)}
+              >
+                {dutchTranslation}
+              </option>
+            ))}
+          </select>
           <input
-            className={getAttendanceStyle(attendance.status)}
-            value={attendance.currentStatusAbbreviation}
-            name="currentStatusAbbreviation"
-            onChange={changeItem}
-          />
-          <input
-            value={attendance.note}
-            name="note"
-            onChange={changeItem}
+            value={props.attendance.note}
+            onChange={updateNotes}
             placeholder="aantekeningen"
           />
           <input
             type="submit"
-            disabled={!isUnsaved(attendance)}
+            disabled={!isUnsaved(props.attendance)}
             value="Opslaan"
           ></input>
         </form>
