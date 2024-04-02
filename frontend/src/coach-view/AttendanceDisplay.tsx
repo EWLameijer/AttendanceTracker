@@ -19,8 +19,8 @@ const AttendanceDisplay = (props: {
   const user = useContext(UserContext);
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    props.saveAttendances([props.attendance]);
+    // event.preventDefault();
+    // props.saveAttendances([props.attendance]);
   };
 
   const showHistory = () =>
@@ -31,7 +31,7 @@ const AttendanceDisplay = (props: {
       ...props.attendance,
       note: event.currentTarget.value,
     };
-    props.updateAttendance([newAttendance]);
+    props.saveAttendances([newAttendance]);
   };
 
   const getAttendanceStyle = (status: string) => attendanceStyle.get(status);
@@ -52,7 +52,7 @@ const AttendanceDisplay = (props: {
       ...props.attendance,
       status: event.currentTarget.value,
     };
-    props.updateAttendance([newAttendance]);
+    props.saveAttendances([newAttendance]);
   };
 
   const sortedStatuses = Object.keys(Status)
