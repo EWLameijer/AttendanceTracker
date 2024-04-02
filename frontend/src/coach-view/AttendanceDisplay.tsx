@@ -64,8 +64,24 @@ const AttendanceDisplay = (props: {
     .map((key) => [key, translateAttendanceStatus(key)])
     .sort((a, b) => a[1]!.localeCompare(b[1]!));
 
+  function formatTime(timeOfRegistration: string) {
+    const date = new Date(timeOfRegistration);
+    return `${date.getDate()}/${
+      date.getMonth() + 1
+    } om ${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
+  }
+
+  const displayAttendance = (attendance: Attendance) =>
+    `${attendance.studentName}` +
+    (attendance.personnelName
+      ? ` - geregistreerd door ${attendance.personnelName} (${formatTime(
+          attendance.timeOfRegistration!
+        )})`
+      : "");
+
   return (
     <li>
+      {displayAttendance(props.attendance)}
       <div className="left-box">
         <form onSubmit={submit}>
           <select

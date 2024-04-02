@@ -32,25 +32,10 @@ const statusTranslations = new Map<string, string>([
 export const translateAttendanceStatus = (status: string) =>
   statusTranslations.get(status);
 
-export const displayAttendance = (attendance: Attendance) =>
-  `${attendance.studentName}: ${translateAttendanceStatus(attendance.status)}` +
-  (attendance.personnelName
-    ? ` - ${attendance.personnelName} (${formatTime(
-        attendance.timeOfRegistration!
-      )})`
-    : "");
-
 export interface Class {
   groupName: string;
   teacherName: string;
   attendances: Attendance[];
-}
-function formatTime(timeOfRegistration: string) {
-  const date = new Date(timeOfRegistration);
-  return `${date.getDate()}/${date.getMonth()} om ${date.getHours()}:${date
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}`;
 }
 
 export function addExtraData(attendance: Attendance): Attendance {
