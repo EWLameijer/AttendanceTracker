@@ -24,7 +24,7 @@ const ScheduleView = () => {
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [classes, setClasses] = useState<Array<string>>();
+  const [classes, setClasses] = useState<string[]>();
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const dayTeacher = ["", "", "", "", ""];
@@ -101,23 +101,26 @@ const ScheduleView = () => {
   submitButton?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
-    const startDate = new Date(startDateAsString);
+    const dateToCheck = new Date(startDateAsString);
     const endDate = new Date(endDateAsString);
-    const classesOfSelectedPeriod = [];
+    const classesOfSelectedPeriod: string[] = [];
 
-    while (startDate < endDate) {
-      startDate.setDate(startDate.getDate() + 1);
+    while (dateToCheck <= endDate) {
+      console.log("Initial: " + dateToCheck);
       if (
-        (dayTeacher[0] != "" && startDate.getDay() == 1) || // dayTeacher[] is zero based, getDay has 0 for sunday.
-        (dayTeacher[1] != "" && startDate.getDay() == 2) ||
-        (dayTeacher[2] != "" && startDate.getDay() == 3) ||
-        (dayTeacher[3] != "" && startDate.getDay() == 4) ||
-        (dayTeacher[4] != "" && startDate.getDay() == 5)
+        (dayTeacher[0] != "" && dateToCheck.getDay() == 1) || // dayTeacher[] is zero based, getDay has 0 for sunday.
+        (dayTeacher[1] != "" && dateToCheck.getDay() == 2) ||
+        (dayTeacher[2] != "" && dateToCheck.getDay() == 3) ||
+        (dayTeacher[3] != "" && dateToCheck.getDay() == 4) ||
+        (dayTeacher[4] != "" && dateToCheck.getDay() == 5)
       ) {
-        classesOfSelectedPeriod.push(); // build ScheduledClasses
+        console.log("Before push: " + dateToCheck);
+        classesOfSelectedPeriod.push(toYYYYMMDD(dateToCheck)); // build ScheduledClasses
       }
+      dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
-    // setClasses(classesOfSelectedPeriod);
+    console.table(classesOfSelectedPeriod);
+    setClasses(classesOfSelectedPeriod);
     // This button resets dayTeacher[] if clicked twice
   };
 
