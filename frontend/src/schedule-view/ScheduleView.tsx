@@ -17,7 +17,6 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  //const [checkbox, setCheckbox] = useState<boolean>();
 
   const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
@@ -74,28 +73,15 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
-  // const handleCheckboxChange = () => {
-  //   setCheckbox(!checkbox);
-  // };
-
   const createDayTeachers = weekdays.map((value, index) => (
     <DayTeacher
       updateDayTeacher={updateDayTeacher}
       dayIndex={index}
       key={value}
       day={value}
-      //onCheckboxChange={handleCheckboxChange}
       teachers={teachers}
     />
   ));
-
-  const handleExcludeStartDateChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => setExcludeStartDateAsString(event.target.value);
-
-  const handleExcludeEndDateChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => setExcludeEndDateAsString(event.target.value);
 
   const submitButton = document.getElementById("genClasses");
   submitButton?.addEventListener("click", (event) => event.preventDefault());
@@ -106,23 +92,33 @@ const ScheduleView = () => {
     const classesOfSelectedPeriod: string[] = [];
 
     while (dateToCheck <= endDate) {
-      console.log("Initial: " + dateToCheck);
       if (
-        (dayTeacher[0] != "" && dateToCheck.getDay() == 1) || // dayTeacher[] is zero based, getDay has 0 for sunday.
+        // getDay is zero based, but it has sunday as the first day.
+        // So while 0 & 1 in one line looks odd, it is correct.
+        (dayTeacher[0] != "" && dateToCheck.getDay() == 1) ||
         (dayTeacher[1] != "" && dateToCheck.getDay() == 2) ||
         (dayTeacher[2] != "" && dateToCheck.getDay() == 3) ||
         (dayTeacher[3] != "" && dateToCheck.getDay() == 4) ||
         (dayTeacher[4] != "" && dateToCheck.getDay() == 5)
       ) {
-        console.log("Before push: " + dateToCheck);
-        classesOfSelectedPeriod.push(toYYYYMMDD(dateToCheck)); // build ScheduledClasses
+        classesOfSelectedPeriod.push(toYYYYMMDD(dateToCheck));
       }
       dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
     console.table(classesOfSelectedPeriod);
     setClasses(classesOfSelectedPeriod);
-    // This button resets dayTeacher[] if clicked twice
+    // Bug: This button resets dayTeacher[] if clicked twice
   };
+
+  const handleExcludeStartDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setExcludeStartDateAsString(event.target.value);
+
+  const handleExcludeEndDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setExcludeEndDateAsString(event.target.value);
+
+  const excludeClasses = () => {};
 
   const submitClasses = () => {
     // axios
@@ -223,6 +219,12 @@ const ScheduleView = () => {
             value={ExcludeEndDateAsString.toString()}
             onChange={handleExcludeEndDateChange}
           ></input>
+        </div>
+
+        <div>
+          <button id="exclClasses" onClick={excludeClasses}>
+            Verwijder selectie
+          </button>
         </div>
 
         <div>
