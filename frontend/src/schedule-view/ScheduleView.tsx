@@ -17,27 +17,16 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-
   const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [classes, setClasses] = useState<string[]>();
+  const [classes, setClasses] = useState<string[]>(new Array<string>());
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const dayTeacher = ["", "", "", "", ""];
-
   const user = useContext(UserContext);
-
-  const updateDayTeacher = (
-    day: number,
-    teacherId: string,
-    isActive: boolean
-  ) => {
-    if (isActive) dayTeacher[day] = teacherId;
-    else dayTeacher[day] = "";
-  };
 
   useEffect(() => {
     axios
@@ -73,6 +62,15 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
+  const updateDayTeacher = (
+    day: number,
+    teacherId: string,
+    isActive: boolean
+  ) => {
+    if (isActive) dayTeacher[day] = teacherId;
+    else dayTeacher[day] = "";
+  };
+
   const createDayTeachers = weekdays.map((value, index) => (
     <DayTeacher
       updateDayTeacher={updateDayTeacher}
@@ -85,7 +83,7 @@ const ScheduleView = () => {
 
   const generate = document.getElementById("genClasses");
   generate?.addEventListener("click", (event) => event.preventDefault());
-  const exclude = document.getElementById("exclude");
+  const exclude = document.getElementById("excludeClasses");
   exclude?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
@@ -138,6 +136,8 @@ const ScheduleView = () => {
     console.table(listOfClasses);
   };
 
+  const showClasses = classes?.map((value) => <p key={value}>{value}</p>);
+
   const submitClasses = () => {
     // axios
     //   .post<ScheduledClass>(
@@ -170,9 +170,6 @@ const ScheduleView = () => {
       <form>
         <h3>Voeg een nieuwe les toe:</h3>
 
-        {classes?.toString()}
-        <br></br>
-
         <div>
           <p>Kies een groep:</p>
           <select id="group" name="group" onChange={handleGroupChange}>
@@ -188,18 +185,14 @@ const ScheduleView = () => {
           <p>Kies een begin- en einddatum van de in te voeren periode:</p>
           Begindatum:
           <input
-            id="inputStartDate"
-            name="date"
             type="date"
-            value={startDateAsString.toString()}
+            value={startDateAsString}
             onChange={handleStartDateChange}
           ></input>
           Einddatum:
           <input
-            id="inputEndDate"
-            name="date"
             type="date"
-            value={endDateAsString.toString()}
+            value={endDateAsString}
             onChange={handleEndDateChange}
           ></input>
         </div>
@@ -215,32 +208,26 @@ const ScheduleView = () => {
           </button>
         </div>
 
-        <div>
-          <p>{classes?.forEach.toString()}</p>
-        </div>
+        <div>{showClasses}</div>
 
         <div>
           <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
           Begindatum:
           <input
-            id="inputExcludeStartDate"
-            name="date"
             type="date"
-            value={ExcludeStartDateAsString.toString()}
+            value={ExcludeStartDateAsString}
             onChange={handleExcludeStartDateChange}
           ></input>
           Einddatum:
           <input
-            id="inputExcludeEndDate"
-            name="date"
             type="date"
-            value={ExcludeEndDateAsString.toString()}
+            value={ExcludeEndDateAsString}
             onChange={handleExcludeEndDateChange}
           ></input>
         </div>
 
         <div>
-          <button id="exclude" onClick={excludeClasses}>
+          <button id="excludeClasses" onClick={excludeClasses}>
             Verwijder selectie
           </button>
         </div>
