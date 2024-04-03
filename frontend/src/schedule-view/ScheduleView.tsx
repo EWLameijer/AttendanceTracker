@@ -168,6 +168,16 @@ const ScheduleView = () => {
   return (
     teachers.length > 0 && (
       <form>
+        <p>To do:</p>
+        <ul>
+          <li>Fix bug of generate list button</li>
+          <li>Fix text area updating on pruned dates</li>
+          <li>Expand saving to include relevant teacher on each date</li>
+          <li>Refactor api to accept list of ScheduledClass or something</li>
+          <li>Clean up code</li>
+          <li>Add tables?</li>
+        </ul>
+
         <h3>Voeg een nieuwe les toe:</h3>
 
         <div>
@@ -208,8 +218,6 @@ const ScheduleView = () => {
           </button>
         </div>
 
-        <div>{showClasses}</div>
-
         <div>
           <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
           Begindatum:
@@ -225,6 +233,8 @@ const ScheduleView = () => {
             onChange={handleExcludeEndDateChange}
           ></input>
         </div>
+
+        <div>{showClasses}</div>
 
         <div>
           <button id="excludeClasses" onClick={excludeClasses}>
