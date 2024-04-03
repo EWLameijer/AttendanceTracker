@@ -83,13 +83,15 @@ const ScheduleView = () => {
     />
   ));
 
-  const submitButton = document.getElementById("genClasses");
-  submitButton?.addEventListener("click", (event) => event.preventDefault());
+  const generate = document.getElementById("genClasses");
+  generate?.addEventListener("click", (event) => event.preventDefault());
+  const exclude = document.getElementById("exclude");
+  exclude?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
     const dateToCheck = new Date(startDateAsString);
     const endDate = new Date(endDateAsString);
-    const classesOfSelectedPeriod: string[] = [];
+    const classesInSelectedPeriod: string[] = [];
 
     while (dateToCheck <= endDate) {
       if (
@@ -101,13 +103,14 @@ const ScheduleView = () => {
         (dayTeacher[3] != "" && dateToCheck.getDay() == 4) ||
         (dayTeacher[4] != "" && dateToCheck.getDay() == 5)
       ) {
-        classesOfSelectedPeriod.push(toYYYYMMDD(dateToCheck));
+        classesInSelectedPeriod.push(toYYYYMMDD(dateToCheck));
       }
       dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
-    console.table(classesOfSelectedPeriod);
-    setClasses(classesOfSelectedPeriod);
-    // Bug: This button resets dayTeacher[] if clicked twice
+    setClasses(classesInSelectedPeriod);
+    console.log("Initial period:");
+    console.table(classesInSelectedPeriod);
+    // Bug: The button resets dayTeacher[] if clicked twice
   };
 
   const handleExcludeStartDateChange = (
@@ -118,7 +121,22 @@ const ScheduleView = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setExcludeEndDateAsString(event.target.value);
 
-  const excludeClasses = () => {};
+  const excludeClasses = () => {
+    const dateToCheck = new Date(ExcludeStartDateAsString);
+    const endDate = new Date(ExcludeEndDateAsString);
+    const listOfClasses = classes;
+
+    while (dateToCheck <= endDate) {
+      const index = listOfClasses!.indexOf(toYYYYMMDD(dateToCheck));
+      if (index > -1) {
+        listOfClasses?.splice(index, 1);
+      }
+      dateToCheck.setDate(dateToCheck.getDate() + 1);
+    }
+    setClasses(listOfClasses);
+    console.log("Result:");
+    console.table(listOfClasses);
+  };
 
   const submitClasses = () => {
     // axios
@@ -222,7 +240,7 @@ const ScheduleView = () => {
         </div>
 
         <div>
-          <button id="exclClasses" onClick={excludeClasses}>
+          <button id="exclude" onClick={excludeClasses}>
             Verwijder selectie
           </button>
         </div>
