@@ -93,8 +93,7 @@ const ScheduleView = () => {
 
     while (dateToCheck <= endDate) {
       if (
-        // getDay is zero based, but it has sunday as the first day.
-        // So while 0 & 1 in one line looks odd, it is correct.
+        // getDay is zero based, but it has sunday as the first day. So while 0 & 1 in one line looks odd, it is correct.
         (dayTeacher[0] != "" && dateToCheck.getDay() == 1) ||
         (dayTeacher[1] != "" && dateToCheck.getDay() == 2) ||
         (dayTeacher[2] != "" && dateToCheck.getDay() == 3) ||
@@ -120,20 +119,24 @@ const ScheduleView = () => {
   ) => setExcludeEndDateAsString(event.target.value);
 
   const excludeClasses = () => {
-    const dateToCheck = new Date(ExcludeStartDateAsString);
-    const endDate = new Date(ExcludeEndDateAsString);
-    const listOfClasses = classes;
+    if (classes.length == 0) {
+      alert("Genereer eerst een periode");
+    } else {
+      const dateToCheck = new Date(ExcludeStartDateAsString);
+      const endDate = new Date(ExcludeEndDateAsString);
+      const listOfClasses = classes;
 
-    while (dateToCheck <= endDate) {
-      const index = listOfClasses!.indexOf(toYYYYMMDD(dateToCheck));
-      if (index > -1) {
-        listOfClasses?.splice(index, 1);
+      while (dateToCheck <= endDate) {
+        const index = listOfClasses!.indexOf(toYYYYMMDD(dateToCheck));
+        if (index > -1) {
+          listOfClasses?.splice(index, 1);
+        }
+        dateToCheck.setDate(dateToCheck.getDate() + 1);
       }
-      dateToCheck.setDate(dateToCheck.getDate() + 1);
+      setClasses(listOfClasses);
+      console.log("Result:");
+      console.table(listOfClasses);
     }
-    setClasses(listOfClasses);
-    console.log("Result:");
-    console.table(listOfClasses);
   };
 
   const showClasses = classes?.map((value) => <p key={value}>{value}</p>);
