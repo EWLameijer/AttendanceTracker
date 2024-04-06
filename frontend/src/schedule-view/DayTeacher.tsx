@@ -9,13 +9,10 @@ const DayTeacher = (props: {
   ) => void;
   dayIndex: number;
   day: string;
-  //onCheckboxChange: React.ChangeEventHandler<HTMLInputElement>;
   teachers: Teacher[];
 }) => {
   const [teacherId, setTeacherId] = useState<string>(props.teachers[0].id);
   const [isChecked, setIsChecked] = useState(false);
-
-  //  if (props.teachers?.[0]) setTeacherId(props.teachers[0].id);
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setTeacherId(event.target.value);

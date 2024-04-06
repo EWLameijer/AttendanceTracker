@@ -10,7 +10,7 @@ import DayTeacher from "./DayTeacher";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [groupId, setGroupId] = useState<string>();
+  const [groupId, setGroupId] = useState<string>("");
   const [startDateAsString, setStartDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
@@ -22,7 +22,9 @@ const ScheduleView = () => {
   const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [classes, setClasses] = useState<string[]>(new Array<string>());
+  const [classes, setClasses] = useState<ScheduledClass[]>(
+    new Array<ScheduledClass>()
+  );
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const dayTeacher = ["", "", "", "", ""];
@@ -89,18 +91,23 @@ const ScheduleView = () => {
   const generateClasses = () => {
     const dateToCheck = new Date(startDateAsString);
     const endDate = new Date(endDateAsString);
-    const classesInSelectedPeriod: string[] = [];
+    const classesInSelectedPeriod: ScheduledClass[] = [];
 
     while (dateToCheck <= endDate) {
       if (
         // getDay is zero based, but it has sunday as the first day. So while 0 & 1 in one line looks odd, it is correct.
-        (dayTeacher[0] != "" && dateToCheck.getDay() == 1) ||
-        (dayTeacher[1] != "" && dateToCheck.getDay() == 2) ||
-        (dayTeacher[2] != "" && dateToCheck.getDay() == 3) ||
-        (dayTeacher[3] != "" && dateToCheck.getDay() == 4) ||
-        (dayTeacher[4] != "" && dateToCheck.getDay() == 5)
+        (dayTeacher[0].length > 0 && dateToCheck.getDay() == 1) ||
+        (dayTeacher[1].length > 0 && dateToCheck.getDay() == 2) ||
+        (dayTeacher[2].length > 0 && dateToCheck.getDay() == 3) ||
+        (dayTeacher[3].length > 0 && dateToCheck.getDay() == 4) ||
+        (dayTeacher[4].length > 0 && dateToCheck.getDay() == 5)
       ) {
-        classesInSelectedPeriod.push(toYYYYMMDD(dateToCheck));
+        const classToSchedule: ScheduledClass = {
+          groupId: groupId,
+          teacherId: dayTeacher[i],
+          dateAsString: toYYYYMMDD(dateToCheck),
+        };
+        classesInSelectedPeriod.push(classToSchedule);
       }
       dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
