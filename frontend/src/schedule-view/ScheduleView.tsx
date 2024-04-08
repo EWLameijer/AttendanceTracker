@@ -150,30 +150,28 @@ const ScheduleView = () => {
   ));
 
   const submitClasses = () => {
-    // axios
-    //   .post<ScheduledClass>(
-    //     `${BASE_URL}/scheduled-classes`,
-    //     {
-    //       groupId,
-    //       teacherId,
-    //       dateAsString,
-    //     },
-    //     {
-    //       auth: {
-    //         username: user.username,
-    //         password: user.password,
-    //       },
-    //     }
-    //   )
-    //   .then((response) => {
-    //     if (response.status == HttpStatusCode.Created)
-    //       alert("1 nieuwe les toegevoegd");
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status == HttpStatusCode.BadRequest)
-    //       alert("FOUT: Deze leraar heeft al een groep op deze dag");
-    //     else alert(error.response.status + " " + error.response.data);
-    //   });
+    axios
+      .post<ScheduledClass>(
+        `${BASE_URL}/scheduled-classes`,
+        {
+          classes,
+        },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status == HttpStatusCode.Created)
+          alert("1 nieuwe les toegevoegd");
+      })
+      .catch((error) => {
+        if (error.response.status == HttpStatusCode.BadRequest)
+          alert("FOUT: Deze leraar heeft al een groep op deze dag");
+        else alert(error.response.status + " " + error.response.data);
+      });
   };
 
   return (
@@ -183,8 +181,12 @@ const ScheduleView = () => {
         <ul>
           <li>Fix bug of generate list button</li>
           <li>Fix text area updating on pruned dates</li>
-          <li>Expand saving to include relevant teacher on each date</li>
-          <li>Refactor api to accept list of ScheduledClass or something</li>
+          <li>
+            Refactor api to accept list of ScheduledClass or something. Ran into
+            an issue. The foreach in java runs "until done or it hits an
+            exception". Duplicate entry is exception. Keep API as single entry
+            save?
+          </li>
           <li>Clean up code</li>
           <li>Add tables?</li>
         </ul>
