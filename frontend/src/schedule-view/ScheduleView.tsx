@@ -17,9 +17,9 @@ const ScheduleView = () => {
   const [endDateAsString, setEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [ExcludeStartDateAsString, setExcludeStartDateAsString] =
+  const [excludeStartDateAsString, setExcludeStartDateAsString] =
     useState<string>(toYYYYMMDD(new Date()));
-  const [ExcludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
+  const [excludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
   const [classes, setClasses] = useState<ScheduledClass[]>(
@@ -104,7 +104,7 @@ const ScheduleView = () => {
       ) {
         const classToSchedule: ScheduledClass = {
           groupId: groupId,
-          teacherId: dayTeacher[i],
+          teacherId: dayTeacher[dateToCheck.getDay() - 1],
           dateAsString: toYYYYMMDD(dateToCheck),
         };
         classesInSelectedPeriod.push(classToSchedule);
@@ -129,12 +129,16 @@ const ScheduleView = () => {
     if (classes.length == 0) {
       alert("Genereer eerst een periode");
     } else {
-      const dateToCheck = new Date(ExcludeStartDateAsString);
-      const endDate = new Date(ExcludeEndDateAsString);
+      const dateToCheck = new Date(excludeStartDateAsString);
+      const endDate = new Date(excludeEndDateAsString);
       const listOfClasses = classes;
 
       while (dateToCheck <= endDate) {
-        const index = listOfClasses!.indexOf(toYYYYMMDD(dateToCheck));
+        const index = listOfClasses
+          .map(function (e) {
+            return e.dateAsString;
+          })
+          .indexOf(toYYYYMMDD(dateToCheck));
         if (index > -1) {
           listOfClasses?.splice(index, 1);
         }
@@ -146,7 +150,9 @@ const ScheduleView = () => {
     }
   };
 
-  const showClasses = classes?.map((value) => <p key={value}>{value}</p>);
+  const showClasses = classes?.map((value) => (
+    <p key={value.dateAsString}>{value.dateAsString}</p>
+  ));
 
   const submitClasses = () => {
     // axios
@@ -233,13 +239,13 @@ const ScheduleView = () => {
           Begindatum:
           <input
             type="date"
-            value={ExcludeStartDateAsString}
+            value={excludeStartDateAsString}
             onChange={handleExcludeStartDateChange}
           ></input>
           Einddatum:
           <input
             type="date"
-            value={ExcludeEndDateAsString}
+            value={excludeEndDateAsString}
             onChange={handleExcludeEndDateChange}
           ></input>
         </div>
