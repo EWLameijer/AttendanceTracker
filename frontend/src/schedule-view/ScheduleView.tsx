@@ -94,14 +94,8 @@ const ScheduleView = () => {
     const classesInSelectedPeriod: ScheduledClass[] = [];
 
     while (dateToCheck <= endDate) {
-      if (
-        // getDay is zero based, but it has sunday as the first day. So while 0 & 1 in one line looks odd, it is correct.
-        (dayTeacher[0].length > 0 && dateToCheck.getDay() == 1) ||
-        (dayTeacher[1].length > 0 && dateToCheck.getDay() == 2) ||
-        (dayTeacher[2].length > 0 && dateToCheck.getDay() == 3) ||
-        (dayTeacher[3].length > 0 && dateToCheck.getDay() == 4) ||
-        (dayTeacher[4].length > 0 && dateToCheck.getDay() == 5)
-      ) {
+      // dayTeacher[0..4] = monday..friday = getDay 1..5
+      if (dayTeacher[dateToCheck.getDay() - 1]) {
         const classToSchedule: ScheduledClass = {
           groupId: groupId,
           teacherId: dayTeacher[dateToCheck.getDay() - 1],
