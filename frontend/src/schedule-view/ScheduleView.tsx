@@ -95,6 +95,7 @@ const ScheduleView = () => {
 
     while (dateToCheck <= endDate) {
       // dayTeacher[0..4] = monday..friday = getDay 1..5
+      // This is why the -1 is here.
       if (dayTeacher[dateToCheck.getDay() - 1]) {
         const classToSchedule: ScheduledClass = {
           groupId: groupId,
