@@ -12,12 +12,19 @@ const AttendanceDisplay = (props: {
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
-  const [currentNote, setCurrentNote] = useState(props.attendance.note);
-  const [currentStatus, setCurrentStatus] = useState(props.attendance.status);
+  const [currentRegistration, setCurrentRegistration] = useState({
+    note: props.attendance.note,
+    status: props.attendance.status,
+  });
+
+  let currentTimer: number | undefined = undefined;
+
   // need useEffect else a teacher setting all as present won't work!
   useEffect(() => {
-    setCurrentNote(props.attendance.note);
-    setCurrentStatus(props.attendance.status);
+    setCurrentRegistration({
+      note: props.attendance.note,
+      status: props.attendance.status,
+    });
   }, [props.attendance.note, props.attendance.status]);
 
   const showHistory = () =>
@@ -33,6 +40,12 @@ const AttendanceDisplay = (props: {
     [Status.WORKING_FROM_HOME, "input-attendance-working-from-home"],
     [Status.SICK, "input-attendance-sick"],
   ]);
+
+  const saveIfModifiedAndEnterPressed = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") saveIfModified();
+  };
 
   const sortedStatuses = Object.keys(Status)
     .filter(
@@ -58,22 +71,45 @@ const AttendanceDisplay = (props: {
         )})`
       : "");
 
-  const saveIfModified = () =>
+  const saveIfModified = () => saveRegistration(currentRegistration);
+
+  function saveRegistration(updatedRegistration: {
+    note: string | undefined;
+    status: string;
+  }) {
     props.saveIfModified({
       ...props.attendance,
-      note: currentNote,
-      status: currentStatus,
+      ...updatedRegistration,
     });
+  }
+
+  const updateNote = (event: React.ChangeEvent<HTMLInputElement>) =>
+    updateProperty("note", event.currentTarget.value);
+
+  const updateStatus = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    updateProperty("status", event.currentTarget.value);
+
+  const updateProperty = (key: string, value: string) => {
+    clearTimeout(currentTimer);
+    const updatedRegistration = {
+      ...currentRegistration,
+      [key]: value,
+    };
+    currentTimer = setTimeout(
+      () => saveRegistration(updatedRegistration),
+      1000
+    );
+    setCurrentRegistration(updatedRegistration);
+  };
 
   return (
     <li>
       {displayAttendance(props.attendance)}
       <div className="left-box">
         <select
-          value={currentStatus}
-          onChange={(event) => setCurrentStatus(event.currentTarget.value)}
-          onBlur={saveIfModified}
-          className={getAttendanceStyle(currentStatus)}
+          value={currentRegistration.status}
+          onChange={updateStatus}
+          className={getAttendanceStyle(currentRegistration.status)}
         >
           {sortedStatuses.map(([status, dutchTranslation]) => (
             <option
@@ -86,11 +122,11 @@ const AttendanceDisplay = (props: {
           ))}
         </select>
         <input
-          value={currentNote}
-          onChange={(event) => setCurrentNote(event.currentTarget.value)}
-          onBlur={saveIfModified}
+          value={currentRegistration.note}
+          onChange={updateNote}
           placeholder="aantekeningen"
-          disabled={currentStatus === Status.NOT_REGISTERED_YET}
+          disabled={currentRegistration.status === Status.NOT_REGISTERED_YET}
+          onKeyDown={saveIfModifiedAndEnterPressed}
         />
         {!user.isTeacher() && (
           <button onClick={showHistory}>Geschiedenis</button>
