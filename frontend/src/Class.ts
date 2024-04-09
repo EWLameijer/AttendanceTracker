@@ -30,7 +30,7 @@ const statusTranslations = new Map<string, string>([
 ]);
 
 export const translateAttendanceStatus = (status: string) =>
-  statusTranslations.get(status);
+  statusTranslations.get(status)!;
 
 export interface Class {
   groupName: string;
@@ -50,11 +50,3 @@ export function addExtraData(attendance: Attendance): Attendance {
     savedStatus: attendance.status,
   };
 }
-
-export const isUnsaved = (attendance: Attendance) =>
-  attendance.status != Status.NOT_REGISTERED_YET &&
-  (attendance.note != attendance.savedNote ||
-    attendance.status != attendance.savedStatus);
-
-export const unsavedAttendancesExist = (chosenClass: Class) =>
-  chosenClass.attendances.some((attendance) => isUnsaved(attendance));

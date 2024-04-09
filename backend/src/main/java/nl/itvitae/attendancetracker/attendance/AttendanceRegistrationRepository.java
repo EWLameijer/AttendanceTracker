@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public interface AttendanceRegistrationRepository<T extends AttendanceRegistration> extends CrudRepository<T, UUID> {
+public interface AttendanceRegistrationRepository extends CrudRepository<AttendanceRegistration, UUID> {
     List<AttendanceRegistration> findByAttendanceDate(LocalDate date);
 
     List<AttendanceRegistration> findByAttendanceStudentId(UUID studentId);

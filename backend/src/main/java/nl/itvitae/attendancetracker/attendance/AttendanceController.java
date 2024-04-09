@@ -33,7 +33,7 @@ public class AttendanceController {
 
     private final AttendanceRegistrationService attendanceRegistrationService;
 
-    private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
+    private final AttendanceRegistrationRepository attendanceRegistrationRepository;
 
     private final StudentRepository studentRepository;
 
