@@ -1,3 +1,0 @@
-Design
-
-Wil automatisch saven als iets wordt veranderd.
