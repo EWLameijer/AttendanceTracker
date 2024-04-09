@@ -83,22 +83,25 @@ const AttendanceDisplay = (props: {
     });
   }
 
-  const updateNote = (event: React.ChangeEvent<HTMLInputElement>) =>
-    updateProperty("note", event.currentTarget.value);
-
-  const updateStatus = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    updateProperty("status", event.currentTarget.value);
-
-  const updateProperty = (key: string, value: string) => {
+  const updateNote = (event: React.ChangeEvent<HTMLInputElement>) => {
     clearTimeout(currentTimer);
     const updatedRegistration = {
       ...currentRegistration,
-      [key]: value,
+      note: event.currentTarget.value,
     };
     currentTimer = setTimeout(
       () => saveRegistration(updatedRegistration),
       1000
     );
+    setCurrentRegistration(updatedRegistration);
+  };
+
+  const updateStatus = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const updatedRegistration = {
+      ...currentRegistration,
+      status: event.currentTarget.value,
+    };
+    saveRegistration(updatedRegistration);
     setCurrentRegistration(updatedRegistration);
   };
 
