@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,12 +20,6 @@ public class PersonnelController {
     private final InvitationRepository invitationRepository;
 
     private final PersonnelService personnelService;
-
-    @GetMapping("teachers")
-    public Iterable<PersonnelDto> getAllTeachers() {
-        return StreamSupport.stream(personnelRepository.findAllByRole(ATRole.TEACHER).spliterator(), false)
-                .map(PersonnelDto::from).toList();
-    }
 
     @GetMapping("login")
     public PersonnelDto login(Principal principal) {

@@ -15,7 +15,9 @@ public class PersonnelService {
 
     private final AuthorityRepository authorityRepository;
 
-    public Personnel save(String username, String password, ATRole role) {
+    public Teacher
+
+    private Personnel save(String username, String password, ATRole role) {
         var personnel = new Personnel(username, passwordEncoder.encode(password), role);
         personnelRepository.save(personnel);
         var authority = new Authority(username, role.asSpringSecurityRole());
