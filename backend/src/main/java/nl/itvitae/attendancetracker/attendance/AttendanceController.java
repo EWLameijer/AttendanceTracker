@@ -35,6 +35,8 @@ public class AttendanceController {
 
     private final AttendanceRegistrationRepository attendanceRegistrationRepository;
 
+    private final AttendanceRepository attendanceRepository;
+
     private final StudentRepository studentRepository;
 
     private final PersonnelRepository personnelRepository;
@@ -72,8 +74,25 @@ public class AttendanceController {
             if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
             var personnel = possiblePersonnel.get();
 
-            var status = attendanceRegistrationDto.status();
-            var attendanceRegistration = new AttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
+            var attendance = attendanceRepository.findByStudentAndDate(student, date).orElseThrow(
+                    () -> new IllegalArgumentException("Student does not follow lessons on this date"));
+
+            var previousRegistrationsByThisRegistrar = attendanceRegistrationRepository.findByAttendanceAndPersonnel(attendance, personnel);
+            var possibleMostRecentRegistrationByThisRegistrar = previousRegistrationsByThisRegistrar.stream().max(
+                    Comparator.comparing(AttendanceRegistration::getDateTime));
+
+            AttendanceRegistration attendanceRegistration;
+            var note = attendanceRegistrationDto.note();
+            var status = toStatus(attendanceRegistrationDto.status());
+            if (possibleMostRecentRegistrationByThisRegistrar.isPresent() &&
+                    possibleMostRecentRegistrationByThisRegistrar.get().getDateTime().isAfter(LocalDateTime.now().minusMinutes(1))) {
+                attendanceRegistration = possibleMostRecentRegistrationByThisRegistrar.get();
+                attendanceRegistration.setDateTime(LocalDateTime.now());
+                attendanceRegistration.setNote(note);
+                attendanceRegistration.setStatus(status);
+            } else
+                attendanceRegistration = new AttendanceRegistration(student, date, personnel, status, note);
+
             attendanceRegistrationService.save(attendanceRegistration);
             resultingRegistrations.add(attendanceRegistration);
         }

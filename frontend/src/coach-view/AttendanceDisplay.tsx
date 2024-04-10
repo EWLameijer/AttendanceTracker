@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import "../styles.css";
 import UserContext from "../context/UserContext.ts";
 
+let currentTimer: number | undefined = undefined;
+
 const AttendanceDisplay = (props: {
   attendance: Attendance;
   saveIfModified: (attendance: Attendance) => void;
@@ -16,8 +18,6 @@ const AttendanceDisplay = (props: {
     note: props.attendance.note,
     status: props.attendance.status,
   });
-
-  let currentTimer: number | undefined = undefined;
 
   // need useEffect else a teacher setting all as present won't work!
   useEffect(() => {

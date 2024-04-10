@@ -1,5 +1,6 @@
 package nl.itvitae.attendancetracker.attendance;
 
+import nl.itvitae.attendancetracker.personnel.Personnel;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
@@ -10,4 +11,6 @@ public interface AttendanceRegistrationRepository extends CrudRepository<Attenda
     List<AttendanceRegistration> findByAttendanceDate(LocalDate date);
 
     List<AttendanceRegistration> findByAttendanceStudentId(UUID studentId);
+
+    List<AttendanceRegistration> findByAttendanceAndPersonnel(Attendance attendance, Personnel personnel);
 }
