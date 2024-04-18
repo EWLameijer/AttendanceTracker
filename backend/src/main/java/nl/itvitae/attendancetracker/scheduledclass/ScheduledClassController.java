@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
@@ -26,21 +28,33 @@ public class ScheduledClassController {
     private final PersonnelRepository personnelRepository;
 
     @PostMapping("/scheduled-classes")
-    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
-        var group = groupRepository.findById(scheduledClassInputDto.groupId()).orElseThrow(() ->
-                new BadRequestException("Group not found"));
+    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto[] listNewClasses) {
+        var validClasses = new ArrayList<ScheduledClass>();
 
-        var teacher = personnelRepository.findById(scheduledClassInputDto.teacherId()).orElseThrow(() ->
-                new BadRequestException("Teacher not found"));
+        for (ScheduledClassInputDto potentialClass : listNewClasses) {
+            LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
-        LocalDate localDate = parseLocalDateOrThrow(scheduledClassInputDto.dateAsString());
+            var teacher = personnelRepository.findById(potentialClass.teacherId()).orElseThrow(() ->
+                    new BadRequestException("Teacher not found"));
 
-        if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isEmpty()) {
-            scheduledClassRepository.save(new ScheduledClass(group, teacher, localDate));
+            if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
+                throw new BadRequestException(MessageFormat.format(
+                        "{0} unavailable on {1}",
+                        potentialClass.teacherId(),
+                        potentialClass.dateAsString()));
+            }
 
-            return new ResponseEntity<>("New lesson added.", HttpStatus.CREATED);
+            var group = groupRepository.findById(potentialClass.groupId()).orElseThrow(() ->
+                    new BadRequestException("Group not found"));
+
+            validClasses.add(new ScheduledClass(group, teacher, localDate));
         }
 
-        throw new BadRequestException("Teacher already scheduled for that date.");
+        for (ScheduledClass validClass : validClasses) {
+            scheduledClassRepository.save(validClass);
+        }
+
+        return new ResponseEntity<>(MessageFormat.format(
+                "{0} classes added", (long) validClasses.size()), HttpStatus.CREATED);
     }
 }
