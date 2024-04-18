@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
@@ -34,7 +35,8 @@ public class ScheduledClassController {
         for (ScheduledClassInputDto potentialClass : listNewClasses) {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
-            var teacher = personnelRepository.findById(potentialClass.teacherId()).orElseThrow(() ->
+            UUID possibleTeacher = UUID.fromString(potentialClass.teacherId());
+            var teacher = personnelRepository.findById(possibleTeacher).orElseThrow(() ->
                     new BadRequestException("Teacher not found"));
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
@@ -44,7 +46,8 @@ public class ScheduledClassController {
                         potentialClass.dateAsString()));
             }
 
-            var group = groupRepository.findById(potentialClass.groupId()).orElseThrow(() ->
+            UUID possibleGroup = UUID.fromString((potentialClass.groupId()));
+            var group = groupRepository.findById(possibleGroup).orElseThrow(() ->
                     new BadRequestException("Group not found"));
 
             validClasses.add(new ScheduledClass(group, teacher, localDate));

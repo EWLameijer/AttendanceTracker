@@ -87,6 +87,8 @@ const ScheduleView = () => {
   generate?.addEventListener("click", (event) => event.preventDefault());
   const exclude = document.getElementById("excludeClasses");
   exclude?.addEventListener("click", (event) => event.preventDefault());
+  const submit = document.getElementById("submitClasses");
+  submit?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
     const dateToCheck = new Date(startDateAsString);
@@ -94,8 +96,7 @@ const ScheduleView = () => {
     const classesInSelectedPeriod: ScheduledClass[] = [];
 
     while (dateToCheck <= endDate) {
-      // dayTeacher[0..4] = monday..friday = getDay 1..5
-      // This is why the -1 is here.
+      // dayTeacher[0..4] EQUALS monday..friday EQUALS getDay 1..5 -> This is why the getDay()-1 is here.
       if (dayTeacher[dateToCheck.getDay() - 1]) {
         const classToSchedule: ScheduledClass = {
           groupId: groupId,
@@ -168,9 +169,12 @@ const ScheduleView = () => {
           alert("1 nieuwe les toegevoegd");
       })
       .catch((error) => {
-        if (error.response.status == HttpStatusCode.BadRequest)
+        if (error.response.status == HttpStatusCode.BadRequest) {
+          console.log(error);
+          console.log(error.response);
+          console.log(error.response.status);
           alert("FOUT: Deze leraar heeft al een groep op deze dag");
-        else alert(error.response.status + " " + error.response.data);
+        } else alert(error.response.status + " " + error.response.data);
       });
   };
 
@@ -256,7 +260,9 @@ const ScheduleView = () => {
         </div>
 
         <div>
-          <button onClick={submitClasses}>Sla alle lessen op.</button>
+          <button id="submitClasses" onClick={submitClasses}>
+            Sla alle lessen op.
+          </button>
         </div>
       </form>
     )
