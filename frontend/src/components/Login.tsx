@@ -13,7 +13,7 @@ const Login = () => {
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     axios
-      .get(`${BASE_URL}/personnel/login`, {
+      .get(`${BASE_URL}/workers/login`, {
         auth: {
           username: loginData.username,
           password: loginData.password,

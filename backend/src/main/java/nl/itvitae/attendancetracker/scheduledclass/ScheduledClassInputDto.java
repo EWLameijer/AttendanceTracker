@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public record ScheduledClassInputDto(
         UUID groupId,
-        UUID teacherId,
+        String teacherName,
         String dateAsString) {
 }

@@ -3,7 +3,7 @@ package nl.itvitae.attendancetracker.scheduledclass;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
+import nl.itvitae.attendancetracker.worker.WorkerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,21 +23,20 @@ public class ScheduledClassController {
 
     private final GroupRepository groupRepository;
 
-    private final PersonnelRepository personnelRepository;
+    private final WorkerService workerService;
 
     @PostMapping("/scheduled-classes")
     public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
         var group = groupRepository.findById(scheduledClassInputDto.groupId()).orElseThrow(() ->
                 new BadRequestException("Group not found"));
 
-        var teacher = personnelRepository.findById(scheduledClassInputDto.teacherId()).orElseThrow(() ->
+        var teacher = workerService.findTeacherByNameIgnoringCase(scheduledClassInputDto.teacherName()).orElseThrow(() ->
                 new BadRequestException("Teacher not found"));
 
         LocalDate localDate = parseLocalDateOrThrow(scheduledClassInputDto.dateAsString());
 
         if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isEmpty()) {
             scheduledClassRepository.save(new ScheduledClass(group, teacher, localDate));
-
             return new ResponseEntity<>("New lesson added.", HttpStatus.CREATED);
         }
 

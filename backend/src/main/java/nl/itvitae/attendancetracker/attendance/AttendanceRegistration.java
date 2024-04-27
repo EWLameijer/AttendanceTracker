@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.student.Student;
+import nl.itvitae.attendancetracker.worker.Worker;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class AttendanceRegistration {
     private UUID id;
 
     @ManyToOne
-    private Personnel personnel;
+    private Worker registrar;
 
     private LocalDateTime dateTime;
 
@@ -33,19 +33,19 @@ public class AttendanceRegistration {
 
     private String note;
 
-    private AttendanceRegistration(Personnel personnel, Attendance attendance, AttendanceStatus status, String note) {
-        this.personnel = personnel;
+    private AttendanceRegistration(Worker registrar, Attendance attendance, AttendanceStatus status, String note) {
+        this.registrar = registrar;
         this.dateTime = LocalDateTime.now();
         this.attendance = attendance;
         this.status = status;
         this.note = note;
     }
 
-    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status, String note) {
-        this(personnel, new Attendance(student, date), status, note);
+    public AttendanceRegistration(Student student, LocalDate date, Worker registrar, AttendanceStatus status, String note) {
+        this(registrar, new Attendance(student, date), status, note);
     }
 
-    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status) {
-        this(personnel, new Attendance(student, date), status, null);
+    public AttendanceRegistration(Student student, LocalDate date, Worker registrar, AttendanceStatus status) {
+        this(registrar, new Attendance(student, date), status, null);
     }
 }

@@ -1,6 +1,6 @@
 package nl.itvitae.attendancetracker;
 
-import nl.itvitae.attendancetracker.personnel.ATRole;
+import nl.itvitae.attendancetracker.worker.ATRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,7 +24,7 @@ public class SecurityConfiguration {
         // As we also use the Users table for Personnel, I prefer 'name' over the default 'username', and 'personnel' over 'users'
         // for implementation, see:
         // https://stackoverflow.com/questions/67634569/how-to-change-jdbc-schema-users-with-mytable-in-oauth2-spring-boot
-        jdbcUserDetailsManager.setUsersByUsernameQuery("select name,password,enabled from personnel where name = ?");
+        jdbcUserDetailsManager.setUsersByUsernameQuery("select name,password,enabled from worker where name = ?");
         return jdbcUserDetailsManager;
     }
 

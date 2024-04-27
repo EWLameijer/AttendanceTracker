@@ -12,7 +12,7 @@ public record AttendanceRegistrationDto(
         String note
 ) {
     public static AttendanceRegistrationDto from(AttendanceRegistration attendanceRegistration) {
-        var by = attendanceRegistration.getPersonnel().getName();
+        var by = attendanceRegistration.getRegistrar().getName();
         var registrationTime = attendanceRegistration.getDateTime();
         var studentName = attendanceRegistration.getAttendance().getStudent().getName();
         var attendanceDate = attendanceRegistration.getAttendance().getDate().toString();

@@ -6,13 +6,12 @@ import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationService;
 import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.personnel.ATRole;
-import nl.itvitae.attendancetracker.personnel.Personnel;
-import nl.itvitae.attendancetracker.personnel.PersonnelService;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import nl.itvitae.attendancetracker.student.StudentRepository;
+import nl.itvitae.attendancetracker.worker.Worker;
+import nl.itvitae.attendancetracker.worker.WorkerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,7 @@ public class Seeder implements CommandLineRunner {
 
     private final AttendanceRegistrationService attendanceRegistrationService;
 
-    private final PersonnelService personnelService;
+    private final WorkerService workerService;
 
     private final ScheduledClassRepository scheduledClassRepository;
 
@@ -54,12 +53,13 @@ public class Seeder implements CommandLineRunner {
             studentRepository.saveAll(List.of(
                     arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
-            var wubbo = personnelService.save("Wubbo", "Wubbo", ATRole.TEACHER);
-            var niels = personnelService.save("Niels", "Niels", ATRole.TEACHER);
-            var juan = personnelService.save("Juan", "Juan", ATRole.ADMIN);
-            var nouchka = personnelService.save("Nouchka", "Nouchka", ATRole.ADMIN);
-            var dan = personnelService.save("Dan", "Dan", ATRole.TEACHER);
-            var chantal = personnelService.save("Chantal", "Chantal", ATRole.ADMIN);
+            var wubbo = workerService.createRegisteringTeacher("Wubbo", "Wubbo").orElseThrow();
+            var niels = workerService.createRegisteringTeacher("Niels", "Niels").orElseThrow();
+            var juan = workerService.createAdmin("Juan", "Juan").orElseThrow();
+            var nouchka = workerService.createAdmin("Nouchka", "Nouchka");
+            var chantal = workerService.createAdmin("Chantal", "Chantal");
+
+            var dan = workerService.createScheduledTeacher("Dan").orElseThrow();
 
             var scheduledDate = LocalDate.now();
             var javaClass = new ScheduledClass(java, wubbo, scheduledDate);
@@ -71,7 +71,7 @@ public class Seeder implements CommandLineRunner {
             var basAttendance = new AttendanceRegistration(bas, scheduledDate, wubbo, AttendanceStatus.LATE, "10:30 (trein)");
             //var zebeAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
             var celiasAttendance = new AttendanceRegistration(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
-            var davidsAttendance = new AttendanceRegistration(david, scheduledDate, dan, AttendanceStatus.PRESENT);
+            var davidsAttendance = new AttendanceRegistration(david, scheduledDate, juan, AttendanceStatus.PRESENT);
             var eduardsAttendance = new AttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
             var filippasAttendance = new AttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
             attendanceRegistrationService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
@@ -83,7 +83,8 @@ public class Seeder implements CommandLineRunner {
         }
     }
 
-    private void createHistory(Group group, int days, Personnel teacher, Personnel registrar) {
+
+    private void createHistory(Group group, int days, Worker teacher, Worker registrar) {
         var today = LocalDate.now().minusDays(1);
         var nextDaysPerformance = new HashMap<Student, AttendanceRegistration>();
         for (Student student : group.getMembers()) {
@@ -107,7 +108,7 @@ public class Seeder implements CommandLineRunner {
     private AttendanceRegistration getNewAttendance(
             Student student,
             LocalDate dateToAssess,
-            Personnel registrar,
+            Worker registrar,
             AttendanceRegistration currentAttendanceRegistration) {
         if (rand.nextInt(100) < 70)
             return new AttendanceRegistration(student, dateToAssess, registrar, currentAttendanceRegistration.getStatus(), currentAttendanceRegistration.getNote());

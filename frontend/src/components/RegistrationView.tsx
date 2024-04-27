@@ -32,7 +32,7 @@ const RegistrationView = () => {
       return;
     }
     axios
-      .post(`${BASE_URL}/personnel/register`, {
+      .post(`${BASE_URL}/workers/register`, {
         invitationId,
         password,
       })

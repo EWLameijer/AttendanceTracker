@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nl.itvitae.attendancetracker.group.Group;
-import nl.itvitae.attendancetracker.teacher.Teacher;
+import nl.itvitae.attendancetracker.worker.Worker;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -21,11 +21,11 @@ public class ScheduledClass {
     private Group group;
 
     @ManyToOne
-    private Teacher teacher;
+    private Worker teacher;
 
     private LocalDate date;
 
-    public ScheduledClass(Group group, Teacher teacher, LocalDate date) {
+    public ScheduledClass(Group group, Worker teacher, LocalDate date) {
         this.group = group;
         this.teacher = teacher;
         this.date = date;

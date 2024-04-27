@@ -18,7 +18,7 @@ const ScheduleView = () => {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/personnel/teachers`, {
+      .get(`${BASE_URL}/workers/teachers`, {
         auth: {
           username: user.username,
           password: user.password,

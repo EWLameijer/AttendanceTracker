@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker.personnel;
+package nl.itvitae.attendancetracker.worker;
 
 import java.util.UUID;
 

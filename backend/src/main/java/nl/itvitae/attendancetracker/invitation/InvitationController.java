@@ -1,8 +1,8 @@
 package nl.itvitae.attendancetracker.invitation;
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.personnel.ATRole;
-import nl.itvitae.attendancetracker.personnel.PersonnelDto;
+import nl.itvitae.attendancetracker.worker.ATRole;
+import nl.itvitae.attendancetracker.worker.WorkerDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +18,19 @@ public class InvitationController {
     private final InvitationService invitationService;
 
     @PostMapping("for-teacher")
-    public InvitationDto getTeacherOneTimePassword(@RequestBody PersonnelDto personnelDto) {
-        var name = personnelDto.name().trim();
-        invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, ATRole.TEACHER)));
+    public InvitationDto getTeacherOneTimePassword(@RequestBody WorkerDto workerDto) {
+        return getInvitation(workerDto, ATRole.TEACHER);
     }
 
     @PostMapping("for-coach-or-admin")
-    public InvitationDto getCoachOrAdminOneTimePassword(@RequestBody PersonnelDto personnelDto) {
-        var name = personnelDto.name().trim();
+    public InvitationDto getAdminOneTimePassword(@RequestBody WorkerDto workerDto) {
+        return getInvitation(workerDto, ATRole.ADMIN);
+    }
+
+    private InvitationDto getInvitation(WorkerDto workerDto, ATRole role) {
+        var name = workerDto.name().trim();
         invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, ATRole.ADMIN)));
+        return InvitationDto.from(invitationRepository.save(new Invitation(name, role)));
     }
 
     @GetMapping("{id}")

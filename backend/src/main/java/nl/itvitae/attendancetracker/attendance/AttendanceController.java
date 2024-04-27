@@ -4,14 +4,14 @@ package nl.itvitae.attendancetracker.attendance;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
-import nl.itvitae.attendancetracker.personnel.ATRole;
-import nl.itvitae.attendancetracker.personnel.Personnel;
-import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import nl.itvitae.attendancetracker.student.StudentRepository;
+import nl.itvitae.attendancetracker.worker.ATRole;
+import nl.itvitae.attendancetracker.worker.Worker;
+import nl.itvitae.attendancetracker.worker.WorkerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,11 +37,11 @@ public class AttendanceController {
 
     private final StudentRepository studentRepository;
 
-    private final PersonnelRepository personnelRepository;
-
     private final AttendanceVersionService attendanceVersionService;
 
     private final ScheduledClassRepository scheduledClassRepository;
+
+    private final WorkerService workerService;
 
     @GetMapping("by-student/{studentId}")
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
@@ -68,7 +68,7 @@ public class AttendanceController {
 
             var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(attendanceRegistrationDto.date()));
 
-            var possiblePersonnel = personnelRepository.findByNameIgnoringCase(attendanceRegistrationDto.personnelName());
+            var possiblePersonnel = workerService.findRegistrarByNameIgnoringCase(attendanceRegistrationDto.personnelName());
             if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
             var personnel = possiblePersonnel.get();
 
@@ -92,9 +92,9 @@ public class AttendanceController {
                 .filter(attendanceStatus -> attendanceStatus.name().equals(status)).findFirst().orElseThrow();
     }
 
-    private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
+    private ScheduledDateDto getDateDtoForDateAndRegistrar(String dateAsString, String nameOfRegistrar) {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
-        var personnel = personnelRepository.findByNameIgnoringCase(nameOfPersonnel)
+        var personnel = workerService.findRegistrarByNameIgnoringCase(nameOfRegistrar)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
         var classes = findClassesByDateAndPersonnel(chosenDate, personnel);
         var attendances = findAttendancesByDateAndPersonnel(chosenDate, personnel);
@@ -110,12 +110,12 @@ public class AttendanceController {
         return new ScheduledDateDto(attendanceVersion, previousDate, chosenDate, nextDate, scheduledclassDtos);
     }
 
-    private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Personnel personnel) {
+    private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Worker registrar) {
         var attendances = attendanceRegistrationRepository.findByAttendanceDate(date);
-        if (personnel.getRole() != ATRole.TEACHER) return attendances;
+        if (registrar.getRole() != ATRole.TEACHER) return attendances;
 
         // otherwise: find by teacher
-        var possibleScheduledClass = scheduledClassRepository.findByDateAndTeacher(date, personnel);
+        var possibleScheduledClass = scheduledClassRepository.findByDateAndTeacher(date, registrar);
         if (possibleScheduledClass.isEmpty()) return List.of();
         var students = possibleScheduledClass.get().getGroup().getMembers();
 
@@ -126,36 +126,36 @@ public class AttendanceController {
                 .toList();
     }
 
-    private Optional<LocalDate> findPreviousDate(LocalDate date, Personnel personnel) {
+    private Optional<LocalDate> findPreviousDate(LocalDate date, Worker registrar) {
         final int dayDirection = -1;
-        return findNearestDate(date, dayDirection, personnel);
+        return findNearestDate(date, dayDirection, registrar);
     }
 
-    private Optional<LocalDate> findNextDate(LocalDate date, Personnel personnel) {
+    private Optional<LocalDate> findNextDate(LocalDate date, Worker registrar) {
         final int dayDirection = 1;
-        return findNearestDate(date, dayDirection, personnel);
+        return findNearestDate(date, dayDirection, registrar);
     }
 
-    private Optional<LocalDate> findNearestDate(LocalDate originalDate, int dayDirection, Personnel personnel) {
+    private Optional<LocalDate> findNearestDate(LocalDate originalDate, int dayDirection, Worker registrar) {
         // students have at most a 3-week holiday: seeing no lessons after 4 weeks means the course started/stopped.
         // Asked Chantal 202312XX: In some cases, she may be willing to give me 4 weeks holiday; so 5 weeks it is
         final int maxDaysToInvestigate = 5 * 7;
         for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
-            var classes = findClassesByDateAndPersonnel(dateToInvestigate, personnel);
+            var classes = findClassesByDateAndPersonnel(dateToInvestigate, registrar);
             if (!classes.isEmpty()) return Optional.of(dateToInvestigate);
         }
         return Optional.empty();
     }
 
-    private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Personnel personnel) {
-        return personnel.getRole() == ATRole.TEACHER ?
-                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, personnel).stream().toList() :
+    private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Worker registrar) {
+        return registrar.getRole() == ATRole.TEACHER ?
+                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, registrar).stream().toList() :
                 scheduledClassRepository.findAllByDate(dateToInvestigate);
     }
 
-    private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Personnel personnel) {
-        var classes = findClassesByDateAndPersonnel(date, personnel);
+    private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Worker registrar) {
+        var classes = findClassesByDateAndPersonnel(date, registrar);
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var classDtos = new ArrayList<ScheduledClassDto>();
@@ -166,7 +166,7 @@ public class AttendanceController {
 
     @GetMapping("by-date/{dateAsString}")
     public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, Principal principal) {
-        return getDateDtoForDateAndPersonnel(dateAsString, principal.getName());
+        return getDateDtoForDateAndRegistrar(dateAsString, principal.getName());
     }
 
     private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {
