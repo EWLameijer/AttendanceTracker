@@ -9,7 +9,7 @@ import UserContext from "../context/UserContext";
 const ScheduleView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [teacherId, setTeacherId] = useState<string>();
+  const [teacherName, setTeacherName] = useState<string>();
   const [groupId, setGroupId] = useState<string>();
   const [dateAsString, setDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
@@ -26,7 +26,7 @@ const ScheduleView = () => {
       })
       .then((response) => {
         setTeachers(response.data);
-        setTeacherId(response.data[0].id);
+        setTeacherName(response.data[0].name);
       });
 
     axios
@@ -46,7 +46,7 @@ const ScheduleView = () => {
     setDateAsString(event.target.value);
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setTeacherId(event.target.value);
+    setTeacherName(event.target.value);
 
   const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setGroupId(event.target.value);
@@ -60,7 +60,7 @@ const ScheduleView = () => {
         `${BASE_URL}/scheduled-classes`,
         {
           groupId,
-          teacherId,
+          teacherName,
           dateAsString,
         },
         {
@@ -100,7 +100,7 @@ const ScheduleView = () => {
         Leraar:
         <select id="teacher" name="teacher" onChange={handleTeacherChange}>
           {teachers.map((teacher: Teacher, index: number) => (
-            <option key={index} value={teacher.id}>
+            <option key={index} value={teacher.name}>
               {teacher.name}
             </option>
           ))}
