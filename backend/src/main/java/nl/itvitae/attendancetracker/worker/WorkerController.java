@@ -37,7 +37,7 @@ public class WorkerController {
 
     @PostMapping("register")
     @Transactional
-    public ResponseEntity<WorkerDto> register(@RequestBody PersonnelRegistrationDto registration) {
+    public ResponseEntity<WorkerDto> register(@RequestBody RegistrarRegistrationDto registration) {
         if (!isStrongEnoughPassword(registration.password()))
             throw new BadRequestException("Password should be at least 16 characters, contain uppercase and lowercase letters, number(s) and punctuation");
         var possibleInvitation = invitationRepository.findById(registration.invitationId());

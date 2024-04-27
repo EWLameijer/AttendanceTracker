@@ -51,12 +51,12 @@ public class WorkerService {
     }
 
     public Optional<Worker> findRegistrarByNameIgnoringCase(String name) {
-        var possibleRegistrar = workerRepository.findByNameIgnoringCase(name);
+        var possibleRegistrar = findByNameIgnoringCase(name);
         return possibleRegistrar.isPresent() && possibleRegistrar.get().getPassword() != null ? possibleRegistrar : Optional.empty();
     }
 
     public boolean hasRegistrarByNameIgnoringCase(String name) {
-        var possibleRegistrar = workerRepository.findByNameIgnoringCase(name);
+        var possibleRegistrar = findByNameIgnoringCase(name);
         return possibleRegistrar.isPresent() && possibleRegistrar.get().getPassword() != null;
     }
 
