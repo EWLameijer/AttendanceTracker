@@ -30,6 +30,11 @@ public class WorkerController {
         return workerService.getTeachers();
     }
 
+    @PostMapping("create-teacher-for-scheduling")
+    public ResponseEntity<WorkerDto> createScheduledTeacher(@RequestBody WorkerDto workerDto) {
+        return workerService.createScheduledTeacher(workerDto.name()).map(WorkerDto::from).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+    }
+
     @PostMapping("register")
     @Transactional
     public ResponseEntity<WorkerDto> register(@RequestBody PersonnelRegistrationDto registration) {

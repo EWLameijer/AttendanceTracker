@@ -38,10 +38,39 @@ const PersonnelView = () => {
   const inviteCoachOrAdmin = () =>
     invite("coach of administrator", "coach-or-admin");
 
+  const createTeacherForScheduling = () => {
+    const name = prompt(`Geef de naam van de docent om aan te maken:`);
+    if (!name?.trim()) {
+      alert("Geen naam opgegeven!");
+      return;
+    }
+    axios
+      .post(
+        `${BASE_URL}/workers/create-teacher-for-scheduling`,
+        { name },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
+      .then(() => {
+        alert(`Docent aangemaakt!`);
+      })
+      .catch(() => {
+        alert("Er bestaat al een gebruiker met die naam");
+      });
+  };
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoachOrAdmin}>Nodig coach/admin uit</button>
+      <button onClick={createTeacherForScheduling}>
+        Maak nieuwe docent aan voor planning (maar maak nog geen account voor
+        die docent aan)
+      </button>
     </>
   );
 };
