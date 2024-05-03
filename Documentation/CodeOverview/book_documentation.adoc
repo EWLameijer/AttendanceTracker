@@ -1,0 +1,7 @@
+
+
+Frontend:
+
+Getting all attendances in all groups at a certain date: DatePicker
+    Getting all attendances in _one_ group at a certain date: GroupElement 
+        Getting the attendance of one person at a certain date: AttendanceDisplay

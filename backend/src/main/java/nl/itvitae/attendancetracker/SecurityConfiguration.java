@@ -3,6 +3,7 @@ package nl.itvitae.attendancetracker;
 import nl.itvitae.attendancetracker.personnel.ATRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -29,6 +30,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        var admin = ATRole.ADMIN.name();
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -37,8 +39,9 @@ public class SecurityConfiguration {
                                         "/students/**",
                                         "/groups/**",
                                         "/scheduled-classes/**",
-                                        "/personnel/teachers/**").hasRole(ATRole.ADMIN.name())
+                                        "/personnel/teachers/**").hasRole(admin)
                                 .requestMatchers("/attendances/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/invitations/**").hasRole(admin)
                                 .requestMatchers("/**").permitAll())
                 .build();
     }

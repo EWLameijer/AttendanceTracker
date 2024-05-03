@@ -20,7 +20,6 @@ import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -34,7 +33,9 @@ public class AttendanceController {
 
     private final AttendanceRegistrationService attendanceRegistrationService;
 
-    private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
+    private final AttendanceRegistrationRepository attendanceRegistrationRepository;
+
+    private final AttendanceRepository attendanceRepository;
 
     private final StudentRepository studentRepository;
 
@@ -73,10 +74,25 @@ public class AttendanceController {
             if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
             var personnel = possiblePersonnel.get();
 
-            var status = attendanceRegistrationDto.status();
-            var attendanceRegistration = status.contains(":") ?
-                    new LateAttendanceRegistration(student, date, personnel, toLocalTime(status), attendanceRegistrationDto.note()) :
-                    new TypeOfAttendanceRegistration(student, date, personnel, toStatus(status), attendanceRegistrationDto.note());
+            var attendance = attendanceRepository.findByStudentAndDate(student, date).orElseThrow(
+                    () -> new IllegalArgumentException("Student does not follow lessons on this date"));
+
+            var previousRegistrationsByThisRegistrar = attendanceRegistrationRepository.findByAttendanceAndPersonnel(attendance, personnel);
+            var possibleMostRecentRegistrationByThisRegistrar = previousRegistrationsByThisRegistrar.stream().max(
+                    Comparator.comparing(AttendanceRegistration::getDateTime));
+
+            AttendanceRegistration attendanceRegistration;
+            var note = attendanceRegistrationDto.note();
+            var status = toStatus(attendanceRegistrationDto.status());
+            if (possibleMostRecentRegistrationByThisRegistrar.isPresent() &&
+                    possibleMostRecentRegistrationByThisRegistrar.get().getDateTime().isAfter(LocalDateTime.now().minusMinutes(1))) {
+                attendanceRegistration = possibleMostRecentRegistrationByThisRegistrar.get();
+                attendanceRegistration.setDateTime(LocalDateTime.now());
+                attendanceRegistration.setNote(note);
+                attendanceRegistration.setStatus(status);
+            } else
+                attendanceRegistration = new AttendanceRegistration(student, date, personnel, status, note);
+
             attendanceRegistrationService.save(attendanceRegistration);
             resultingRegistrations.add(attendanceRegistration);
         }
@@ -94,11 +110,6 @@ public class AttendanceController {
         return Arrays.stream(AttendanceStatus.values())
                 .filter(attendanceStatus -> attendanceStatus.name().equals(status)).findFirst().orElseThrow();
     }
-
-    private LocalTime toLocalTime(String status) {
-        return LocalTime.from(DateTimeFormatter.ISO_LOCAL_TIME.parse(status + ":00"));
-    }
-
 
     private ScheduledDateDto getDateDtoForDateAndPersonnel(String dateAsString, String nameOfPersonnel) {
         var chosenDate = parseLocalDateOrThrow(dateAsString);

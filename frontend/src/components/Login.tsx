@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../utils";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({ username: "", password: "" });
@@ -12,7 +13,7 @@ const Login = () => {
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     axios
-      .get("http://localhost:8080/personnel/login", {
+      .get(`${BASE_URL}/personnel/login`, {
         auth: {
           username: loginData.username,
           password: loginData.password,

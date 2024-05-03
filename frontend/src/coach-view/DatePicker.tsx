@@ -80,39 +80,41 @@ const DatePicker = () => {
 
   const nextLessonDay = () => loadDate(nextDate!);
 
-  return classes.length == 0 ? (
-    <></>
-  ) : (
-    <>
-      <h3>
-        <button onClick={previousLessonDay} disabled={!previousDate}>
-          Vorige lesdag
-        </button>
-        {capitalize(getDisplayedDay().toLocaleDateString("nl-NL", dateOptions))}
-        <button onClick={nextLessonDay} disabled={!nextDate}>
-          Volgende lesdag
-        </button>
-      </h3>
-      {user.isTeacher() ? (
-        <GroupElement
-          chosenClass={classes[0]}
-          dateAsString={toYYYYMMDD(lastDate)}
-        />
-      ) : (
-        <ol>
-          {classes
-            .sort((a, b) => a.groupName.localeCompare(b.groupName))
-            .map((currentClass) => (
-              <li key={currentClass.groupName}>
-                <GroupElement
-                  chosenClass={currentClass}
-                  dateAsString={toYYYYMMDD(lastDate)}
-                />
-              </li>
-            ))}
-        </ol>
-      )}
-    </>
+  return (
+    classes.length > 0 && (
+      <>
+        <h3>
+          <button onClick={previousLessonDay} disabled={!previousDate}>
+            Vorige lesdag
+          </button>
+          {capitalize(
+            getDisplayedDay().toLocaleDateString("nl-NL", dateOptions)
+          )}
+          <button onClick={nextLessonDay} disabled={!nextDate}>
+            Volgende lesdag
+          </button>
+        </h3>
+        {user.isTeacher() ? (
+          <GroupElement
+            chosenClass={classes[0]}
+            dateAsString={toYYYYMMDD(lastDate)}
+          />
+        ) : (
+          <ol>
+            {classes
+              .sort((a, b) => a.groupName.localeCompare(b.groupName))
+              .map((currentClass) => (
+                <li key={currentClass.groupName}>
+                  <GroupElement
+                    chosenClass={currentClass}
+                    dateAsString={toYYYYMMDD(lastDate)}
+                  />
+                </li>
+              ))}
+          </ol>
+        )}
+      </>
+    )
   );
 };
 
