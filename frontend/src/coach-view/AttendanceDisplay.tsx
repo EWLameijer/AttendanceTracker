@@ -1,38 +1,34 @@
-import { useContext } from "react";
-import {
-  Attendance,
-  Status,
-  isUnsaved,
-  translateAttendanceStatus,
-} from "../Class.ts";
+import { useContext, useEffect, useState } from "react";
+import { Attendance, Status, translateAttendanceStatus } from "../Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
 import UserContext from "../context/UserContext.ts";
 
+let currentTimer: number | undefined = undefined;
+
 const AttendanceDisplay = (props: {
   attendance: Attendance;
-  updateAttendance: (attendances: Attendance[]) => void;
-  saveAttendances: (attendance: Attendance[]) => void;
+  saveIfModified: (attendance: Attendance) => void;
 }) => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
-  const submit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    props.saveAttendances([props.attendance]);
-  };
+  const [currentRegistration, setCurrentRegistration] = useState({
+    note: props.attendance.note,
+    status: props.attendance.status,
+  });
+
+  // need useEffect else a teacher setting all as present won't work!
+  useEffect(() => {
+    setCurrentRegistration({
+      note: props.attendance.note,
+      status: props.attendance.status,
+    });
+  }, [props.attendance.note, props.attendance.status]);
 
   const showHistory = () =>
     navigate(`/students/${props.attendance.studentName}`);
-
-  const updateNotes = (event: React.FormEvent<HTMLInputElement>) => {
-    const newAttendance: Attendance = {
-      ...props.attendance,
-      note: event.currentTarget.value,
-    };
-    props.updateAttendance([newAttendance]);
-  };
 
   const getAttendanceStyle = (status: string) => attendanceStyle.get(status);
 
@@ -45,14 +41,10 @@ const AttendanceDisplay = (props: {
     [Status.SICK, "input-attendance-sick"],
   ]);
 
-  const updateAttendanceType = (
-    event: React.ChangeEvent<HTMLSelectElement>
+  const saveIfModifiedAndEnterPressed = (
+    event: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    const newAttendance = {
-      ...props.attendance,
-      status: event.currentTarget.value,
-    };
-    props.updateAttendance([newAttendance]);
+    if (event.key === "Enter") saveIfModified();
   };
 
   const sortedStatuses = Object.keys(Status)
@@ -79,41 +71,68 @@ const AttendanceDisplay = (props: {
         )})`
       : "");
 
+  const saveIfModified = () => saveRegistration(currentRegistration);
+
+  function saveRegistration(updatedRegistration: {
+    note: string | undefined;
+    status: string;
+  }) {
+    props.saveIfModified({
+      ...props.attendance,
+      ...updatedRegistration,
+    });
+  }
+
+  const updateNote = (event: React.ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(currentTimer);
+    const updatedRegistration = {
+      ...currentRegistration,
+      note: event.currentTarget.value,
+    };
+    currentTimer = setTimeout(
+      () => saveRegistration(updatedRegistration),
+      1000
+    );
+    setCurrentRegistration(updatedRegistration);
+  };
+
+  const updateStatus = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const updatedRegistration = {
+      ...currentRegistration,
+      status: event.currentTarget.value,
+    };
+    saveRegistration(updatedRegistration);
+    setCurrentRegistration(updatedRegistration);
+  };
+
   return (
     <li>
       {displayAttendance(props.attendance)}
       <div className="left-box">
-        <form onSubmit={submit}>
-          <select
-            value={props.attendance.status}
-            onChange={updateAttendanceType}
-            className={getAttendanceStyle(props.attendance.status)}
-          >
-            {sortedStatuses.map(([status, dutchTranslation]) => (
-              <option
-                key={status}
-                value={status}
-                className={getAttendanceStyle(status!)}
-              >
-                {dutchTranslation}
-              </option>
-            ))}
-          </select>
-          <input
-            value={props.attendance.note}
-            onChange={updateNotes}
-            placeholder="aantekeningen"
-          />
-          <input
-            type="submit"
-            disabled={!isUnsaved(props.attendance)}
-            value="Opslaan"
-          ></input>
-        </form>
-        {!user.isTeacher() ? (
+        <select
+          value={currentRegistration.status}
+          onChange={updateStatus}
+          className={getAttendanceStyle(currentRegistration.status)}
+        >
+          {sortedStatuses.map(([status, dutchTranslation]) => (
+            <option
+              key={status}
+              value={status}
+              className={getAttendanceStyle(status)}
+            >
+              {dutchTranslation}
+            </option>
+          ))}
+        </select>
+        <input
+          value={currentRegistration.note}
+          onChange={updateNote}
+          placeholder="aantekeningen"
+          disabled={currentRegistration.status === Status.NOT_REGISTERED_YET}
+          onKeyDown={saveIfModifiedAndEnterPressed}
+        />
+        {!user.isTeacher() && (
           <button onClick={showHistory}>Geschiedenis</button>
-        ) : (
-          <></>
         )}
       </div>
     </li>

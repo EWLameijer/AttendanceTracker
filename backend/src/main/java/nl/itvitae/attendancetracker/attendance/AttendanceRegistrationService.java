@@ -11,7 +11,7 @@ public class AttendanceRegistrationService {
 
     private final AttendanceRepository attendanceRepository;
 
-    private final AttendanceRegistrationRepository<AttendanceRegistration> attendanceRegistrationRepository;
+    private final AttendanceRegistrationRepository attendanceRegistrationRepository;
 
     public void saveAll(List<AttendanceRegistration> attendanceRegistrations) {
         for (AttendanceRegistration attendanceRegistration : attendanceRegistrations) {

@@ -14,6 +14,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class AttendanceRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

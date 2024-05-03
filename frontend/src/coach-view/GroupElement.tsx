@@ -1,12 +1,5 @@
 import axios from "axios";
-import {
-  Attendance,
-  Class,
-  Status,
-  addExtraData,
-  isUnsaved,
-  unsavedAttendancesExist,
-} from "../Class.ts";
+import { Attendance, Class, Status, addExtraData } from "../Class.ts";
 import { BASE_URL } from "../utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
 import { useContext, useEffect, useState } from "react";
@@ -17,7 +10,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass]);
   const user = useContext(UserContext);
 
-  const updateAttendance = (updatedAttendances: Attendance[]) => {
+  const updateAttendances = (updatedAttendances: Attendance[]) => {
     const newAttendances = [...chosenClass.attendances];
     for (const updatedAttendance of updatedAttendances) {
       const studentIndex = chosenClass.attendances.findIndex(
@@ -28,7 +21,18 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
     setChosenClass({ ...chosenClass!, attendances: newAttendances });
   };
 
-  const saveAttendances = (attendances: Attendance[]) => {
+  const isUpdated = (attendance: Attendance) => {
+    const originalAttendance = chosenClass.attendances.find(
+      (savedAttendance) =>
+        savedAttendance.studentName === attendance.studentName
+    )!;
+    return (
+      attendance.note !== originalAttendance.note ||
+      attendance.status !== originalAttendance.status
+    );
+  };
+
+  const saveModifiedAttendances = (attendances: Attendance[]) => {
     if (
       attendances.some(
         (attendance) => attendance.status == Status.NOT_REGISTERED_YET
@@ -36,7 +40,11 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
     )
       return;
 
-    const formattedAttendances = attendances.map((attendance) => {
+    const updatedAttendances = attendances.filter(isUpdated);
+
+    if (updatedAttendances.length == 0) return;
+
+    const formattedAttendances = updatedAttendances.map((attendance) => {
       const newAttendance: Attendance = {
         studentName: attendance.studentName,
         status: attendance.status,
@@ -57,27 +65,17 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
         const extendedAttendances = basicAttendances.map((attendance) =>
           addExtraData(attendance)
         );
-        updateAttendance(extendedAttendances);
+        updateAttendances(extendedAttendances);
       });
   };
 
-  const setUnregisteredAsPresent = (attendance: Attendance): Attendance => {
-    const newAttendance = { ...attendance };
-    if (newAttendance.savedStatus === Status.NOT_REGISTERED_YET)
-      newAttendance.status = Status.PRESENT;
-    return newAttendance;
-  };
-
-  const saveAllNewentries = () =>
-    saveAttendances(
-      chosenClass.attendances.filter((attendance) => isUnsaved(attendance))
-    );
-
   const setAllUnregisteredAsPresent = () => {
-    const newAttendances = chosenClass!.attendances.map((attendance) =>
-      setUnregisteredAsPresent(attendance)
-    );
-    setChosenClass({ ...chosenClass!, attendances: newAttendances });
+    const newAttendances = chosenClass!.attendances
+      .filter(
+        (attendance) => attendance.savedStatus === Status.NOT_REGISTERED_YET
+      )
+      .map((attendance) => ({ ...attendance, status: Status.PRESENT }));
+    saveModifiedAttendances(newAttendances);
   };
 
   const unregisteredAttendancesExist = () =>
@@ -108,21 +106,12 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
             <AttendanceDisplay
               key={attendance.studentName}
               attendance={attendance}
-              updateAttendance={updateAttendance}
-              saveAttendances={saveAttendances}
+              saveIfModified={(attendance) =>
+                saveModifiedAttendances([attendance])
+              }
             />
           ))}
       </ol>
-      {user.isTeacher() ? (
-        <button
-          onClick={saveAllNewentries}
-          disabled={!unsavedAttendancesExist(chosenClass)}
-        >
-          Stuur alle nieuwe registraties door
-        </button>
-      ) : (
-        <></>
-      )}
     </>
   );
 };
