@@ -27,7 +27,7 @@ const ScheduleView = () => {
   );
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
-  const dayTeacher = ["", "", "", "", ""];
+  const [dayTeacher, setDayTeacher] = useState(["", "", "", "", ""]);
   const user = useContext(UserContext);
 
   useEffect(() => {
@@ -69,8 +69,9 @@ const ScheduleView = () => {
     teacherId: string,
     isActive: boolean
   ) => {
-    if (isActive) dayTeacher[day] = teacherId;
-    else dayTeacher[day] = "";
+    const tempArray = [...dayTeacher];
+    tempArray[day] = isActive ? teacherId : "";
+    setDayTeacher(tempArray);
   };
 
   const createDayTeachers = weekdays.map((value, index) => (
@@ -112,7 +113,6 @@ const ScheduleView = () => {
     setClasses(classesInSelectedPeriod);
     console.log("Initial period:");
     console.table(classesInSelectedPeriod);
-    // Bug: The button resets dayTeacher[] if clicked twice
   };
 
   const handleExcludeStartDateChange = (
@@ -129,7 +129,7 @@ const ScheduleView = () => {
     } else {
       const dateToCheck = new Date(excludeStartDateAsString);
       const endDate = new Date(excludeEndDateAsString);
-      const listOfClasses = classes;
+      const listOfClasses = [...classes];
 
       while (dateToCheck <= endDate) {
         const index = listOfClasses
@@ -159,9 +159,7 @@ const ScheduleView = () => {
     axios
       .post<ScheduledClassInputDto[]>(
         `${BASE_URL}/scheduled-classes`,
-        {
-          classes,
-        },
+        classes,
         {
           auth: {
             username: user.username,
@@ -186,20 +184,6 @@ const ScheduleView = () => {
   return (
     teachers.length > 0 && (
       <form>
-        <p>To do:</p>
-        <ul>
-          <li>Fix bug of generate list button</li>
-          <li>Fix text area updating on pruned dates</li>
-          <li>
-            Refactor api to accept list of ScheduledClass or something. Ran into
-            an issue. The foreach in java runs "until done or it hits an
-            exception". Duplicate entry is exception. Keep API as single entry
-            save?
-          </li>
-          <li>Do something about layout?</li>
-          <li>Clean up code</li>
-        </ul>
-
         <h3>Voeg een nieuwe les toe:</h3>
 
         <div>
