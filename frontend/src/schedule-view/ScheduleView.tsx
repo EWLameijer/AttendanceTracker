@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
-import { ScheduledClass } from "./ScheduledClass";
+import { ScheduledClassInputDto } from "./ScheduledClass";
 import UserContext from "../context/UserContext";
 import DayTeacher from "./DayTeacher";
 
@@ -22,8 +22,8 @@ const ScheduleView = () => {
   const [excludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
     toYYYYMMDD(new Date())
   );
-  const [classes, setClasses] = useState<ScheduledClass[]>(
-    new Array<ScheduledClass>()
+  const [classes, setClasses] = useState<ScheduledClassInputDto[]>(
+    new Array<ScheduledClassInputDto>()
   );
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
@@ -83,22 +83,24 @@ const ScheduleView = () => {
     />
   ));
 
-  const generate = document.getElementById("genClasses");
-  generate?.addEventListener("click", (event) => event.preventDefault());
-  const exclude = document.getElementById("excludeClasses");
-  exclude?.addEventListener("click", (event) => event.preventDefault());
-  const submit = document.getElementById("submitClasses");
-  submit?.addEventListener("click", (event) => event.preventDefault());
+  document
+    .getElementById("genClasses")
+    ?.addEventListener("click", (event) => event.preventDefault());
+  document
+    .getElementById("excludeClasses")
+    ?.addEventListener("click", (event) => event.preventDefault());
+  document
+    .getElementById("submitClasses")
+    ?.addEventListener("click", (event) => event.preventDefault());
 
   const generateClasses = () => {
     const dateToCheck = new Date(startDateAsString);
     const endDate = new Date(endDateAsString);
-    const classesInSelectedPeriod: ScheduledClass[] = [];
+    const classesInSelectedPeriod: ScheduledClassInputDto[] = [];
 
     while (dateToCheck <= endDate) {
-      // dayTeacher[0..4] EQUALS monday..friday EQUALS getDay 1..5 -> This is why the getDay()-1 is here.
       if (dayTeacher[dateToCheck.getDay() - 1]) {
-        const classToSchedule: ScheduledClass = {
+        const classToSchedule: ScheduledClassInputDto = {
           groupId: groupId,
           teacherId: dayTeacher[dateToCheck.getDay() - 1],
           dateAsString: toYYYYMMDD(dateToCheck),
@@ -146,13 +148,16 @@ const ScheduleView = () => {
     }
   };
 
+  // const classesToBeAdded: HTMLElement = document.getElementById("showClasses")!;
+  // classesToBeAdded!.textContent = "it works";
+
   const showClasses = classes?.map((value) => (
     <p key={value.dateAsString}>{value.dateAsString}</p>
   ));
 
   const submitClasses = () => {
     axios
-      .post<ScheduledClass>(
+      .post<ScheduledClassInputDto[]>(
         `${BASE_URL}/scheduled-classes`,
         {
           classes,
@@ -191,8 +196,8 @@ const ScheduleView = () => {
             exception". Duplicate entry is exception. Keep API as single entry
             save?
           </li>
+          <li>Do something about layout?</li>
           <li>Clean up code</li>
-          <li>Add tables?</li>
         </ul>
 
         <h3>Voeg een nieuwe les toe:</h3>
