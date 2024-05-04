@@ -161,12 +161,11 @@ const ScheduleView = () => {
         }
       )
       .then((response) => {
-        if (response.status == HttpStatusCode.Created)
-          alert("Nieuwe lessen toegevoegd");
+        if (response.status == HttpStatusCode.Created) alert(response.data);
       })
       .catch((error) => {
         if (error.response.status == HttpStatusCode.BadRequest) {
-          alert("FOUT: Een of meer lessen bestaan al");
+          alert(error.response.data);
         } else alert(error.response.status + " " + error.response.data);
       });
   };

@@ -40,10 +40,9 @@ public class ScheduledClassController {
                     new BadRequestException("Teacher not found"));
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
-                throw new BadRequestException(MessageFormat.format(
-                        "{0} unavailable on {1}",
-                        potentialClass.teacherId(),
-                        potentialClass.dateAsString()));
+                return new ResponseEntity<>(MessageFormat.format(
+                        "De geselecteerde leraar is niet beschikbaar op {0}.",
+                        potentialClass.dateAsString()), HttpStatus.BAD_REQUEST);
             }
 
             UUID possibleGroup = UUID.fromString((potentialClass.groupId()));
@@ -58,6 +57,6 @@ public class ScheduledClassController {
         }
 
         return new ResponseEntity<>(MessageFormat.format(
-                "{0} classes added", (long) validClasses.size()), HttpStatus.CREATED);
+                "{0} lessen toegevoegd.", (long) validClasses.size()), HttpStatus.CREATED);
     }
 }
