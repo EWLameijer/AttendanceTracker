@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
-import { ScheduledClassInputDto } from "./ScheduledClass";
+import { ScheduledClassInputDto } from "./ScheduledClassInputDto";
 import UserContext from "../context/UserContext";
 import DayTeacher from "./DayTeacher";
 
