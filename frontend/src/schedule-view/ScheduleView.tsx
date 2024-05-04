@@ -25,9 +25,9 @@ const ScheduleView = () => {
   const [classes, setClasses] = useState<ScheduledClassInputDto[]>(
     new Array<ScheduledClassInputDto>()
   );
+  const [dayTeacher, setDayTeacher] = useState(["", "", "", "", ""]);
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
-  const [dayTeacher, setDayTeacher] = useState(["", "", "", "", ""]);
   const user = useContext(UserContext);
 
   useEffect(() => {
@@ -111,8 +111,6 @@ const ScheduleView = () => {
       dateToCheck.setDate(dateToCheck.getDate() + 1);
     }
     setClasses(classesInSelectedPeriod);
-    console.log("Initial period:");
-    console.table(classesInSelectedPeriod);
   };
 
   const handleExcludeStartDateChange = (
@@ -143,13 +141,8 @@ const ScheduleView = () => {
         dateToCheck.setDate(dateToCheck.getDate() + 1);
       }
       setClasses(listOfClasses);
-      console.log("Result:");
-      console.table(listOfClasses);
     }
   };
-
-  // const classesToBeAdded: HTMLElement = document.getElementById("showClasses")!;
-  // classesToBeAdded!.textContent = "it works";
 
   const showClasses = classes?.map((value) => (
     <p key={value.dateAsString}>{value.dateAsString}</p>
@@ -169,14 +162,11 @@ const ScheduleView = () => {
       )
       .then((response) => {
         if (response.status == HttpStatusCode.Created)
-          alert("1 nieuwe les toegevoegd");
+          alert("Nieuwe lessen toegevoegd");
       })
       .catch((error) => {
         if (error.response.status == HttpStatusCode.BadRequest) {
-          console.log(error);
-          console.log(error.response);
-          console.log(error.response.status);
-          alert("FOUT: Deze leraar heeft al een groep op deze dag");
+          alert("FOUT: Een of meer lessen bestaan al");
         } else alert(error.response.status + " " + error.response.data);
       });
   };
