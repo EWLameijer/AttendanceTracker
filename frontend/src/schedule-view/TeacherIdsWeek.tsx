@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Teacher } from "./Teacher";
 
 const DayTeacher = (props: {
-  updateDayTeacher: (
+  updateTeacherIdForADay: (
     dayNumber: number,
     teacherId: string,
     isActive: boolean
@@ -16,7 +16,7 @@ const DayTeacher = (props: {
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setTeacherId(event.target.value);
-    props.updateDayTeacher(props.dayIndex, event.target.value, isChecked);
+    props.updateTeacherIdForADay(props.dayIndex, event.target.value, isChecked);
   };
 
   return (
@@ -29,7 +29,11 @@ const DayTeacher = (props: {
           onChange={() => {
             const newCheckState = !isChecked;
             setIsChecked(newCheckState);
-            props.updateDayTeacher(props.dayIndex, teacherId, newCheckState);
+            props.updateTeacherIdForADay(
+              props.dayIndex,
+              teacherId,
+              newCheckState
+            );
           }}
         />
         {props.day}

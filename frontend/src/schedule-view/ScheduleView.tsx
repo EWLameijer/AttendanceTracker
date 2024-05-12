@@ -5,7 +5,7 @@ import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
 import { ScheduledClassInputDto } from "./ScheduledClassInputDto";
 import UserContext from "../context/UserContext";
-import DayTeacher from "./DayTeacher";
+import TeacherIdsWeek from "./TeacherIdsWeek";
 
 const ScheduleView = () => {
   const today = toYYYYMMDD(new Date());
@@ -21,7 +21,7 @@ const ScheduleView = () => {
   const [classes, setClasses] = useState<ScheduledClassInputDto[]>(
     new Array<ScheduledClassInputDto>()
   );
-  const [dayTeacher, setDayTeacher] = useState(["", "", "", "", ""]);
+  const [teacherIdsWeek, setTeacherIdsWeek] = useState(["", "", "", "", ""]);
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const user = useContext(UserContext);
@@ -60,19 +60,19 @@ const ScheduleView = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEndDateAsString(event.target.value);
 
-  const updateDayTeacher = (
+  const updateTeacherIdForADay = (
     day: number,
     teacherId: string,
     isActive: boolean
   ) => {
-    const tempArray = [...dayTeacher];
-    tempArray[day] = isActive ? teacherId : "";
-    setDayTeacher(tempArray);
+    const localCopyOfTeacherIdsWeek = [...teacherIdsWeek];
+    localCopyOfTeacherIdsWeek[day] = isActive ? teacherId : "";
+    setTeacherIdsWeek(localCopyOfTeacherIdsWeek);
   };
 
-  const createDayTeachers = weekdays.map((value, index) => (
-    <DayTeacher
-      updateDayTeacher={updateDayTeacher}
+  const createTeacherIdsWeek = weekdays.map((value, index) => (
+    <TeacherIdsWeek
+      updateTeacherIdForADay={updateTeacherIdForADay}
       dayIndex={index}
       key={value}
       day={value}
@@ -96,10 +96,10 @@ const ScheduleView = () => {
     const classesInSelectedPeriod: ScheduledClassInputDto[] = [];
 
     while (dateToCheck <= endDate) {
-      if (dayTeacher[dateToCheck.getDay() - 1]) {
+      if (teacherIdsWeek[dateToCheck.getDay() - 1]) {
         const classToSchedule: ScheduledClassInputDto = {
           groupId: groupId,
-          teacherId: dayTeacher[dateToCheck.getDay() - 1],
+          teacherId: teacherIdsWeek[dateToCheck.getDay() - 1],
           dateAsString: toYYYYMMDD(dateToCheck),
         };
         classesInSelectedPeriod.push(classToSchedule);
@@ -200,7 +200,7 @@ const ScheduleView = () => {
 
         <div>
           <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-          {createDayTeachers}
+          {createTeacherIdsWeek}
         </div>
 
         <div>
