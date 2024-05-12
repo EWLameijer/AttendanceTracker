@@ -136,7 +136,9 @@ const ScheduleView = () => {
     <p key={value.dateAsString}>{value.dateAsString}</p>
   ));
 
-  const submitClasses = () => {
+  const submitClasses = (event: React.FormEvent) => {
+    event.preventDefault();
+
     axios
       .post<ScheduledClassInputDto[]>(
         `${BASE_URL}/scheduled-classes`,
@@ -165,7 +167,7 @@ const ScheduleView = () => {
 
         <div>
           <p>Kies een groep:</p>
-          <select id="group" onChange={handleGroupChange}>
+          <select onChange={handleGroupChange}>
             {groups.map((group: Group, index: number) => (
               <option key={index} value={group.id}>
                 {group.name}

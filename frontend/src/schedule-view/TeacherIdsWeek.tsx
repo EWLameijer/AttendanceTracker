@@ -38,7 +38,7 @@ const DayTeacher = (props: {
         />
         {props.day}
       </label>
-      <select name="teacher" onChange={handleTeacherChange}>
+      <select onChange={handleTeacherChange}>
         {props.teachers.map((teacher: Teacher, index: number) => (
           <option key={index} value={teacher.id}>
             {teacher.name}
