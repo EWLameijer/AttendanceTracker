@@ -54,9 +54,7 @@ public class ScheduledClassController {
             validClasses.add(new ScheduledClass(group.get(), teacher.get(), localDate));
         }
 
-        for (ScheduledClass validClass : validClasses) {
-            scheduledClassRepository.save(validClass);
-        }
+        scheduledClassRepository.saveAll(validClasses);
 
         return new ResponseEntity<>(MessageFormat.format(
                 "{0} lessen toegevoegd.", (long) validClasses.size()), HttpStatus.CREATED);
