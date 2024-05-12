@@ -8,20 +8,16 @@ import UserContext from "../context/UserContext";
 import DayTeacher from "./DayTeacher";
 
 const ScheduleView = () => {
+  const today = toYYYYMMDD(new Date());
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [groupId, setGroupId] = useState<string>("");
-  const [startDateAsString, setStartDateAsString] = useState<string>(
-    toYYYYMMDD(new Date())
-  );
-  const [endDateAsString, setEndDateAsString] = useState<string>(
-    toYYYYMMDD(new Date())
-  );
+  const [startDateAsString, setStartDateAsString] = useState<string>(today);
+  const [endDateAsString, setEndDateAsString] = useState<string>(today);
   const [excludeStartDateAsString, setExcludeStartDateAsString] =
-    useState<string>(toYYYYMMDD(new Date()));
-  const [excludeEndDateAsString, setExcludeEndDateAsString] = useState<string>(
-    toYYYYMMDD(new Date())
-  );
+    useState<string>(today);
+  const [excludeEndDateAsString, setExcludeEndDateAsString] =
+    useState<string>(today);
   const [classes, setClasses] = useState<ScheduledClassInputDto[]>(
     new Array<ScheduledClassInputDto>()
   );
