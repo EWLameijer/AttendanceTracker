@@ -70,12 +70,12 @@ const ScheduleView = () => {
     setTeacherIdsWeek(localCopyOfTeacherIdsWeek);
   };
 
-  const createTeacherIdsWeek = weekdays.map((value, index) => (
+  const createTeacherIdsWeek = weekdays.map((day, index) => (
     <TeacherIdsWeek
       updateTeacherIdForADay={updateTeacherIdForADay}
       dayIndex={index}
-      key={value}
-      day={value}
+      key={day}
+      day={day}
       teachers={teachers}
     />
   ));
