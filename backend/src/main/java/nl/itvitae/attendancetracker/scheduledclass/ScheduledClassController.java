@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
@@ -34,8 +33,7 @@ public class ScheduledClassController {
         for (ScheduledClassInputDto potentialClass : listNewClasses) {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
-            UUID possibleTeacher = potentialClass.teacherId();
-            var teacher = personnelRepository.findById(possibleTeacher);
+            var teacher = personnelRepository.findById(potentialClass.teacherId());
             if (teacher.isEmpty()) return new ResponseEntity<>("Leraar bestaat niet", HttpStatus.BAD_REQUEST);
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher.get()).isPresent()) {
@@ -44,8 +42,7 @@ public class ScheduledClassController {
                         potentialClass.dateAsString()), HttpStatus.BAD_REQUEST);
             }
 
-            UUID possibleGroup = potentialClass.groupId();
-            var group = groupRepository.findById(possibleGroup);
+            var group = groupRepository.findById(potentialClass.groupId());
             if (group.isEmpty()) return new ResponseEntity<>("Groep bestaat niet", HttpStatus.BAD_REQUEST);
 
             if (scheduledClassRepository.findByDateAndGroup(localDate, group.get()).isPresent()) {
