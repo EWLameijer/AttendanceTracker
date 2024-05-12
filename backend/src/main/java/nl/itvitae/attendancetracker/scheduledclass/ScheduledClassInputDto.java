@@ -1,7 +1,9 @@
 package nl.itvitae.attendancetracker.scheduledclass;
 
+import java.util.UUID;
+
 public record ScheduledClassInputDto(
-        String groupId,
-        String teacherId,
+        UUID groupId,
+        UUID teacherId,
         String dateAsString) {
 }

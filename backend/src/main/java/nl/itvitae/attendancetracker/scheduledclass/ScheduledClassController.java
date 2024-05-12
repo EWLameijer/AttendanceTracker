@@ -34,7 +34,7 @@ public class ScheduledClassController {
         for (ScheduledClassInputDto potentialClass : listNewClasses) {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
-            UUID possibleTeacher = UUID.fromString(potentialClass.teacherId());
+            UUID possibleTeacher = potentialClass.teacherId();
             var teacher = personnelRepository.findById(possibleTeacher);
             if (teacher.isEmpty()) return new ResponseEntity<>("Leraar bestaat niet", HttpStatus.BAD_REQUEST);
 
@@ -44,7 +44,7 @@ public class ScheduledClassController {
                         potentialClass.dateAsString()), HttpStatus.BAD_REQUEST);
             }
 
-            UUID possibleGroup = UUID.fromString((potentialClass.groupId()));
+            UUID possibleGroup = potentialClass.groupId();
             var group = groupRepository.findById(possibleGroup);
             if (group.isEmpty()) return new ResponseEntity<>("Groep bestaat niet", HttpStatus.BAD_REQUEST);
 
