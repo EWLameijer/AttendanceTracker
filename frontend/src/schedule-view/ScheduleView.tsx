@@ -80,17 +80,8 @@ const ScheduleView = () => {
     />
   ));
 
-  document
-    .getElementById("genClasses")
-    ?.addEventListener("click", (event) => event.preventDefault());
-  document
-    .getElementById("excludeClasses")
-    ?.addEventListener("click", (event) => event.preventDefault());
-  document
-    .getElementById("submitClasses")
-    ?.addEventListener("click", (event) => event.preventDefault());
-
-  const generateClasses = () => {
+  const generateClasses = (event: React.FormEvent) => {
+    event.preventDefault();
     const dateToCheck = new Date(startDateAsString);
     const endDate = new Date(endDateAsString);
     const classesInSelectedPeriod: ScheduledClassInputDto[] = [];
@@ -117,7 +108,8 @@ const ScheduleView = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setExcludeEndDateAsString(event.target.value);
 
-  const excludeClasses = () => {
+  const excludeClasses = (event: React.FormEvent) => {
+    event.preventDefault();
     if (classes.length == 0) {
       alert("Genereer eerst een periode");
     } else {
@@ -204,9 +196,7 @@ const ScheduleView = () => {
         </div>
 
         <div>
-          <button id="genClasses" onClick={generateClasses}>
-            Genereer periode
-          </button>
+          <button onClick={generateClasses}>Genereer periode</button>
         </div>
 
         <div>
@@ -228,15 +218,11 @@ const ScheduleView = () => {
         <div>{showClasses}</div>
 
         <div>
-          <button id="excludeClasses" onClick={excludeClasses}>
-            Verwijder selectie
-          </button>
+          <button onClick={excludeClasses}>Verwijder selectie</button>
         </div>
 
         <div>
-          <button id="submitClasses" onClick={submitClasses}>
-            Sla alle lessen op.
-          </button>
+          <button onClick={submitClasses}>Sla alle lessen op.</button>
         </div>
       </form>
     )
