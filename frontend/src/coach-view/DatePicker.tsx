@@ -5,6 +5,9 @@ import { Class, addExtraData } from "../Class";
 import GroupElement from "./GroupElement";
 import UserContext from "../context/UserContext";
 
+import Stomp from "stompjs";
+import SockJS from "sockjs-client";
+
 // there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
 let lastDate = new Date();
 
@@ -20,23 +23,25 @@ const DatePicker = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
+  const [message, setMessage] = useState<string | undefined>("");
+  const [stompClient, setStompClient] = useState<Stomp.Client | undefined>();
 
   const user = useContext(UserContext);
 
-  let latestUpdateProcessed = "";
+  // let latestUpdateProcessed = "";
 
-  const latestUpdateChecker = () =>
-    axios
-      .get<string>(`${BASE_URL}/attendances/latest-update`, {
-        auth: {
-          username: user.username,
-          password: user.password,
-        },
-      })
-      .then((response) => {
-        if (latestUpdateProcessed !== response.data)
-          loadDate(toYYYYMMDD(lastDate));
-      });
+  // const latestUpdateChecker = () =>
+  //   axios
+  //     .get<string>(`${BASE_URL}/attendances/latest-update`, {
+  //       auth: {
+  //         username: user.username,
+  //         password: user.password,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (latestUpdateProcessed !== response.data)
+  //         loadDate(toYYYYMMDD(lastDate));
+  //     });
 
   useEffect(() => {
     const dateAsString = toYYYYMMDD(lastDate);
@@ -45,9 +50,33 @@ const DatePicker = () => {
     // websockets would be nicer, but I could not get those working within reasonable time. This could be a future feature, though
     // with a maximum of about 9 users I don't expect that the server will need unreasonable amounts of resources, security or features
     // may be a more valuable issue.
-    const heartbeat = setInterval(latestUpdateChecker, 1000);
-    return () => clearInterval(heartbeat);
+    // const heartbeat = setInterval(latestUpdateChecker, 1000);
+    // return () => clearInterval(heartbeat);
+
+    const socket = new SockJS(`/ws`);
+    const client = Stomp.over(socket);
+
+    client.connect(
+      {},
+      () => {
+        client.subscribe("/topic/updates", (message) => {
+          setMessage(message.body);
+        });
+      },
+      function (error) {
+        alert("STOMP error " + error);
+      }
+    );
+
+    setStompClient(client);
   }, []);
+
+  const sendMessage = () => {
+    console.log(stompClient);
+    if (stompClient) {
+      stompClient.send("/app/broadcast", {}, "Hello World");
+    }
+  };
 
   function loadDate(dateAsString: string) {
     axios
@@ -59,7 +88,7 @@ const DatePicker = () => {
       })
       .then((response) => {
         const schedule = response.data;
-        latestUpdateProcessed = schedule.timeOfLatestUpdate;
+        // latestUpdateProcessed = schedule.timeOfLatestUpdate;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
         lastDate = new Date(Date.parse(schedule.currentDate));
@@ -83,6 +112,8 @@ const DatePicker = () => {
   return (
     classes.length > 0 && (
       <>
+        <h1>Message: {message}</h1>
+        <button onClick={sendMessage}>message</button>
         <h3>
           <button onClick={previousLessonDay} disabled={!previousDate}>
             Vorige lesdag

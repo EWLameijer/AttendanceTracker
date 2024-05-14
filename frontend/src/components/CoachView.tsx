@@ -17,6 +17,7 @@ const CoachView = () => {
           Beheer gebruikers
         </button>
       </>
+
       <DatePicker />
     </>
   );

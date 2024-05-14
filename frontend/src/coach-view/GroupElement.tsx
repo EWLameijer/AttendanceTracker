@@ -7,7 +7,9 @@ import UserContext from "../context/UserContext.ts";
 
 const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   const [chosenClass, setChosenClass] = useState(props.chosenClass);
+
   useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass]);
+
   const user = useContext(UserContext);
 
   const updateAttendances = (updatedAttendances: Attendance[]) => {
@@ -56,6 +58,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
       return newAttendance;
     });
 
+    console.log(formattedAttendances);
     axios
       .post<Attendance[]>(`${BASE_URL}/attendances`, formattedAttendances, {
         auth: { username: user.username, password: user.password },
@@ -90,12 +93,14 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
         {user.isTeacher() ? "" : ` (${chosenClass.teacherName})`}
       </h3>
       {user.isTeacher() ? (
-        <button
-          onClick={setAllUnregisteredAsPresent}
-          disabled={!unregisteredAttendancesExist()}
-        >
-          Zet alle ongeregistreerden op aanwezig
-        </button>
+        <>
+          <button
+            onClick={setAllUnregisteredAsPresent}
+            disabled={!unregisteredAttendancesExist()}
+          >
+            Zet alle ongeregistreerden op aanwezig
+          </button>
+        </>
       ) : (
         <></>
       )}
