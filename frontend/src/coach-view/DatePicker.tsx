@@ -53,20 +53,14 @@ const DatePicker = () => {
     // const heartbeat = setInterval(latestUpdateChecker, 1000);
     // return () => clearInterval(heartbeat);
 
-    const socket = new SockJS(`/ws`);
+    const socket = new SockJS(`${BASE_URL}/ws`);
     const client = Stomp.over(socket);
 
-    client.connect(
-      {},
-      () => {
-        client.subscribe("/topic/updates", (message) => {
-          setMessage(message.body);
-        });
-      },
-      function (error) {
-        alert("STOMP error " + error);
-      }
-    );
+    client.connect({}, () => {
+      client.subscribe("/topic/updates", (message) => {
+        setMessage(message.body);
+      });
+    });
 
     setStompClient(client);
   }, []);
