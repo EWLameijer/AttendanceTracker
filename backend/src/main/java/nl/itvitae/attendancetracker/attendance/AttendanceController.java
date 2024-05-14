@@ -4,6 +4,7 @@ package nl.itvitae.attendancetracker.attendance;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
 import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
@@ -45,6 +46,8 @@ public class AttendanceController {
 
     private final ScheduledClassRepository scheduledClassRepository;
 
+    private final GroupRepository groupRepository;
+
     @GetMapping("by-student/{studentId}")
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceStudentId(studentId);
@@ -74,8 +77,14 @@ public class AttendanceController {
             if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
             var personnel = possiblePersonnel.get();
 
-            var attendance = attendanceRepository.findByStudentAndDate(student, date).orElseThrow(
-                    () -> new IllegalArgumentException("Student does not follow lessons on this date"));
+            var group = groupRepository.findByMembersContaining(student).orElseThrow(
+                    () -> new IllegalArgumentException("Student is not member of a group"));
+            if (!scheduledClassRepository.existsByDateAndGroup(date, group)) {
+                throw new IllegalArgumentException("Student does not follow lessons on this date");
+            }
+
+            var possibleAttendance = attendanceRepository.findByStudentAndDate(student, date);
+            var attendance = possibleAttendance.orElse(attendanceRepository.save(new Attendance(student, date)));
 
             var previousRegistrationsByThisRegistrar = attendanceRegistrationRepository.findByAttendanceAndPersonnel(attendance, personnel);
             var possibleMostRecentRegistrationByThisRegistrar = previousRegistrationsByThisRegistrar.stream().max(
