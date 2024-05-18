@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Teacher } from "./Teacher";
 
-const DayTeacher = (props: {
+const TeacherIdsWeek = (props: {
   updateTeacherIdForADay: (
     dayNumber: number,
     teacherId: string,
@@ -48,4 +48,4 @@ const DayTeacher = (props: {
     </div>
   );
 };
-export default DayTeacher;
+export default TeacherIdsWeek;
