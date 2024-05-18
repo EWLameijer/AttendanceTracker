@@ -18,9 +18,7 @@ const ScheduleView = () => {
     useState<string>(today);
   const [excludeEndDateAsString, setExcludeEndDateAsString] =
     useState<string>(today);
-  const [classes, setClasses] = useState<ScheduledClassInputDto[]>(
-    new Array<ScheduledClassInputDto>()
-  );
+  const [classes, setClasses] = useState<ScheduledClassInputDto[]>([]);
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];

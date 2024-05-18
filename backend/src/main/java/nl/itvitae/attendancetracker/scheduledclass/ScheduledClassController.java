@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -37,18 +36,17 @@ public class ScheduledClassController {
             if (teacher.isEmpty()) return new ResponseEntity<>("Leraar bestaat niet", HttpStatus.BAD_REQUEST);
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher.get()).isPresent()) {
-                return new ResponseEntity<>(MessageFormat.format(
-                        "De geselecteerde leraar is niet beschikbaar op {0}.",
-                        potentialClass.dateAsString()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("De geselecteerde leraar is niet beschikbaar op " +
+                        potentialClass.dateAsString() + ".", HttpStatus.BAD_REQUEST);
             }
 
             var group = groupRepository.findById(potentialClass.groupId());
             if (group.isEmpty()) return new ResponseEntity<>("Groep bestaat niet", HttpStatus.BAD_REQUEST);
 
             if (scheduledClassRepository.findByDateAndGroup(localDate, group.get()).isPresent()) {
-                return new ResponseEntity<>(MessageFormat.format(
-                        "Deze groep heeft al een les op {0}.",
-                        potentialClass.dateAsString()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(
+                        "Deze groep heeft al een les op " + potentialClass.dateAsString() + ".",
+                        HttpStatus.BAD_REQUEST);
             }
 
             validClasses.add(new ScheduledClass(group.get(), teacher.get(), localDate));
@@ -56,7 +54,6 @@ public class ScheduledClassController {
 
         scheduledClassRepository.saveAll(validClasses);
 
-        return new ResponseEntity<>(MessageFormat.format(
-                "{0} lessen toegevoegd.", (long) validClasses.size()), HttpStatus.CREATED);
+        return new ResponseEntity<>((long) validClasses.size() + "lessen toegevoegd.", HttpStatus.CREATED);
     }
 }
