@@ -16,7 +16,11 @@ interface DateSchedule {
   classes: Class[];
 }
 
-const DatePicker = () => {
+const DatePicker = ({
+  showAllGroupsForTeacher,
+}: {
+  showAllGroupsForTeacher: boolean;
+}) => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
@@ -94,7 +98,7 @@ const DatePicker = () => {
             Volgende lesdag
           </button>
         </h3>
-        {user.isTeacher() ? (
+        {user.isTeacher() && showAllGroupsForTeacher == false ? (
           <GroupElement
             chosenClass={classes[0]}
             dateAsString={toYYYYMMDD(lastDate)}
