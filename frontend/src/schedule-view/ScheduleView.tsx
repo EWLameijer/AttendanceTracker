@@ -21,7 +21,7 @@ const ScheduleView = () => {
   const [classes, setClasses] = useState<ScheduledClassInputDto[]>(
     new Array<ScheduledClassInputDto>()
   );
-  const [teacherIdsWeek, setTeacherIdsWeek] = useState(["", "", "", "", ""]);
+  const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const user = useContext(UserContext);
