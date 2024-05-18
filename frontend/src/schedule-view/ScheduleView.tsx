@@ -124,7 +124,7 @@ const ScheduleView = () => {
           })
           .indexOf(toYYYYMMDD(dateToCheck));
         if (index > -1) {
-          listOfClasses?.splice(index, 1);
+          listOfClasses.splice(index, 1);
         }
         dateToCheck.setDate(dateToCheck.getDate() + 1);
       }
@@ -132,7 +132,7 @@ const ScheduleView = () => {
     }
   };
 
-  const showClasses = classes?.map((value) => (
+  const showClasses = classes.map((value) => (
     <p key={value.dateAsString}>{value.dateAsString}</p>
   ));
 
