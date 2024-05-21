@@ -11,10 +11,8 @@ services:
       - "5432:5432"
 
   attendancetracker-backend:
+    image: mennomuller/attendancetracker-backend
     container_name: attendancetracker-backend
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -24,3 +22,13 @@ services:
       - AT_CORS=http://localhost:5173
     depends_on:
       - psql-db
+
+  attendancetracker-frontend:
+    image: mennomuller/attendancetracker-frontend
+    container_name: attendancetracker-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8080
+    depends_on:
+      - attendancetracker-backend
