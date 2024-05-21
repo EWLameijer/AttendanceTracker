@@ -24,6 +24,14 @@ const ScheduleView = () => {
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const user = useContext(UserContext);
 
+  const dateRangeGenerator = function* (start: Date, end: Date, step = 1) {
+    const d = start;
+    while (d <= end) {
+      yield new Date(d);
+      d.setDate(d.getDate() + step);
+    }
+  };
+
   useEffect(() => {
     axios
       .get(`${BASE_URL}/personnel/teachers`, {
@@ -80,22 +88,20 @@ const ScheduleView = () => {
 
   const generateClasses = (event: React.FormEvent) => {
     event.preventDefault();
-    const dateToCheck = new Date(startDateAsString);
-    const endDate = new Date(endDateAsString);
-    const classesInSelectedPeriod: ScheduledClassInputDto[] = [];
 
-    while (dateToCheck <= endDate) {
-      if (teacherIdsWeek[dateToCheck.getDay() - 1]) {
-        const classToSchedule: ScheduledClassInputDto = {
-          groupId: groupId,
-          teacherId: teacherIdsWeek[dateToCheck.getDay() - 1],
-          dateAsString: toYYYYMMDD(dateToCheck),
-        };
-        classesInSelectedPeriod.push(classToSchedule);
-      }
-      dateToCheck.setDate(dateToCheck.getDate() + 1);
-    }
-    setClasses(classesInSelectedPeriod);
+    const scheduledClasses = [
+      ...dateRangeGenerator(
+        new Date(startDateAsString),
+        new Date(endDateAsString)
+      ),
+    ]
+      .filter((date) => teacherIdsWeek[date.getDay() - 1])
+      .map((date) => ({
+        groupId,
+        teacherId: teacherIdsWeek[date.getDay() - 1],
+        dateAsString: toYYYYMMDD(date),
+      }));
+    setClasses(scheduledClasses);
   };
 
   const handleExcludeStartDateChange = (
