@@ -153,7 +153,8 @@ const ScheduleView = () => {
       })
       .catch((error) => {
         if (error.response.status == HttpStatusCode.BadRequest) {
-          alert(error.response.data);
+          console.log(error);
+          alert(error.response.data.detail);
         } else alert(error.response.status + " " + error.response.data);
       });
   };
