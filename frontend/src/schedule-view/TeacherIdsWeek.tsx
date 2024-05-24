@@ -11,7 +11,7 @@ const TeacherIdsWeek = (props: {
   day: string;
   teachers: Teacher[];
 }) => {
-  const [teacherId, setTeacherId] = useState<string>(props.teachers[0].id);
+  const [teacherId, setTeacherId] = useState(props.teachers[0].id);
   const [isChecked, setIsChecked] = useState(false);
 
   const handleTeacherChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

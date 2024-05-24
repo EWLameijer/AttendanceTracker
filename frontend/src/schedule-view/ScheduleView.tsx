@@ -24,11 +24,11 @@ const ScheduleView = () => {
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const user = useContext(UserContext);
 
-  const dateRangeGenerator = function* (start: Date, end: Date, step = 1) {
+  const dateRangeGenerator = function* (start: Date, end: Date) {
     const d = start;
     while (d <= end) {
       yield new Date(d);
-      d.setDate(d.getDate() + step);
+      d.setDate(d.getDate() + 1);
     }
   };
 
@@ -117,22 +117,18 @@ const ScheduleView = () => {
     if (classes.length == 0) {
       alert("Genereer eerst een periode");
     } else {
-      const dateToCheck = new Date(excludeStartDateAsString);
-      const endDate = new Date(excludeEndDateAsString);
-      const listOfClasses = [...classes];
+      const startOfExcludedPeriod = new Date(excludeStartDateAsString);
+      const endOfExcludedPeriod = new Date(excludeEndDateAsString);
 
-      while (dateToCheck <= endDate) {
-        const index = listOfClasses
-          .map(function (e) {
-            return e.dateAsString;
-          })
-          .indexOf(toYYYYMMDD(dateToCheck));
-        if (index > -1) {
-          listOfClasses.splice(index, 1);
-        }
-        dateToCheck.setDate(dateToCheck.getDate() + 1);
-      }
-      setClasses(listOfClasses);
+      const excludedClassesAsStrings = [
+        ...dateRangeGenerator(startOfExcludedPeriod, endOfExcludedPeriod),
+      ].map(toYYYYMMDD);
+
+      const remainingClasses = [...classes].filter(
+        (classDto) => !excludedClassesAsStrings.includes(classDto.dateAsString)
+      );
+
+      setClasses(remainingClasses);
     }
   };
 
