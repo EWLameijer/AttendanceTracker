@@ -17,4 +17,6 @@ public interface ScheduledClassRepository extends CrudRepository<ScheduledClass,
     boolean existsByDateAndGroup(LocalDate date, Group group);
 
     Optional<ScheduledClass> findByDateAndTeacher(LocalDate date, Personnel teacher);
+
+    Optional<ScheduledClass> findByDateAndGroup(LocalDate date, Group group);
 }
