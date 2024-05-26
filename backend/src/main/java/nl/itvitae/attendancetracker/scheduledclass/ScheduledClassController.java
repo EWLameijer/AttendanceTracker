@@ -4,14 +4,18 @@ import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
@@ -26,21 +30,34 @@ public class ScheduledClassController {
     private final PersonnelRepository personnelRepository;
 
     @PostMapping("/scheduled-classes")
-    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto scheduledClassInputDto) {
-        var group = groupRepository.findById(scheduledClassInputDto.groupId()).orElseThrow(() ->
-                new BadRequestException("Group not found"));
+    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto[] listNewClasses,
+                                                       UriComponentsBuilder ucb) {
+        var validClasses = new ArrayList<ScheduledClass>();
 
-        var teacher = personnelRepository.findById(scheduledClassInputDto.teacherId()).orElseThrow(() ->
-                new BadRequestException("Teacher not found"));
+        for (ScheduledClassInputDto potentialClass : listNewClasses) {
+            LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
-        LocalDate localDate = parseLocalDateOrThrow(scheduledClassInputDto.dateAsString());
+            var teacher = personnelRepository.findById(potentialClass.teacherId())
+                    .orElseThrow(() -> new BadRequestException("Leraar bestaat niet"));
 
-        if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isEmpty()) {
-            scheduledClassRepository.save(new ScheduledClass(group, teacher, localDate));
+            if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
+                throw new BadRequestException("De geselecteerde leraar is niet beschikbaar op " +
+                        potentialClass.dateAsString() + ".");
+            }
 
-            return new ResponseEntity<>("New lesson added.", HttpStatus.CREATED);
+            var group = groupRepository.findById(potentialClass.groupId())
+                    .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
+
+            if (scheduledClassRepository.findByDateAndGroup(localDate, group).isPresent()) {
+                throw new BadRequestException("Deze groep heeft al een les op " + potentialClass.dateAsString() + ".");
+            }
+
+            validClasses.add(new ScheduledClass(group, teacher, localDate));
         }
 
-        throw new BadRequestException("Teacher already scheduled for that date.");
+        scheduledClassRepository.saveAll(validClasses);
+
+        URI uri = ucb.path("").buildAndExpand().toUri();
+        return ResponseEntity.created(uri).body(validClasses.size() + " lessen toegevoegd.");
     }
 }
