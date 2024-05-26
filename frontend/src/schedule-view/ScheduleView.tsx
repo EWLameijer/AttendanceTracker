@@ -25,7 +25,7 @@ const ScheduleView = () => {
   const user = useContext(UserContext);
 
   const dateRangeGenerator = function* (start: Date, end: Date) {
-    const d = start;
+    const d = new Date(start);
     while (d <= end) {
       yield new Date(d);
       d.setDate(d.getDate() + 1);
@@ -89,16 +89,18 @@ const ScheduleView = () => {
   const generateClasses = (event: React.FormEvent) => {
     event.preventDefault();
 
+    const dayIndex = (date: Date) => date.getDay() - 1;
+
     const scheduledClasses = [
       ...dateRangeGenerator(
         new Date(startDateAsString),
         new Date(endDateAsString)
       ),
     ]
-      .filter((date) => teacherIdsWeek[date.getDay() - 1])
+      .filter((date) => teacherIdsWeek[dayIndex(date)])
       .map((date) => ({
         groupId,
-        teacherId: teacherIdsWeek[date.getDay() - 1],
+        teacherId: teacherIdsWeek[dayIndex(date)],
         dateAsString: toYYYYMMDD(date),
       }));
     setClasses(scheduledClasses);
