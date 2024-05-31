@@ -14,7 +14,7 @@ const TeacherView = () => {
         <input type="checkbox" checked={showAll}></input>
         Toon alle groepen
       </p>
-      <DatePicker showAllGroupsForTeacher={showAll} />
+      <DatePicker />
     </>
   );
 };
