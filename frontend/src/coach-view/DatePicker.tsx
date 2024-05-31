@@ -17,9 +17,12 @@ interface DateSchedule {
 }
 
 const DatePicker = () => {
+  const [showAllGroups, setShowAllGroups] = useState<boolean>(false);
   const [classes, setClasses] = useState<Class[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
+
+  const showAllGroupsToggled = () => setShowAllGroups(!showAllGroups);
 
   const user = useContext(UserContext);
 
@@ -83,6 +86,14 @@ const DatePicker = () => {
   return (
     classes.length > 0 && (
       <>
+        <p>
+          <input
+            type="checkbox"
+            checked={showAllGroups}
+            onChange={showAllGroupsToggled}
+          ></input>
+          Toon alle groepen
+        </p>
         <h3>
           <button onClick={previousLessonDay} disabled={!previousDate}>
             Vorige lesdag
@@ -94,7 +105,7 @@ const DatePicker = () => {
             Volgende lesdag
           </button>
         </h3>
-        {user.isTeacher() ? (
+        {user.isTeacher() && !showAllGroups ? (
           <GroupElement
             chosenClass={classes[0]}
             dateAsString={toYYYYMMDD(lastDate)}
