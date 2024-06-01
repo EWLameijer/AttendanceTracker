@@ -175,7 +175,9 @@ const ScheduleView = () => {
         }
       )
       .then((response) => {
-        if (response.status == HttpStatusCode.Created) alert(response.data);
+        if (response.status == HttpStatusCode.Created)
+          alert(response.data.length + " lessen toegevoegd.");
+        setExistingClasses([...existingClasses, ...response.data]);
       })
       .catch((error) => {
         if (error.response.status == HttpStatusCode.BadRequest) {
@@ -187,7 +189,7 @@ const ScheduleView = () => {
 
   const handleDeleteClass = (sc: ScheduledClassInputDto) => {
     if (confirm(sc.dateAsString + " verwijderen?")) {
-      alert(sc.dateAsString + " is verwijderd");
+      alert(sc.dateAsString + " is verwijderd.");
     }
   };
 

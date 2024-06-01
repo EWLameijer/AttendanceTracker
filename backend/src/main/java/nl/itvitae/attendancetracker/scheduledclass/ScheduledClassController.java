@@ -27,20 +27,20 @@ public class ScheduledClassController {
     private final PersonnelRepository personnelRepository;
 
     @GetMapping("scheduled-classes/{id}")
-    public Iterable<ScheduledClassInputDto> getAllScheduledCLasses(@PathVariable UUID id) {
+    public Iterable<ScheduledClassDtoWithoutAttendance> getAllScheduledCLasses(@PathVariable UUID id) {
         var possibleGroup = groupRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
 
         return scheduledClassRepository.findAllByGroup(possibleGroup).stream()
-                .map(ScheduledClassInputDto::from).toList();
+                .map(ScheduledClassDtoWithoutAttendance::from).toList();
     }
 
     @PostMapping("/scheduled-classes")
-    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto[] listNewClasses,
-                                                       UriComponentsBuilder ucb) {
+    public ResponseEntity<ArrayList<ScheduledClassDtoWithoutAttendance>> createScheduledClass(@RequestBody ScheduledClassDtoWithoutAttendance[] listNewClasses,
+                                                                                              UriComponentsBuilder ucb) {
         var validClasses = new ArrayList<ScheduledClass>();
 
-        for (ScheduledClassInputDto potentialClass : listNewClasses) {
+        for (ScheduledClassDtoWithoutAttendance potentialClass : listNewClasses) {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
             var teacher = personnelRepository.findById(potentialClass.teacherId())
@@ -63,7 +63,14 @@ public class ScheduledClassController {
 
         scheduledClassRepository.saveAll(validClasses);
 
+        ArrayList<ScheduledClassDtoWithoutAttendance> addedClasses = new ArrayList<ScheduledClassDtoWithoutAttendance>();
+
+        for (ScheduledClass validClass : validClasses) {
+            addedClasses.add(ScheduledClassDtoWithoutAttendance.from(validClass));
+        }
+
         URI uri = ucb.path("").buildAndExpand().toUri();
-        return ResponseEntity.created(uri).body(validClasses.size() + " lessen toegevoegd.");
+
+        return ResponseEntity.created(uri).body(addedClasses);
     }
 }
