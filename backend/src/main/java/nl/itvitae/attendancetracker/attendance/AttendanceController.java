@@ -1,7 +1,6 @@
 package nl.itvitae.attendancetracker.attendance;
 
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistration;
@@ -59,7 +58,6 @@ public class AttendanceController {
                 .flatMap(Optional::stream).map(AttendanceRegistrationDto::from).toList();
     }
 
-    @Transactional
     @PostMapping
     public ResponseEntity<List<AttendanceRegistrationDto>> register(
             @RequestBody List<AttendanceRegistrationDto> attendanceRegistrationDtos,
@@ -69,7 +67,6 @@ public class AttendanceController {
         attendanceVersionService.update();
         return ResponseEntity.created(URI.create("")).body(attendanceRegistrationDtos);
     }
-
 
     @GetMapping("latest-update")
     public LocalDateTime getVersion() {
