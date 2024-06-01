@@ -1,5 +1,6 @@
-package nl.itvitae.attendancetracker.attendance;
+package nl.itvitae.attendancetracker.attendance.attendanceregistration;
 
+import nl.itvitae.attendancetracker.attendance.Attendance;
 import nl.itvitae.attendancetracker.personnel.Personnel;
 import org.springframework.data.repository.CrudRepository;
 

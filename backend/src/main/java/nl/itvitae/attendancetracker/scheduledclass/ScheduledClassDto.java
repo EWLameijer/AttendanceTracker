@@ -1,6 +1,6 @@
 package nl.itvitae.attendancetracker.scheduledclass;
 
-import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationDto;
+import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
 
 import java.util.List;
 

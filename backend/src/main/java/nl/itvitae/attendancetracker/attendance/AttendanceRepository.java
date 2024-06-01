@@ -7,6 +7,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-interface AttendanceRepository extends CrudRepository<Attendance, UUID> {
+public interface AttendanceRepository extends CrudRepository<Attendance, UUID> {
     Optional<Attendance> findByStudentAndDate(Student student, LocalDate date);
 }

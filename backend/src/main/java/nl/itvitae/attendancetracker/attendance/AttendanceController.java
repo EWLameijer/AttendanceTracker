@@ -4,7 +4,10 @@ package nl.itvitae.attendancetracker.attendance;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
-import nl.itvitae.attendancetracker.group.GroupRepository;
+import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistration;
+import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
+import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationRepository;
+import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationService;
 import nl.itvitae.attendancetracker.personnel.ATRole;
 import nl.itvitae.attendancetracker.personnel.Personnel;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
@@ -12,7 +15,6 @@ import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
-import nl.itvitae.attendancetracker.student.StudentRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -21,7 +23,6 @@ import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
@@ -38,7 +39,7 @@ public class AttendanceController {
 
     private final AttendanceRepository attendanceRepository;
 
-    private final StudentRepository studentRepository;
+    private final AttendanceService attendanceService;
 
     private final PersonnelRepository personnelRepository;
 
@@ -46,7 +47,6 @@ public class AttendanceController {
 
     private final ScheduledClassRepository scheduledClassRepository;
 
-    private final GroupRepository groupRepository;
 
     @GetMapping("by-student/{studentId}")
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
@@ -62,53 +62,14 @@ public class AttendanceController {
     @Transactional
     @PostMapping
     public ResponseEntity<List<AttendanceRegistrationDto>> register(
-            @RequestBody AttendanceRegistrationDto[] attendanceRegistrationDtos,
+            @RequestBody List<AttendanceRegistrationDto> attendanceRegistrationDtos,
             UriComponentsBuilder ucb
     ) {
-        var resultingRegistrations = new ArrayList<AttendanceRegistration>();
-        for (AttendanceRegistrationDto attendanceRegistrationDto : attendanceRegistrationDtos) {
-            var possibleStudent = studentRepository.findByNameIgnoringCase(attendanceRegistrationDto.studentName());
-            if (possibleStudent.isEmpty()) throw new IllegalArgumentException("No student with that name found!");
-            var student = possibleStudent.get();
-
-            var date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(attendanceRegistrationDto.date()));
-
-            var possiblePersonnel = personnelRepository.findByNameIgnoringCase(attendanceRegistrationDto.personnelName());
-            if (possiblePersonnel.isEmpty()) throw new IllegalArgumentException("Staff name not found");
-            var personnel = possiblePersonnel.get();
-
-            var group = groupRepository.findByMembersContaining(student).orElseThrow(
-                    () -> new IllegalArgumentException("Student is not member of a group"));
-            if (!scheduledClassRepository.existsByDateAndGroup(date, group)) {
-                throw new IllegalArgumentException("Student does not follow lessons on this date");
-            }
-
-            var possibleAttendance = attendanceRepository.findByStudentAndDate(student, date);
-            var attendance = possibleAttendance.orElse(attendanceRepository.save(new Attendance(student, date)));
-
-            var previousRegistrationsByThisRegistrar = attendanceRegistrationRepository.findByAttendanceAndPersonnel(attendance, personnel);
-            var possibleMostRecentRegistrationByThisRegistrar = previousRegistrationsByThisRegistrar.stream().max(
-                    Comparator.comparing(AttendanceRegistration::getDateTime));
-
-            AttendanceRegistration attendanceRegistration;
-            var note = attendanceRegistrationDto.note();
-            var status = toStatus(attendanceRegistrationDto.status());
-            if (possibleMostRecentRegistrationByThisRegistrar.isPresent() &&
-                    possibleMostRecentRegistrationByThisRegistrar.get().getDateTime().isAfter(LocalDateTime.now().minusMinutes(1))) {
-                attendanceRegistration = possibleMostRecentRegistrationByThisRegistrar.get();
-                attendanceRegistration.setDateTime(LocalDateTime.now());
-                attendanceRegistration.setNote(note);
-                attendanceRegistration.setStatus(status);
-            } else
-                attendanceRegistration = new AttendanceRegistration(student, date, personnel, status, note);
-
-            attendanceRegistrationService.save(attendanceRegistration);
-            resultingRegistrations.add(attendanceRegistration);
-        }
-        if (!resultingRegistrations.isEmpty()) attendanceVersionService.update();
-
-        return ResponseEntity.created(URI.create("")).body(resultingRegistrations.stream().map(AttendanceRegistrationDto::from).toList());
+        attendanceService.saveAll(attendanceRegistrationDtos);
+        attendanceVersionService.update();
+        return ResponseEntity.created(URI.create("")).body(attendanceRegistrationDtos);
     }
+
 
     @GetMapping("latest-update")
     public LocalDateTime getVersion() {

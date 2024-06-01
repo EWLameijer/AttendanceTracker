@@ -1,13 +1,13 @@
-package nl.itvitae.attendancetracker.attendance;
+package nl.itvitae.attendancetracker.attendance.attendanceregistration;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nl.itvitae.attendancetracker.attendance.Attendance;
+import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
 import nl.itvitae.attendancetracker.personnel.Personnel;
-import nl.itvitae.attendancetracker.student.Student;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -42,11 +42,17 @@ public class AttendanceRegistration {
         this.note = note;
     }
 
-    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status, String note) {
-        this(personnel, new Attendance(student, date), status, note);
+    public AttendanceRegistration(Attendance attendance, Personnel personnel, AttendanceStatus status, String note) {
+        this(personnel, attendance, status, note);
     }
 
-    public AttendanceRegistration(Student student, LocalDate date, Personnel personnel, AttendanceStatus status) {
-        this(personnel, new Attendance(student, date), status, null);
+    public AttendanceRegistration(Attendance attendance, Personnel personnel, AttendanceStatus status) {
+        this(personnel, attendance, status, null);
+    }
+
+    public void updateWith(AttendanceStatus newStatus, String newNote, LocalDateTime newTime) {
+        status = newStatus;
+        note = newNote;
+        dateTime = newTime;
     }
 }
