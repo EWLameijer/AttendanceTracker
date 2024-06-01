@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker.personnel;
+package nl.itvitae.attendancetracker.registrar;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,35 +15,35 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 @CrossOrigin("${at.cors}")
 @RequestMapping("personnel")
-public class PersonnelController {
-    private final PersonnelRepository personnelRepository;
+public class RegistrarController {
+    private final RegistrarRepository registrarRepository;
 
     private final InvitationRepository invitationRepository;
 
-    private final PersonnelService personnelService;
+    private final RegistrarService registrarService;
 
     @GetMapping("teachers")
-    public Iterable<PersonnelDto> getAllTeachers() {
-        return StreamSupport.stream(personnelRepository.findAllByRole(ATRole.TEACHER).spliterator(), false)
-                .map(PersonnelDto::from).toList();
+    public Iterable<RegistrarDto> getAllTeachers() {
+        return StreamSupport.stream(registrarRepository.findAllByRole(ATRole.TEACHER).spliterator(), false)
+                .map(RegistrarDto::from).toList();
     }
 
     @GetMapping("login")
-    public PersonnelDto login(Principal principal) {
-        return PersonnelDto.from(personnelRepository.findByNameIgnoringCase(principal.getName()).orElseThrow());
+    public RegistrarDto login(Principal principal) {
+        return RegistrarDto.from(registrarRepository.findByIdentityNameIgnoringCase(principal.getName()).orElseThrow());
     }
 
     @PostMapping("register")
     @Transactional
-    public ResponseEntity<PersonnelDto> register(@RequestBody PersonnelRegistrationDto registration) {
+    public ResponseEntity<RegistrarDto> register(@RequestBody RegistrarRegistrationDto registration) {
         if (!isStrongEnoughPassword(registration.password()))
             throw new BadRequestException("Password should be at least 16 characters, contain uppercase and lowercase letters, number(s) and punctuation");
         var possibleInvitation = invitationRepository.findById(registration.invitationId());
         if (possibleInvitation.isEmpty()) return ResponseEntity.notFound().build();
         var invitation = possibleInvitation.get();
-        personnelService.save(invitation.getName(), registration.password(), invitation.getRole());
+        registrarService.save(invitation.getName(), registration.password(), invitation.getRole());
         invitationRepository.deleteById(registration.invitationId());
-        return personnelRepository.findByNameIgnoringCase(invitation.getName()).map(PersonnelDto::from).map(ResponseEntity::ok).orElseThrow();
+        return registrarRepository.findByIdentityNameIgnoringCase(invitation.getName()).map(RegistrarDto::from).map(ResponseEntity::ok).orElseThrow();
     }
 
     private boolean isStrongEnoughPassword(String password) {

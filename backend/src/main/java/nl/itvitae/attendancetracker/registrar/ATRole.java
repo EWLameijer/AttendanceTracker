@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker.personnel;
+package nl.itvitae.attendancetracker.registrar;
 
 public enum ATRole {
     ADMIN, TEACHER;

@@ -1,7 +1,7 @@
 package nl.itvitae.attendancetracker.attendance.attendanceregistration;
 
 import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
-import nl.itvitae.attendancetracker.personnel.Personnel;
+import nl.itvitae.attendancetracker.registrar.Registrar;
 import nl.itvitae.attendancetracker.student.Student;
 
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ public record AttendanceRegistrationDto(
         String note
 ) {
     public static AttendanceRegistrationDto from(AttendanceRegistration attendanceRegistration) {
-        var by = attendanceRegistration.getPersonnel().getName();
+        var by = attendanceRegistration.getRegistrar().getIdentity().getName();
         var registrationTime = attendanceRegistration.getDateTime();
         var studentName = attendanceRegistration.getAttendance().getStudent().getName();
         var attendanceDate = attendanceRegistration.getAttendance().getDate().toString();
@@ -34,15 +34,15 @@ public record AttendanceRegistrationDto(
         );
     }
 
-    public static AttendanceRegistrationDto of(Student student, LocalDate date, Personnel personnel,
+    public static AttendanceRegistrationDto of(Student student, LocalDate date, Registrar registrar,
                                                AttendanceStatus status, String note) {
         return new AttendanceRegistrationDto(UUID.randomUUID(), student.getName(), date.toString(), status.name(),
-                personnel.getName(), LocalDateTime.now().toString(), note);
+                registrar.getIdentity().getName(), LocalDateTime.now().toString(), note);
     }
 
-    public static AttendanceRegistrationDto of(Student student, LocalDate date, Personnel personnel,
+    public static AttendanceRegistrationDto of(Student student, LocalDate date, Registrar registrar,
                                                AttendanceStatus status) {
         return new AttendanceRegistrationDto(UUID.randomUUID(), student.getName(), date.toString(), status.name(),
-                personnel.getName(), LocalDateTime.now().toString(), null);
+                registrar.getIdentity().getName(), LocalDateTime.now().toString(), null);
     }
 }

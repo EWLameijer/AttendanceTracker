@@ -1,7 +1,7 @@
 package nl.itvitae.attendancetracker.scheduledclass;
 
 import nl.itvitae.attendancetracker.group.Group;
-import nl.itvitae.attendancetracker.personnel.Personnel;
+import nl.itvitae.attendancetracker.teacher.Teacher;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ public interface ScheduledClassRepository extends CrudRepository<ScheduledClass,
 
     boolean existsByDateAndGroup(LocalDate date, Group group);
 
-    Optional<ScheduledClass> findByDateAndTeacher(LocalDate date, Personnel teacher);
+    Optional<ScheduledClass> findByDateAndTeacher(LocalDate date, Teacher teacher);
 
     Optional<ScheduledClass> findByDateAndGroup(LocalDate date, Group group);
 }

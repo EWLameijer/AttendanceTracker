@@ -6,13 +6,15 @@ import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.personnel.ATRole;
-import nl.itvitae.attendancetracker.personnel.Personnel;
-import nl.itvitae.attendancetracker.personnel.PersonnelService;
+import nl.itvitae.attendancetracker.registrar.ATRole;
+import nl.itvitae.attendancetracker.registrar.Registrar;
+import nl.itvitae.attendancetracker.registrar.RegistrarService;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import nl.itvitae.attendancetracker.student.StudentRepository;
+import nl.itvitae.attendancetracker.teacher.Teacher;
+import nl.itvitae.attendancetracker.teacher.TeacherService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -31,9 +33,10 @@ public class Seeder implements CommandLineRunner {
 
     private final AttendanceService attendanceService;
 
-    private final PersonnelService personnelService;
+    private final RegistrarService registrarService;
 
     private final ScheduledClassRepository scheduledClassRepository;
+    private final TeacherService teacherService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -54,36 +57,39 @@ public class Seeder implements CommandLineRunner {
             studentRepository.saveAll(List.of(
                     arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
-            var wubbo = personnelService.save("Wubbo", "Wubbo", ATRole.TEACHER);
-            var niels = personnelService.save("Niels", "Niels", ATRole.TEACHER);
-            var juan = personnelService.save("Juan", "Juan", ATRole.ADMIN);
-            var nouchka = personnelService.save("Nouchka", "Nouchka", ATRole.ADMIN);
-            var dan = personnelService.save("Dan", "Dan", ATRole.TEACHER);
-            var chantal = personnelService.save("Chantal", "Chantal", ATRole.ADMIN);
+            var wubboAsRegistrar = registrarService.save("Wubbo", "Wubbo", ATRole.TEACHER);
+            var nielsAsRegistrar = registrarService.save("Niels", "Niels", ATRole.TEACHER);
+            var juan = registrarService.save("Juan", "Juan", ATRole.ADMIN);
+            var nouchka = registrarService.save("Nouchka", "Nouchka", ATRole.ADMIN);
+            var dan = teacherService.save("Dan");
+            var chantal = registrarService.save("Chantal", "Chantal", ATRole.ADMIN);
+// TODO: MAAK DAN EXTERNAL
+            var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
+            var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 
             var scheduledDate = LocalDate.now();
-            var javaClass = new ScheduledClass(java, wubbo, scheduledDate);
-            var cyberClass = new ScheduledClass(cyber, niels, scheduledDate);
+            var javaClass = new ScheduledClass(java, wubboAsTeacher, scheduledDate);
+            var cyberClass = new ScheduledClass(cyber, nielsAsTeacher, scheduledDate);
             var dataClass = new ScheduledClass(data, dan, scheduledDate);
             scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
 
             //var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
-            var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubbo, AttendanceStatus.LATE, "10:30 (trein)");
+            var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubboAsRegistrar, AttendanceStatus.LATE, "10:30 (trein)");
             //var zebeAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
-            var celiasAttendance = AttendanceRegistrationDto.of(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
-            var davidsAttendance = AttendanceRegistrationDto.of(david, scheduledDate, dan, AttendanceStatus.PRESENT);
+            var celiasAttendance = AttendanceRegistrationDto.of(celia, scheduledDate, nielsAsRegistrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+            var davidsAttendance = AttendanceRegistrationDto.of(david, scheduledDate, juan, AttendanceStatus.PRESENT);
             var eduardsAttendance = AttendanceRegistrationDto.of(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
             var filippasAttendance = AttendanceRegistrationDto.of(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
             attendanceService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
-            createHistory(java, 90, wubbo, juan);
-            createHistory(cyber, 180, niels, juan);
+            createHistory(java, 90, wubboAsTeacher, juan);
+            createHistory(cyber, 180, nielsAsTeacher, juan);
             createHistory(data, 270, dan, juan);
             System.out.println("Students seeded!");
         }
     }
 
-    private void createHistory(Group group, int days, Personnel teacher, Personnel registrar) {
+    private void createHistory(Group group, int days, Teacher teacher, Registrar registrar) {
         var today = LocalDate.now().minusDays(1);
         var nextDaysPerformance = new HashMap<Student, AttendanceRegistrationDto>();
         for (Student student : group.getMembers()) {
@@ -107,7 +113,7 @@ public class Seeder implements CommandLineRunner {
     private AttendanceRegistrationDto getNewAttendance(
             Student student,
             LocalDate dateToAssess,
-            Personnel registrar,
+            Registrar registrar,
             AttendanceRegistrationDto currentAttendanceRegistration) {
         if (rand.nextInt(100) < 70)
             return AttendanceRegistrationDto.of(student, dateToAssess, registrar,

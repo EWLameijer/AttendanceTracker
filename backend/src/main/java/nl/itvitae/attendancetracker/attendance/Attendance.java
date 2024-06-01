@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistration;
-import nl.itvitae.attendancetracker.personnel.Personnel;
+import nl.itvitae.attendancetracker.registrar.Registrar;
 import nl.itvitae.attendancetracker.student.Student;
 
 import java.time.LocalDate;
@@ -32,8 +32,8 @@ public class Attendance {
         this.date = date;
     }
 
-    public Optional<AttendanceRegistration> getLatestRegistrationBy(Personnel registrar) {
-        return registrations.stream().filter(registration -> registration.getPersonnel().getId() == registrar.getId()).
+    public Optional<AttendanceRegistration> getLatestRegistrationBy(Registrar registrar) {
+        return registrations.stream().filter(registration -> registration.getRegistrar().getId() == registrar.getId()).
                 max(Comparator.comparing(AttendanceRegistration::getDateTime));
     }
 
