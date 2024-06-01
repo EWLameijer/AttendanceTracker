@@ -14,7 +14,7 @@ import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import nl.itvitae.attendancetracker.student.StudentRepository;
 import nl.itvitae.attendancetracker.teacher.Teacher;
-import nl.itvitae.attendancetracker.teacher.TeacherService;
+import nl.itvitae.attendancetracker.workeridentity.WorkerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +36,7 @@ public class Seeder implements CommandLineRunner {
     private final RegistrarService registrarService;
 
     private final ScheduledClassRepository scheduledClassRepository;
-    private final TeacherService teacherService;
+    private final WorkerService workerService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -57,13 +57,12 @@ public class Seeder implements CommandLineRunner {
             studentRepository.saveAll(List.of(
                     arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
-            var wubboAsRegistrar = registrarService.save("Wubbo", "Wubbo", ATRole.TEACHER);
-            var nielsAsRegistrar = registrarService.save("Niels", "Niels", ATRole.TEACHER);
-            var juan = registrarService.save("Juan", "Juan", ATRole.ADMIN);
-            var nouchka = registrarService.save("Nouchka", "Nouchka", ATRole.ADMIN);
-            var dan = teacherService.save("Dan");
-            var chantal = registrarService.save("Chantal", "Chantal", ATRole.ADMIN);
-// TODO: MAAK DAN EXTERNAL
+            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER);
+            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER);
+            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.ADMIN);
+            var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN);
+            var dan = workerService.saveExternalTeacher("Dan");
+            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.ADMIN);
             var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
             var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 

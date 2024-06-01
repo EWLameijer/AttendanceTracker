@@ -6,6 +6,7 @@ import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.invitation.InvitationRepository;
 import nl.itvitae.attendancetracker.teacher.TeacherDto;
 import nl.itvitae.attendancetracker.teacher.TeacherRepository;
+import nl.itvitae.attendancetracker.workeridentity.WorkerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class RegistrarController {
 
     private final InvitationRepository invitationRepository;
 
-    private final RegistrarService registrarService;
+    private final WorkerService workerService;
 
     private final TeacherRepository teacherRepository;
 
@@ -44,7 +45,7 @@ public class RegistrarController {
         var possibleInvitation = invitationRepository.findById(registration.invitationId());
         if (possibleInvitation.isEmpty()) return ResponseEntity.notFound().build();
         var invitation = possibleInvitation.get();
-        registrarService.save(invitation.getName(), registration.password(), invitation.getRole());
+        workerService.saveRegistrar(invitation.getName(), registration.password(), invitation.getRole());
         invitationRepository.deleteById(registration.invitationId());
         return registrarRepository.findByIdentityNameIgnoringCase(invitation.getName()).map(RegistrarDto::from).map(ResponseEntity::ok).orElseThrow();
     }

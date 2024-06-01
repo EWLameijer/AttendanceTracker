@@ -38,10 +38,36 @@ const PersonnelView = () => {
   const inviteCoachOrAdmin = () =>
     invite("coach of administrator", "coach-or-admin");
 
+  const addExternalTeacher = () => {
+    const name = prompt(
+      `Geef de naam van de externe docent om toe te voegen aan de lijst docenten die ingeroosterd kunnen worden:`
+    );
+    if (!name?.trim()) {
+      alert("Geen naam opgegeven!");
+      return;
+    }
+    axios
+      .post(
+        `${BASE_URL}/teachers`,
+        { name: name.trim() },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
+      .then(() => alert("Externe docent aangemaakt!"))
+      .catch(() => alert("Deze gebruiker bestaat al!"));
+  };
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoachOrAdmin}>Nodig coach/admin uit</button>
+      <button onClick={addExternalTeacher}>
+        Voeg externe docent toe die zich nog niet hoeft te registreren
+      </button>
     </>
   );
 };
