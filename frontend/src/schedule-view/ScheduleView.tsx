@@ -57,16 +57,11 @@ const ScheduleView = () => {
       .then((response) => {
         setGroups(response.data);
         setGroupId(response.data[0].id);
+        getExistingClassesForSelectedGroup(response.data[0].id);
       });
-
-    //TODO Load initially selected group's scheduled classes
   }, []);
 
-  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const id: string = event.target.value;
-
-    setGroupId(id);
-
+  const getExistingClassesForSelectedGroup = (id: string) => {
     axios
       .get(`${BASE_URL}/scheduled-classes/${id}`, {
         auth: {
@@ -77,6 +72,14 @@ const ScheduleView = () => {
       .then((response) => {
         setExistingClasses(response.data);
       });
+  };
+
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const id: string = event.target.value;
+
+    setGroupId(id);
+
+    getExistingClassesForSelectedGroup(id);
   };
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -262,7 +265,10 @@ const ScheduleView = () => {
                   </div>
                 </form>
               </td>
-              <td>{existingClasses.length}</td>
+              <td>
+                {existingClasses.length}
+                {}
+              </td>
             </tr>
           </tbody>
         </table>
