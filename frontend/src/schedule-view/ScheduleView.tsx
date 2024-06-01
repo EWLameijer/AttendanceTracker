@@ -160,13 +160,6 @@ const ScheduleView = () => {
     <p key={value.dateAsString}>{value.dateAsString}</p>
   ));
 
-  const showExistingClasses = existingClasses.map((value) => (
-    <p key={value.dateAsString}>
-      {value.dateAsString}
-      <button>X</button>
-    </p>
-  ));
-
   const submitClasses = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -191,6 +184,24 @@ const ScheduleView = () => {
         } else alert(error.response.status + " " + error.response.data);
       });
   };
+
+  const handleDeleteClass = (value: ScheduledClassInputDto) => {
+    if (confirm(value.dateAsString + " verwijderen?")) {
+      alert(value.dateAsString + " is verwijderd");
+    }
+  };
+
+  const showExistingClasses = existingClasses.map((value) => (
+    <p key={value.dateAsString}>
+      {value.dateAsString}
+      <button
+        value={value.dateAsString}
+        onClick={() => handleDeleteClass(value)}
+      >
+        X
+      </button>
+    </p>
+  ));
 
   return (
     //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
