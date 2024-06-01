@@ -156,8 +156,15 @@ const ScheduleView = () => {
     }
   };
 
-  const showClasses = classes.map((value) => (
+  const showClassesToAdd = classes.map((value) => (
     <p key={value.dateAsString}>{value.dateAsString}</p>
+  ));
+
+  const showExistingClasses = existingClasses.map((value) => (
+    <p key={value.dateAsString}>
+      {value.dateAsString}
+      <button>X</button>
+    </p>
   ));
 
   const submitClasses = (event: React.FormEvent) => {
@@ -254,7 +261,7 @@ const ScheduleView = () => {
                     ></input>
                   </div>
 
-                  <div>{showClasses}</div>
+                  <div>{showClassesToAdd}</div>
 
                   <div>
                     <button onClick={excludeClasses}>Verwijder selectie</button>
@@ -265,10 +272,7 @@ const ScheduleView = () => {
                   </div>
                 </form>
               </td>
-              <td>
-                {existingClasses.length}
-                {}
-              </td>
+              <td>{showExistingClasses}</td>
             </tr>
           </tbody>
         </table>
