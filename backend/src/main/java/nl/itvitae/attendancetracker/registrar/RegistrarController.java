@@ -4,12 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.invitation.InvitationRepository;
+import nl.itvitae.attendancetracker.teacher.TeacherDto;
+import nl.itvitae.attendancetracker.teacher.TeacherRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +24,11 @@ public class RegistrarController {
 
     private final RegistrarService registrarService;
 
+    private final TeacherRepository teacherRepository;
+
     @GetMapping("teachers")
-    public Iterable<RegistrarDto> getAllTeachers() {
-        return StreamSupport.stream(registrarRepository.findAllByRole(ATRole.TEACHER).spliterator(), false)
-                .map(RegistrarDto::from).toList();
+    public Stream<TeacherDto> getAllTeachers() {
+        return teacherRepository.findAll().stream().map(TeacherDto::from);
     }
 
     @GetMapping("login")

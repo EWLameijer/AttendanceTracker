@@ -41,9 +41,8 @@ public class AttendanceController {
     private final AttendanceVersionService attendanceVersionService;
 
     private final ScheduledClassRepository scheduledClassRepository;
-    
-    private final RegistrarService registrarService;
 
+    private final RegistrarService registrarService;
 
     @GetMapping("by-student/{studentId}")
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {

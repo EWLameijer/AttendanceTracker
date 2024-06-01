@@ -7,6 +7,7 @@ import nl.itvitae.attendancetracker.workeridentity.WorkerIdentity;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @NoArgsConstructor
 public class Teacher {
@@ -15,7 +16,6 @@ public class Teacher {
     private UUID id;
 
     @OneToOne
-    @Getter
     private WorkerIdentity identity;
 
     public Teacher(WorkerIdentity identity) {
