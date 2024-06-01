@@ -185,9 +185,9 @@ const ScheduleView = () => {
       });
   };
 
-  const handleDeleteClass = (value: ScheduledClassInputDto) => {
-    if (confirm(value.dateAsString + " verwijderen?")) {
-      alert(value.dateAsString + " is verwijderd");
+  const handleDeleteClass = (sc: ScheduledClassInputDto) => {
+    if (confirm(sc.dateAsString + " verwijderen?")) {
+      alert(sc.dateAsString + " is verwijderd");
     }
   };
 
