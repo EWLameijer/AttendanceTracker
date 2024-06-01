@@ -1,9 +1,9 @@
 package nl.itvitae.attendancetracker;
 
 import lombok.RequiredArgsConstructor;
-import nl.itvitae.attendancetracker.attendance.AttendanceRegistration;
-import nl.itvitae.attendancetracker.attendance.AttendanceRegistrationService;
+import nl.itvitae.attendancetracker.attendance.AttendanceService;
 import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
+import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.ATRole;
@@ -29,7 +29,7 @@ public class Seeder implements CommandLineRunner {
 
     private final GroupRepository groupRepository;
 
-    private final AttendanceRegistrationService attendanceRegistrationService;
+    private final AttendanceService attendanceService;
 
     private final PersonnelService personnelService;
 
@@ -68,13 +68,13 @@ public class Seeder implements CommandLineRunner {
             scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
 
             //var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
-            var basAttendance = new AttendanceRegistration(bas, scheduledDate, wubbo, AttendanceStatus.LATE, "10:30 (trein)");
+            var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubbo, AttendanceStatus.LATE, "10:30 (trein)");
             //var zebeAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
-            var celiasAttendance = new AttendanceRegistration(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
-            var davidsAttendance = new AttendanceRegistration(david, scheduledDate, dan, AttendanceStatus.PRESENT);
-            var eduardsAttendance = new AttendanceRegistration(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
-            var filippasAttendance = new AttendanceRegistration(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
-            attendanceRegistrationService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
+            var celiasAttendance = AttendanceRegistrationDto.of(celia, scheduledDate, niels, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+            var davidsAttendance = AttendanceRegistrationDto.of(david, scheduledDate, dan, AttendanceStatus.PRESENT);
+            var eduardsAttendance = AttendanceRegistrationDto.of(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
+            var filippasAttendance = AttendanceRegistrationDto.of(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
+            attendanceService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
             createHistory(java, 90, wubbo, juan);
             createHistory(cyber, 180, niels, juan);
@@ -85,18 +85,18 @@ public class Seeder implements CommandLineRunner {
 
     private void createHistory(Group group, int days, Personnel teacher, Personnel registrar) {
         var today = LocalDate.now().minusDays(1);
-        var nextDaysPerformance = new HashMap<Student, AttendanceRegistration>();
+        var nextDaysPerformance = new HashMap<Student, AttendanceRegistrationDto>();
         for (Student student : group.getMembers()) {
-            nextDaysPerformance.put(student, new AttendanceRegistration(student, today, registrar, AttendanceStatus.PRESENT));
+            nextDaysPerformance.put(student, AttendanceRegistrationDto.of(student, today, registrar, AttendanceStatus.PRESENT));
         }
         for (int day = 1; day < days; day++) {
             var dateToAssess = today.minusDays(day);
             if (isStudyDay(dateToAssess.getDayOfWeek())) {
                 scheduledClassRepository.save(new ScheduledClass(group, teacher, dateToAssess));
                 for (Student student : group.getMembers()) {
-                    AttendanceRegistration currentAttendance = getNewAttendance(student, dateToAssess, registrar, nextDaysPerformance.get(student));
+                    AttendanceRegistrationDto currentAttendance = getNewAttendance(student, dateToAssess, registrar, nextDaysPerformance.get(student));
                     nextDaysPerformance.put(student, currentAttendance);
-                    attendanceRegistrationService.save(currentAttendance);
+                    attendanceService.save(currentAttendance);
                 }
             }
         }
@@ -104,25 +104,26 @@ public class Seeder implements CommandLineRunner {
 
     private final Random rand = new Random();
 
-    private AttendanceRegistration getNewAttendance(
+    private AttendanceRegistrationDto getNewAttendance(
             Student student,
             LocalDate dateToAssess,
             Personnel registrar,
-            AttendanceRegistration currentAttendanceRegistration) {
+            AttendanceRegistrationDto currentAttendanceRegistration) {
         if (rand.nextInt(100) < 70)
-            return new AttendanceRegistration(student, dateToAssess, registrar, currentAttendanceRegistration.getStatus(), currentAttendanceRegistration.getNote());
+            return AttendanceRegistrationDto.of(student, dateToAssess, registrar,
+                    AttendanceStatus.valueOf(currentAttendanceRegistration.status()), currentAttendanceRegistration.note());
         var nextRand = rand.nextInt(100);
         if (nextRand < 20)
-            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.LATE, "10:20");
+            return AttendanceRegistrationDto.of(student, dateToAssess, registrar, AttendanceStatus.LATE, "10:20");
         else if (nextRand < 23)
-            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.WORKING_FROM_HOME);
+            return AttendanceRegistrationDto.of(student, dateToAssess, registrar, AttendanceStatus.WORKING_FROM_HOME);
         else if (nextRand < 27)
-            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITH_NOTICE);
+            return AttendanceRegistrationDto.of(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITH_NOTICE);
         else if (nextRand < 30)
-            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+            return AttendanceRegistrationDto.of(student, dateToAssess, registrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
         else if (nextRand < 90)
-            return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.PRESENT);
-        else return new AttendanceRegistration(student, dateToAssess, registrar, AttendanceStatus.SICK);
+            return AttendanceRegistrationDto.of(student, dateToAssess, registrar, AttendanceStatus.PRESENT);
+        else return AttendanceRegistrationDto.of(student, dateToAssess, registrar, AttendanceStatus.SICK);
     }
 
     private boolean isStudyDay(DayOfWeek dayOfWeek) {
