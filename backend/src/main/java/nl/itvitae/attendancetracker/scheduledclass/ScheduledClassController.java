@@ -5,17 +5,14 @@ import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
@@ -28,6 +25,15 @@ public class ScheduledClassController {
     private final GroupRepository groupRepository;
 
     private final PersonnelRepository personnelRepository;
+
+    @GetMapping("scheduled-classes/{id}")
+    public Iterable<ScheduledClassInputDto> getAllScheduledCLasses(@PathVariable UUID id) {
+        var possibleGroup = groupRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
+
+        return scheduledClassRepository.findAllByGroup(possibleGroup).stream()
+                .map(ScheduledClassInputDto::from).toList();
+    }
 
     @PostMapping("/scheduled-classes")
     public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto[] listNewClasses,

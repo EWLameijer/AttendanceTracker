@@ -26,3 +26,11 @@
 .input-attendance-late {
   background-color: #ffff00;
 }
+
+table,
+th,
+td {
+  border: 3px solid black;
+  border-collapse: collapse;
+  padding: 10px;
+}

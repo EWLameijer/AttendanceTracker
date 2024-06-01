@@ -20,6 +20,9 @@ const ScheduleView = () => {
     useState<string>(today);
   const [classes, setClasses] = useState<ScheduledClassInputDto[]>([]);
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
+  const [existingClasses, setExistingClasses] = useState<
+    ScheduledClassInputDto[]
+  >([]);
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const user = useContext(UserContext);
@@ -57,8 +60,22 @@ const ScheduleView = () => {
       });
   }, []);
 
-  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setGroupId(event.target.value);
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const id: string = event.target.value;
+
+    setGroupId(id);
+
+    axios
+      .get(`${BASE_URL}/scheduled-classes/${id}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        setExistingClasses(response.data);
+      });
+  };
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setStartDateAsString(event.target.value);
@@ -164,72 +181,80 @@ const ScheduleView = () => {
   };
 
   return (
+    //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
     teachers.length > 0 && (
-      <form>
-        <h3>Voeg een nieuwe les toe:</h3>
+      <table>
+        <p>Kies een groep:</p>
+        <select onChange={handleGroupChange}>
+          {groups.map((group: Group, index: number) => (
+            <option key={index} value={group.id}>
+              {group.name}
+            </option>
+          ))}
+        </select>
 
-        <div>
-          <p>Kies een groep:</p>
-          <select onChange={handleGroupChange}>
-            {groups.map((group: Group, index: number) => (
-              <option key={index} value={group.id}>
-                {group.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <thead>
+          <p>Voeg nieuwe lessen toe:</p>
+        </thead>
+        <thead>
+          <p>Verwijder bestaande lessen:</p>
+        </thead>
+        <td>
+          <form>
+            <div>
+              <p>Kies een begin- en einddatum van de in te voeren periode:</p>
+              Begindatum:
+              <input
+                type="date"
+                value={startDateAsString}
+                onChange={handleStartDateChange}
+              ></input>
+              Einddatum:
+              <input
+                type="date"
+                value={endDateAsString}
+                onChange={handleEndDateChange}
+              ></input>
+            </div>
 
-        <div>
-          <p>Kies een begin- en einddatum van de in te voeren periode:</p>
-          Begindatum:
-          <input
-            type="date"
-            value={startDateAsString}
-            onChange={handleStartDateChange}
-          ></input>
-          Einddatum:
-          <input
-            type="date"
-            value={endDateAsString}
-            onChange={handleEndDateChange}
-          ></input>
-        </div>
+            <div>
+              <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
+              {createTeacherIdsWeek}
+            </div>
 
-        <div>
-          <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-          {createTeacherIdsWeek}
-        </div>
+            <div>
+              <button onClick={generateClasses}>Genereer periode</button>
+            </div>
 
-        <div>
-          <button onClick={generateClasses}>Genereer periode</button>
-        </div>
+            <div>
+              <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
+              Begindatum:
+              <input
+                type="date"
+                value={excludeStartDateAsString}
+                onChange={handleExcludeStartDateChange}
+              ></input>
+              Einddatum:
+              <input
+                type="date"
+                value={excludeEndDateAsString}
+                onChange={handleExcludeEndDateChange}
+              ></input>
+            </div>
 
-        <div>
-          <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
-          Begindatum:
-          <input
-            type="date"
-            value={excludeStartDateAsString}
-            onChange={handleExcludeStartDateChange}
-          ></input>
-          Einddatum:
-          <input
-            type="date"
-            value={excludeEndDateAsString}
-            onChange={handleExcludeEndDateChange}
-          ></input>
-        </div>
+            <div>{showClasses}</div>
 
-        <div>{showClasses}</div>
+            <div>
+              <button onClick={excludeClasses}>Verwijder selectie</button>
+            </div>
 
-        <div>
-          <button onClick={excludeClasses}>Verwijder selectie</button>
-        </div>
-
-        <div>
-          <button onClick={submitClasses}>Sla alle lessen op.</button>
-        </div>
-      </form>
+            <div>
+              <button onClick={submitClasses}>Sla alle lessen op.</button>
+            </div>
+          </form>
+        </td>
+        <td>{existingClasses.length}</td>
+      </table>
     )
   );
 };
