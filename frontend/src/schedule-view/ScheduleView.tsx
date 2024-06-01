@@ -58,6 +58,8 @@ const ScheduleView = () => {
         setGroups(response.data);
         setGroupId(response.data[0].id);
       });
+
+    //TODO Load initially selected group's scheduled classes
   }, []);
 
   const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
