@@ -20,10 +20,10 @@ public class TeacherController {
     private final TeacherRepository teacherRepository;
 
     @PostMapping
-    public ResponseEntity<Teacher> create(@RequestBody TeacherDto teacherDto, UriComponentsBuilder ucb) {
+    public ResponseEntity<TeacherDto> create(@RequestBody TeacherDto teacherDto, UriComponentsBuilder ucb) {
         var newTeacher = workerService.saveExternalTeacher(teacherDto.name());
         URI uri = ucb.path("").buildAndExpand().toUri();
-        return ResponseEntity.created(uri).body(newTeacher);
+        return ResponseEntity.created(uri).body(TeacherDto.from(newTeacher));
     }
 
     @DeleteMapping("{id}")

@@ -106,7 +106,10 @@ const PersonnelView = () => {
           },
         }
       )
-      .then(() => alert("Externe docent aangemaakt!"))
+      .then((response) => {
+        alert("Externe docent aangemaakt!");
+        setTeachers([...teachers, response.data]);
+      })
       .catch(() => alert("Deze gebruiker bestaat al!"));
   };
 
@@ -213,7 +216,7 @@ const PersonnelView = () => {
       <h3>Uitgenodigden</h3>
       <ul>
         {inviteesForDisplay.map((invitee) => (
-          <li key={invitee.id}>
+          <li key={invitee.name}>
             {invitee.name} ({invitee.role})
           </li>
         ))}
