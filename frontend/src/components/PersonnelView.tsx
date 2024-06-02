@@ -152,6 +152,31 @@ const PersonnelView = () => {
     }
   };
 
+  const removeFromLessonPlanning = (id: string) => {
+    const name = teachers.find((teacher) => teacher.id === id)?.name;
+    const reply = confirm(`Wilt u echt geen lessen meer plannen met ${name}?`);
+    if (reply) {
+      axios
+        .delete(`${BASE_URL}/teachers/${id}`, {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        })
+        .then(() => {
+          alert(
+            `${name} verwijderd van de lijst met in te roosteren docenten.`
+          );
+          setTeachers(teachers.filter((teacher) => teacher.id !== id));
+        })
+        .catch(() =>
+          alert(
+            `Kan ${name} niet verwijderen van de lijst met in te roosteren docenten.`
+          )
+        );
+    }
+  };
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
@@ -170,7 +195,14 @@ const PersonnelView = () => {
       </h3>
       <ul>
         {externalTeachers.map((externalTeacher) => (
-          <li key={externalTeacher.id}>{externalTeacher.name}</li>
+          <li key={externalTeacher.id}>
+            {externalTeacher.name}
+            <button
+              onClick={() => removeFromLessonPlanning(externalTeacher.id)}
+            >
+              Verwijderen
+            </button>
+          </li>
         ))}
       </ul>
       <RegistrarList

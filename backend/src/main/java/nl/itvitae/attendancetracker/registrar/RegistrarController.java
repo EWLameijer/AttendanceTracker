@@ -30,7 +30,7 @@ public class RegistrarController {
 
     @GetMapping("teachers")
     public Stream<TeacherDto> getAllTeachers() {
-        return teacherRepository.findAll().stream().map(TeacherDto::from);
+        return teacherRepository.findAllByCanBeScheduledTrue().stream().map(TeacherDto::from);
     }
 
     @GetMapping
