@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +31,11 @@ public class RegistrarController {
     @GetMapping("teachers")
     public Stream<TeacherDto> getAllTeachers() {
         return teacherRepository.findAll().stream().map(TeacherDto::from);
+    }
+
+    @GetMapping
+    public Stream<RegistrarDto> getAll() {
+        return StreamSupport.stream(registrarRepository.findAll().spliterator(), false).map(RegistrarDto::from);
     }
 
     @GetMapping("login")

@@ -18,7 +18,7 @@ public class Invitation {
 
     private String name;
 
-    private LocalDateTime timeOfCreation = LocalDateTime.now();
+    private final LocalDateTime timeOfCreation = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private ATRole role;

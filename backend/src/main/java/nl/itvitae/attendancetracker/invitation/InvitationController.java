@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,21 +20,27 @@ public class InvitationController {
     private final InvitationService invitationService;
 
     @PostMapping("for-teacher")
-    public InvitationDto getTeacherOneTimePassword(@RequestBody RegistrarDto personnelDto) {
+    public InvitationDtoWithCode getTeacherOneTimePassword(@RequestBody RegistrarDto personnelDto) {
         var name = personnelDto.name().trim();
         invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, ATRole.TEACHER)));
+        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, ATRole.TEACHER)));
     }
 
     @PostMapping("for-coach-or-admin")
-    public InvitationDto getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto personnelDto) {
+    public InvitationDtoWithCode getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto personnelDto) {
         var name = personnelDto.name().trim();
         invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, ATRole.ADMIN)));
+        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, ATRole.ADMIN)));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<InvitationDto> getInvitation(@PathVariable UUID id) {
-        return invitationRepository.findById(id).map(InvitationDto::from).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<InvitationDtoWithCode> getInvitation(@PathVariable UUID id) {
+        return invitationRepository.findById(id).map(InvitationDtoWithCode::from).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public Stream<InvitationDtoForOverview> getAll() {
+        return StreamSupport.stream(invitationRepository.findAll().spliterator(), false).
+                map(InvitationDtoForOverview::from);
     }
 }
