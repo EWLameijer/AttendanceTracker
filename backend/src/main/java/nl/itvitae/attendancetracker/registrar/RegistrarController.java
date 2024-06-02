@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class RegistrarController {
 
     @GetMapping
     public Stream<RegistrarDto> getAll() {
-        return StreamSupport.stream(registrarRepository.findAll().spliterator(), false).map(RegistrarDto::from);
+        return registrarRepository.findAllByEnabledTrue().stream().map(RegistrarDto::from);
     }
 
     @GetMapping("login")
@@ -54,6 +54,15 @@ public class RegistrarController {
         workerService.saveRegistrar(invitation.getName(), registration.password(), invitation.getRole());
         invitationRepository.deleteById(registration.invitationId());
         return registrarRepository.findByIdentityNameIgnoringCase(invitation.getName()).map(RegistrarDto::from).map(ResponseEntity::ok).orElseThrow();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+        var registrarToBeDisabled = registrarRepository.findById(id).
+                orElseThrow(() -> new BadRequestException("Registrar with this id not found!"));
+        registrarToBeDisabled.setEnabled(false);
+        registrarRepository.save(registrarToBeDisabled);
+        return ResponseEntity.noContent().build();
     }
 
     private boolean isStrongEnoughPassword(String password) {

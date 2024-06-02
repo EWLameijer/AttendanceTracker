@@ -1,15 +1,10 @@
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import { useContext, useEffect, useState } from "react";
-import { BASE_URL, FRONTEND_URL, byName } from "../utils";
+import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../utils";
 import Role from "./shared/Role";
 import { Teacher } from "../schedule-view/Teacher";
-
-interface Registrar {
-  id: string;
-  name: string;
-  role: string;
-}
+import RegistrarList from "./personnel-view-components/RegistrarList";
 
 const PersonnelView = () => {
   const user = useContext(UserContext);
@@ -115,7 +110,7 @@ const PersonnelView = () => {
       .catch(() => alert("Deze gebruiker bestaat al!"));
   };
 
-  const registeredTeachers = registrars
+  const registeringTeachers = registrars
     .filter((registrar) => registrar.role == Role.TEACHER)
     .sort(byName);
 
@@ -123,12 +118,12 @@ const PersonnelView = () => {
     .filter((registrar) => registrar.role == Role.ADMIN)
     .sort(byName);
 
-  const registeredTeacherNames = registeredTeachers.map(
+  const registeringTeacherNames = registeringTeachers.map(
     (registeredTeacher) => registeredTeacher.name
   );
 
   const externalTeachers = teachers
-    .filter((teacher) => !registeredTeacherNames.includes(teacher.name))
+    .filter((teacher) => !registeringTeacherNames.includes(teacher.name))
     .sort(byName);
 
   const inviteesForDisplay = invitees
@@ -138,6 +133,25 @@ const PersonnelView = () => {
     }))
     .sort(byName);
 
+  const disableRegistrar = (id: string) => {
+    const name = registrars.find((registrar) => registrar.id === id)?.name;
+    const reply = confirm(`Wilt u echt het account van ${name} deactiveren?`);
+    if (reply) {
+      axios
+        .delete(`${BASE_URL}/personnel/${id}`, {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        })
+        .then(() => {
+          alert(`Account van ${name} gedeactiveerd.`);
+          setRegistrars(registrars.filter((registrar) => registrar.id !== id));
+        })
+        .catch(() => alert(`Kan account van ${name} niet deactiveren.`));
+    }
+  };
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
@@ -145,12 +159,11 @@ const PersonnelView = () => {
       <button onClick={addExternalTeacher}>
         Voeg externe docent toe die zich nog niet hoeft te registreren
       </button>
-      <h3>Docenten (die aanwezigheid kunnen registreren)</h3>
-      <ul>
-        {registeredTeachers.map((registeredTeacher) => (
-          <li key={registeredTeacher.id}>{registeredTeacher.name}</li>
-        ))}
-      </ul>
+      <RegistrarList
+        title="Docenten (die aanwezigheid kunnen registreren)"
+        registrars={registeringTeachers}
+        disableRegistrar={disableRegistrar}
+      />
       <h3>
         Externe docenten (die geen aanwezigheid kunnen registreren, maar wel
         kunnen worden toegekend aan klassen)
@@ -160,12 +173,11 @@ const PersonnelView = () => {
           <li key={externalTeacher.id}>{externalTeacher.name}</li>
         ))}
       </ul>
-      <h3>Administratoren</h3>
-      <ul>
-        {admins.map((admin) => (
-          <li key={admin.id}>{admin.name}</li>
-        ))}
-      </ul>
+      <RegistrarList
+        title="Administratoren"
+        registrars={admins}
+        disableRegistrar={disableRegistrar}
+      />
       <h3>Uitgenodigden</h3>
       <ul>
         {inviteesForDisplay.map((invitee) => (

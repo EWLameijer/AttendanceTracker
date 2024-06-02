@@ -24,3 +24,9 @@ interface Named {
 }
 
 export const byName = (a: Named, b: Named) => a.name.localeCompare(b.name);
+
+export interface Registrar {
+  id: string;
+  name: string;
+  role: string;
+}
