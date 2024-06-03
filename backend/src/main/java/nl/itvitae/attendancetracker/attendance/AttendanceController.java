@@ -165,7 +165,7 @@ public class AttendanceController {
                             .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
                             .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT_REGISTERED_YET", null, null, null)));
         }
-        var teacherName = chosenClass.getTeacher().getIdentity().getName();
+        var teacherName = chosenClass.getTeacher().getName();
         return new ScheduledClassDto(groupName, teacherName, date.toString(), groupAttendances);
     }
 }

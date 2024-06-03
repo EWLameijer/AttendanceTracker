@@ -34,4 +34,8 @@ public class Registrar {
         this.password = password;
         this.role = role;
     }
+
+    public String getName() {
+        return getIdentity().getName();
+    }
 }
