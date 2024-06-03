@@ -57,8 +57,8 @@ const PersonnelView = () => {
           },
         }
       )
-      .then(() => alert("Externe docent aangemaakt!"))
-      .catch(() => alert("Deze gebruiker bestaat al!"));
+      .then(() => alert(`Externe docent ${name} aangemaakt!`))
+      .catch(() => alert(`Er bestaat al een ${name}!`));
   };
 
   return (
