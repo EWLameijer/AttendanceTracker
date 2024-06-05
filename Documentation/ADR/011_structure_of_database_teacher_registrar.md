@@ -39,7 +39,7 @@ For now, it is unclear how much value is gained (in reduced update/maintenance t
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
-Proposed
+Accepted
 
 
 ## Consequences
