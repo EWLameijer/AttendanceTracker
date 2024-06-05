@@ -2,7 +2,7 @@ export interface Attendance {
   studentName: string;
   status: string;
   date: string;
-  personnelName: string;
+  registrarName: string;
   timeOfRegistration?: string;
   note?: string;
   savedStatus?: string;
@@ -43,7 +43,7 @@ export function addExtraData(attendance: Attendance): Attendance {
     studentName: attendance.studentName,
     status: attendance.status,
     date: attendance.date,
-    personnelName: attendance.personnelName,
+    registrarName: attendance.registrarName,
     timeOfRegistration: attendance.timeOfRegistration,
     note: attendance.note || "",
     savedNote: attendance.note || "",

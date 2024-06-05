@@ -79,12 +79,12 @@ public class AttendanceController {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
         var registrar = registrarRepository.findByIdentityNameIgnoringCase(nameOfRegistrar)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
-        var classes = findClassesByDateAndPersonnel(chosenDate, registrar);
-        var attendances = findAttendancesByDateAndPersonnel(chosenDate, registrar);
+        var classes = findClassesByDateAndRegistrar(chosenDate, registrar);
+        var attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
         // if the requested day does not have a schedule, return the most recent lesson date instead
         if (classes.isEmpty()) {
             chosenDate = findPreviousDate(LocalDate.now(), registrar).orElseThrow(() -> new BadRequestException("No nearby lesson date!"));
-            attendances = findAttendancesByDateAndPersonnel(chosenDate, registrar);
+            attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
         }
         var previousDate = findPreviousDate(chosenDate, registrar);
         var nextDate = findNextDate(chosenDate, registrar);
@@ -93,7 +93,7 @@ public class AttendanceController {
         return new ScheduledDateDto(attendanceVersion, previousDate, chosenDate, nextDate, scheduledclassDtos);
     }
 
-    private List<AttendanceRegistration> findAttendancesByDateAndPersonnel(LocalDate date, Registrar registrar) {
+    private List<AttendanceRegistration> findAttendancesByDateAndRegistrar(LocalDate date, Registrar registrar) {
         var attendances = attendanceRegistrationRepository.findByAttendanceDate(date);
         if (registrar.getRole() != ATRole.TEACHER) return attendances;
 
@@ -126,20 +126,20 @@ public class AttendanceController {
         final int maxDaysToInvestigate = 5 * 7;
         for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
-            var classes = findClassesByDateAndPersonnel(dateToInvestigate, registrar);
+            var classes = findClassesByDateAndRegistrar(dateToInvestigate, registrar);
             if (!classes.isEmpty()) return Optional.of(dateToInvestigate);
         }
         return Optional.empty();
     }
 
-    private List<ScheduledClass> findClassesByDateAndPersonnel(LocalDate dateToInvestigate, Registrar registrar) {
+    private List<ScheduledClass> findClassesByDateAndRegistrar(LocalDate dateToInvestigate, Registrar registrar) {
         return registrar.getRole() == ATRole.TEACHER ?
                 scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, registrarService.asTeacher(registrar)).stream().toList() :
                 scheduledClassRepository.findAllByDate(dateToInvestigate);
     }
 
     private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Registrar registrar) {
-        var classes = findClassesByDateAndPersonnel(date, registrar);
+        var classes = findClassesByDateAndRegistrar(date, registrar);
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
         var classDtos = new ArrayList<ScheduledClassDto>();

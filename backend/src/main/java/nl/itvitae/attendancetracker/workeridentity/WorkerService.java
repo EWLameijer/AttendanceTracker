@@ -37,8 +37,7 @@ public class WorkerService {
 
     @Transactional
     public Registrar saveRegistrar(String username, String password, ATRole role) {
-        throwIfInvalidName(username);
-        var workerIdentity = save(username);
+        var workerIdentity = saveOrThrow(username);
         if (role == ATRole.TEACHER) teacherRepository.save(new Teacher(workerIdentity));
         var registrar = new Registrar(workerIdentity, passwordEncoder.encode(password), role);
         registrarRepository.save(registrar);
@@ -49,13 +48,13 @@ public class WorkerService {
 
     @Transactional
     public Teacher saveExternalTeacher(String name) {
-        throwIfInvalidName(name);
-        var workerIdentity = save(name);
+        var workerIdentity = saveOrThrow(name);
         return teacherRepository.save(new Teacher(workerIdentity));
     }
 
-    private void throwIfInvalidName(String name) {
+    private WorkerIdentity saveOrThrow(String name) {
         if (nameHasBadFormatOrIsAlreadyInUse(name))
             throw new BadRequestException("Name has bad format or is already in use!");
+        return save(name);
     }
 }
