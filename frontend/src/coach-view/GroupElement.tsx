@@ -48,7 +48,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
       const newAttendance: Attendance = {
         studentName: attendance.studentName,
         status: attendance.status,
-        personnelName: user.username,
+        registrarName: user.username,
         date: props.dateAsString,
       };
       const note = attendance.note;

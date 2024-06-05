@@ -13,7 +13,7 @@ public record AttendanceRegistrationDto(
         String studentName,
         String date,
         String status,
-        String personnelName,
+        String registrarName,
         String timeOfRegistration,
         String note
 ) {

@@ -50,7 +50,7 @@ public class AttendanceRegistrationService {
 
         var date = parseLocalDateOrThrow(attendanceRegistrationDto.date());
 
-        var personnel = registrarRepository.findByIdentityNameIgnoringCase(attendanceRegistrationDto.personnelName()).
+        var registrar = registrarRepository.findByIdentityNameIgnoringCase(attendanceRegistrationDto.registrarName()).
                 orElseThrow(() -> new IllegalArgumentException("Staff name not found"));
 
         var group = groupRepository.findByMembersContaining(student).orElseThrow(
@@ -58,7 +58,7 @@ public class AttendanceRegistrationService {
         if (!scheduledClassRepository.existsByDateAndGroup(date, group)) {
             throw new IllegalArgumentException("Student does not follow lessons on this date");
         }
-        return new AttendanceRegistrationEntities(student, personnel, date);
+        return new AttendanceRegistrationEntities(student, registrar, date);
     }
 }
 

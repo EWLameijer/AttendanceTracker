@@ -65,8 +65,8 @@ const AttendanceDisplay = (props: {
 
   const displayAttendance = (attendance: Attendance) =>
     `${attendance.studentName}` +
-    (attendance.personnelName
-      ? ` - geregistreerd door ${attendance.personnelName} (${formatTime(
+    (attendance.registrarName
+      ? ` - geregistreerd door ${attendance.registrarName} (${formatTime(
           attendance.timeOfRegistration!
         )})`
       : "");

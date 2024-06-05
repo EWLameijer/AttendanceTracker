@@ -18,17 +18,19 @@ public class InvitationController {
     private final InvitationService invitationService;
 
     @PostMapping("for-teacher")
-    public InvitationDto getTeacherOneTimePassword(@RequestBody RegistrarDto personnelDto) {
-        var name = personnelDto.name().trim();
-        invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, ATRole.TEACHER)));
+    public InvitationDto getTeacherOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationFor(registrarDto, ATRole.TEACHER);
     }
 
     @PostMapping("for-coach-or-admin")
-    public InvitationDto getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto personnelDto) {
-        var name = personnelDto.name().trim();
+    public InvitationDto getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationFor(registrarDto, ATRole.ADMIN);
+    }
+
+    private InvitationDto getInvitationFor(RegistrarDto registrarDto, ATRole role) {
+        var name = registrarDto.name().trim();
         invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, ATRole.ADMIN)));
+        return InvitationDto.from(invitationRepository.save(new Invitation(name, role)));
     }
 
     @GetMapping("{id}")
