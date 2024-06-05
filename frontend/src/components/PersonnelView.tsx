@@ -24,6 +24,7 @@ const PersonnelView = () => {
       .then((response) => {
         setRegistrars(response.data);
       });
+
     axios
       .get(`${BASE_URL}/personnel/teachers`, {
         auth: {
@@ -34,6 +35,7 @@ const PersonnelView = () => {
       .then((response) => {
         setTeachers(response.data);
       });
+
     axios
       .get<Registrar[]>(`${BASE_URL}/invitations`, {
         auth: {
@@ -65,7 +67,7 @@ const PersonnelView = () => {
       )
       .then((response) => {
         alert(
-          `Stuur de ander de link '${FRONTEND_URL}/registration-view/${response.data.code}'. Deze blijft 24 uur geldig.`
+          `Stuur de ander de link ${FRONTEND_URL}/registration-view/${response.data.code} Deze blijft 24 uur geldig.`
         );
         setInvitees([
           ...invitees,
