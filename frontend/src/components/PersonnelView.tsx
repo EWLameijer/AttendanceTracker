@@ -9,9 +9,6 @@ import RegistrarList from "./personnel-view-components/RegistrarList";
 const PersonnelView = () => {
   const user = useContext(UserContext);
 
-  // Let's start with getting all personnel/registrars with role
-  // Then get all external teachers
-  // Then get all invitations
   const [registrars, setRegistrars] = useState<Registrar[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [invitees, setInvitees] = useState<Registrar[]>([]);
