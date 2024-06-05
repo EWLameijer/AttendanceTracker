@@ -187,6 +187,9 @@ const ScheduleView = () => {
       });
   };
 
+  const dayAbbreviation = (d: string) =>
+    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
+
   const handleDeleteClass = (sc: ScheduledClassInputDto) => {
     if (confirm(sc.dateAsString + " verwijderen?")) {
       alert(sc.dateAsString + " is verwijderd.");
@@ -195,7 +198,7 @@ const ScheduleView = () => {
 
   const showExistingClasses = existingClasses.map((value) => (
     <p key={value.dateAsString}>
-      {value.dateAsString}
+      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
       <button
         value={value.dateAsString}
         onClick={() => handleDeleteClass(value)}
