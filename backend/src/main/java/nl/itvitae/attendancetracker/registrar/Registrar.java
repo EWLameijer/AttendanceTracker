@@ -1,8 +1,10 @@
-package nl.itvitae.attendancetracker.personnel;
+package nl.itvitae.attendancetracker.registrar;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nl.itvitae.attendancetracker.workeridentity.WorkerIdentity;
 
 import java.util.UUID;
 
@@ -11,22 +13,24 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Personnel {
+public class Registrar {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
+    @OneToOne
+    private WorkerIdentity identity;
 
     private String password;
 
+    @Setter
     private boolean enabled = true;
 
     @Enumerated(EnumType.STRING)
     private ATRole role;
 
-    public Personnel(String name, String password, ATRole role) {
-        this.name = name;
+    public Registrar(WorkerIdentity identity, String password, ATRole role) {
+        this.identity = identity;
         this.password = password;
         this.role = role;
     }

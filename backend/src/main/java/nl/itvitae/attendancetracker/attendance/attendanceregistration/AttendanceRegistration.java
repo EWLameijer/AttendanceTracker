@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.itvitae.attendancetracker.attendance.Attendance;
 import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
-import nl.itvitae.attendancetracker.personnel.Personnel;
+import nl.itvitae.attendancetracker.registrar.Registrar;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class AttendanceRegistration {
     private UUID id;
 
     @ManyToOne
-    private Personnel personnel;
+    private Registrar registrar;
 
     private LocalDateTime dateTime;
 
@@ -34,20 +34,20 @@ public class AttendanceRegistration {
 
     private String note;
 
-    private AttendanceRegistration(Personnel personnel, Attendance attendance, AttendanceStatus status, String note) {
-        this.personnel = personnel;
+    private AttendanceRegistration(Registrar registrar, Attendance attendance, AttendanceStatus status, String note) {
+        this.registrar = registrar;
         this.dateTime = LocalDateTime.now();
         this.attendance = attendance;
         this.status = status;
         this.note = note;
     }
 
-    public AttendanceRegistration(Attendance attendance, Personnel personnel, AttendanceStatus status, String note) {
-        this(personnel, attendance, status, note);
+    public AttendanceRegistration(Attendance attendance, Registrar registrar, AttendanceStatus status, String note) {
+        this(registrar, attendance, status, note);
     }
 
-    public AttendanceRegistration(Attendance attendance, Personnel personnel, AttendanceStatus status) {
-        this(personnel, attendance, status, null);
+    public AttendanceRegistration(Attendance attendance, Registrar registrar, AttendanceStatus status) {
+        this(registrar, attendance, status, null);
     }
 
     public void updateWith(AttendanceStatus newStatus, String newNote, LocalDateTime newTime) {
