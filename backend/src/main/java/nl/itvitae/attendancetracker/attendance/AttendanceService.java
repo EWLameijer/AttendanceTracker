@@ -32,7 +32,7 @@ public class AttendanceService {
         var student = attendanceRegistrationEntities.student();
         var date = attendanceRegistrationEntities.date();
         var attendance = attendanceRepository.findByStudentAndDate(student, date).orElse(new Attendance(student, date));
-        var registrar = attendanceRegistrationEntities.personnel();
+        var registrar = attendanceRegistrationEntities.registrar();
         var status = toStatus(attendanceRegistrationDto.status());
         var note = attendanceRegistrationDto.note();
         var possibleLatestRegistrationByThisRegistrar = attendance.getLatestRegistrationBy(registrar);
@@ -41,9 +41,7 @@ public class AttendanceService {
             var newTime = LocalDateTime.now();
             possibleLatestRegistrationByThisRegistrar.get().updateWith(status, note, newTime);
         } else {
-            var personnel = attendanceRegistrationEntities.personnel();
-
-            var attendanceRegistration = new AttendanceRegistration(attendance, personnel, status, note);
+            var attendanceRegistration = new AttendanceRegistration(attendance, registrar, status, note);
             attendance.addRegistration(attendanceRegistration);
         }
         return attendance;

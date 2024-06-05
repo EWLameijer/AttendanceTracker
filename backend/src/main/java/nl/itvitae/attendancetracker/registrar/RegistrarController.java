@@ -1,49 +1,53 @@
-package nl.itvitae.attendancetracker.personnel;
+package nl.itvitae.attendancetracker.registrar;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.invitation.InvitationRepository;
+import nl.itvitae.attendancetracker.teacher.TeacherDto;
+import nl.itvitae.attendancetracker.teacher.TeacherRepository;
+import nl.itvitae.attendancetracker.workeridentity.WorkerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("${at.cors}")
 @RequestMapping("personnel")
-public class PersonnelController {
-    private final PersonnelRepository personnelRepository;
+public class RegistrarController {
+    private final RegistrarRepository registrarRepository;
 
     private final InvitationRepository invitationRepository;
 
-    private final PersonnelService personnelService;
+    private final WorkerService workerService;
+
+    private final TeacherRepository teacherRepository;
 
     @GetMapping("teachers")
-    public Iterable<PersonnelDto> getAllTeachers() {
-        return StreamSupport.stream(personnelRepository.findAllByRole(ATRole.TEACHER).spliterator(), false)
-                .map(PersonnelDto::from).toList();
+    public Stream<TeacherDto> getAllTeachers() {
+        return teacherRepository.findAll().stream().map(TeacherDto::from);
     }
 
     @GetMapping("login")
-    public PersonnelDto login(Principal principal) {
-        return PersonnelDto.from(personnelRepository.findByNameIgnoringCase(principal.getName()).orElseThrow());
+    public RegistrarDto login(Principal principal) {
+        return RegistrarDto.from(registrarRepository.findByIdentityNameIgnoringCase(principal.getName()).orElseThrow());
     }
 
     @PostMapping("register")
     @Transactional
-    public ResponseEntity<PersonnelDto> register(@RequestBody PersonnelRegistrationDto registration) {
+    public ResponseEntity<RegistrarDto> register(@RequestBody RegistrarRegistrationDto registration) {
         if (!isStrongEnoughPassword(registration.password()))
             throw new BadRequestException("Password should be at least 16 characters, contain uppercase and lowercase letters, number(s) and punctuation");
         var possibleInvitation = invitationRepository.findById(registration.invitationId());
         if (possibleInvitation.isEmpty()) return ResponseEntity.notFound().build();
         var invitation = possibleInvitation.get();
-        personnelService.save(invitation.getName(), registration.password(), invitation.getRole());
+        workerService.saveRegistrar(invitation.getName(), registration.password(), invitation.getRole());
         invitationRepository.deleteById(registration.invitationId());
-        return personnelRepository.findByNameIgnoringCase(invitation.getName()).map(PersonnelDto::from).map(ResponseEntity::ok).orElseThrow();
+        return registrarRepository.findByIdentityNameIgnoringCase(invitation.getName()).map(RegistrarDto::from).map(ResponseEntity::ok).orElseThrow();
     }
 
     private boolean isStrongEnoughPassword(String password) {

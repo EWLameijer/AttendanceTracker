@@ -3,7 +3,7 @@ package nl.itvitae.attendancetracker.invitation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nl.itvitae.attendancetracker.personnel.ATRole;
+import nl.itvitae.attendancetracker.registrar.ATRole;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

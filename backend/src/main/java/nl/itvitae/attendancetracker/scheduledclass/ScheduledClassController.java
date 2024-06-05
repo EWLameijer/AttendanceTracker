@@ -3,9 +3,8 @@ package nl.itvitae.attendancetracker.scheduledclass;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.personnel.PersonnelRepository;
-
-import org.springframework.http.HttpStatus;
+import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
+import nl.itvitae.attendancetracker.teacher.TeacherRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,8 @@ public class ScheduledClassController {
 
     private final GroupRepository groupRepository;
 
-    private final PersonnelRepository personnelRepository;
+    private final RegistrarRepository registrarRepository;
+    private final TeacherRepository teacherRepository;
 
     @PostMapping("/scheduled-classes")
     public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto[] listNewClasses,
@@ -37,7 +37,7 @@ public class ScheduledClassController {
         for (ScheduledClassInputDto potentialClass : listNewClasses) {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
-            var teacher = personnelRepository.findById(potentialClass.teacherId())
+            var teacher = teacherRepository.findById(potentialClass.teacherId())
                     .orElseThrow(() -> new BadRequestException("Leraar bestaat niet"));
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
