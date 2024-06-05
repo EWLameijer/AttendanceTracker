@@ -12,9 +12,4 @@ export const FRONTEND_URL = "http://localhost:5173"; // when in production, need
 
 export const BASE_URL = "http://localhost:8080";
 
-const padToTwoDigits = (number: number) => number.toString().padStart(2, "0");
-
-export const toYYYYMMDD = (date: Date) =>
-  `${date.getFullYear()}-${padToTwoDigits(
-    date.getMonth() + 1
-  )}-${padToTwoDigits(date.getDate())}`;
+export const toYYYYMMDD = (date: Date) => date.toISOString().substring(0, 10);
