@@ -21,8 +21,4 @@ public class Teacher {
     public Teacher(WorkerIdentity identity) {
         this.identity = identity;
     }
-
-    public String getName() {
-        return getIdentity().getName();
-    }
 }
