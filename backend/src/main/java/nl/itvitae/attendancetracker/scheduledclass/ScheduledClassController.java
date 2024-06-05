@@ -3,7 +3,6 @@ package nl.itvitae.attendancetracker.scheduledclass;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
 import nl.itvitae.attendancetracker.teacher.TeacherRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,6 @@ public class ScheduledClassController {
 
     private final GroupRepository groupRepository;
 
-    private final RegistrarRepository registrarRepository;
     private final TeacherRepository teacherRepository;
 
     @GetMapping("scheduled-classes/{id}")
@@ -64,7 +62,7 @@ public class ScheduledClassController {
 
         scheduledClassRepository.saveAll(validClasses);
 
-        ArrayList<ScheduledClassDtoWithoutAttendance> addedClasses = new ArrayList<ScheduledClassDtoWithoutAttendance>();
+        ArrayList<ScheduledClassDtoWithoutAttendance> addedClasses = new ArrayList<>();
 
         for (ScheduledClass validClass : validClasses) {
             addedClasses.add(ScheduledClassDtoWithoutAttendance.from(validClass));
