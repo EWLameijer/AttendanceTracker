@@ -18,3 +18,15 @@ export const toYYYYMMDD = (date: Date) =>
   `${date.getFullYear()}-${padToTwoDigits(
     date.getMonth() + 1
   )}-${padToTwoDigits(date.getDate())}`;
+
+interface Named {
+  name: string;
+}
+
+export const byName = (a: Named, b: Named) => a.name.localeCompare(b.name);
+
+export interface Registrar {
+  id: string;
+  name: string;
+  role: string;
+}

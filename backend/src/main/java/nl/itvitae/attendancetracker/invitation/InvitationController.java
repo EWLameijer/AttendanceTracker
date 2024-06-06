@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,23 +20,29 @@ public class InvitationController {
     private final InvitationService invitationService;
 
     @PostMapping("for-teacher")
-    public InvitationDto getTeacherOneTimePassword(@RequestBody RegistrarDto registrarDto) {
-        return getInvitationFor(registrarDto, ATRole.TEACHER);
+    public InvitationDtoWithCode getTeacherOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationDtoWithCode(registrarDto, ATRole.TEACHER);
     }
 
     @PostMapping("for-coach-or-admin")
-    public InvitationDto getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
-        return getInvitationFor(registrarDto, ATRole.ADMIN);
+    public InvitationDtoWithCode getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationDtoWithCode(registrarDto, ATRole.ADMIN);
     }
 
-    private InvitationDto getInvitationFor(RegistrarDto registrarDto, ATRole role) {
+    private InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
         var name = registrarDto.name().trim();
         invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
-        return InvitationDto.from(invitationRepository.save(new Invitation(name, role)));
+        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role)));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<InvitationDto> getInvitation(@PathVariable UUID id) {
-        return invitationRepository.findById(id).map(InvitationDto::from).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<InvitationDtoWithCode> getInvitation(@PathVariable UUID id) {
+        return invitationRepository.findById(id).map(InvitationDtoWithCode::from).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public Stream<InvitationDtoForOverview> getAll() {
+        return StreamSupport.stream(invitationRepository.findAll().spliterator(), false).
+                map(InvitationDtoForOverview::from);
     }
 }
