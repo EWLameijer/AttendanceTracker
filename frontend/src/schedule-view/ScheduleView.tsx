@@ -190,9 +190,31 @@ const ScheduleView = () => {
   const dayAbbreviation = (d: string) =>
     new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
 
-  const handleDeleteClass = (sc: ScheduledClassInputDto) => {
-    if (confirm(sc.dateAsString + " verwijderen?")) {
-      alert(sc.dateAsString + " is verwijderd.");
+  const handleDeleteClass = (scheduledClass: ScheduledClassInputDto) => {
+    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+      axios
+        .delete(
+          `${BASE_URL}/scheduled-classes/${scheduledClass.groupId}/${scheduledClass.dateAsString}`,
+          {
+            auth: {
+              username: user.username,
+              password: user.password,
+            },
+          }
+        )
+        .then(() => {
+          alert(`${scheduledClass.dateAsString} is verwijderd.`);
+          setExistingClasses(
+            existingClasses.filter(
+              (existingClasses) =>
+                existingClasses.groupId !== scheduledClass.groupId
+            )
+          );
+        })
+        .catch((response) => {
+          debugger;
+          alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`);
+        });
     }
   };
 

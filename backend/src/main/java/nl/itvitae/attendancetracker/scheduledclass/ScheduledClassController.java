@@ -2,6 +2,7 @@ package nl.itvitae.attendancetracker.scheduledclass;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.teacher.TeacherRepository;
 import org.springframework.http.ResponseEntity;
@@ -43,15 +44,14 @@ public class ScheduledClassController {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
             var teacher = teacherRepository.findById(potentialClass.teacherId())
-                    .orElseThrow(() -> new BadRequestException("Leraar bestaat niet"));
+                    .orElseThrow(() -> new BadRequestException("Leraar bestaat niet."));
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
                 throw new BadRequestException("De geselecteerde leraar is niet beschikbaar op " +
                         potentialClass.dateAsString() + ".");
             }
 
-            var group = groupRepository.findById(potentialClass.groupId())
-                    .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
+            var group = findGroup(potentialClass.groupId());
 
             if (scheduledClassRepository.findByDateAndGroup(localDate, group).isPresent()) {
                 throw new BadRequestException("Deze groep heeft al een les op " + potentialClass.dateAsString() + ".");
@@ -71,5 +71,27 @@ public class ScheduledClassController {
         URI uri = ucb.path("").buildAndExpand().toUri();
 
         return ResponseEntity.created(uri).body(addedClasses);
+    }
+
+    @DeleteMapping("/scheduled-classes/{groupId}/{dateAsString}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID groupId, String dateAsString) {
+        LocalDate localDate = convertToLocalDate(dateAsString);
+
+        var group = findGroup(groupId);
+
+        var scheduledClassToBeDeleted = scheduledClassRepository.findByDateAndGroup(localDate, group).
+                orElseThrow(() -> new BadRequestException("Deze les bestaat niet."));
+        scheduledClassToBeDeleted.setDeleted(true);
+        scheduledClassRepository.save(scheduledClassToBeDeleted);
+        return ResponseEntity.noContent().build();
+    }
+
+    private Group findGroup(UUID id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Groep bestaat niet."));
+    }
+
+    private LocalDate convertToLocalDate(String dateAsString) {
+        return parseLocalDateOrThrow(dateAsString);
     }
 }
