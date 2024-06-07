@@ -74,15 +74,22 @@ public class ScheduledClassController {
     }
 
     @DeleteMapping("/scheduled-classes/{groupId}/{dateAsString}")
-    public ResponseEntity<Void> deleteById(@PathVariable UUID groupId, String dateAsString) {
+    public ResponseEntity<Void> deleteById(@PathVariable UUID groupId, @PathVariable String dateAsString) {
         LocalDate localDate = convertToLocalDate(dateAsString);
 
         var group = findGroup(groupId);
 
+        LocalDate now = LocalDate.now();
+
         var scheduledClassToBeDeleted = scheduledClassRepository.findByDateAndGroup(localDate, group).
                 orElseThrow(() -> new BadRequestException("Deze les bestaat niet."));
-        scheduledClassToBeDeleted.setDeleted(true);
-        scheduledClassRepository.save(scheduledClassToBeDeleted);
+
+        if (localDate.isBefore(now)) {
+            scheduledClassToBeDeleted.setDeleted(true);
+            scheduledClassRepository.save(scheduledClassToBeDeleted);
+        } else {
+            scheduledClassRepository.delete(scheduledClassToBeDeleted);
+        }
         return ResponseEntity.noContent().build();
     }
 

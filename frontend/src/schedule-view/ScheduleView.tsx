@@ -205,14 +205,12 @@ const ScheduleView = () => {
         .then(() => {
           alert(`${scheduledClass.dateAsString} is verwijderd.`);
           setExistingClasses(
-            existingClasses.filter(
-              (existingClasses) =>
-                existingClasses.groupId !== scheduledClass.groupId
-            )
+            existingClasses.filter((existingClasses) => {
+              existingClasses.groupId !== scheduledClass.groupId;
+            })
           );
         })
-        .catch((response) => {
-          debugger;
+        .catch(() => {
           alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`);
         });
     }
