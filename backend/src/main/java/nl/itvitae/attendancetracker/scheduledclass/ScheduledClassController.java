@@ -84,11 +84,11 @@ public class ScheduledClassController {
         var scheduledClassToBeDeleted = scheduledClassRepository.findByDateAndGroup(localDate, group).
                 orElseThrow(() -> new BadRequestException("Deze les bestaat niet."));
 
-        if (localDate.isBefore(now)) {
+        if (localDate.isAfter(now)) {
+            scheduledClassRepository.delete(scheduledClassToBeDeleted);
+        } else {
             scheduledClassToBeDeleted.setDeleted(true);
             scheduledClassRepository.save(scheduledClassToBeDeleted);
-        } else {
-            scheduledClassRepository.delete(scheduledClassToBeDeleted);
         }
         return ResponseEntity.noContent().build();
     }
