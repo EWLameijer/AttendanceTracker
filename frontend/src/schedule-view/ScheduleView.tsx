@@ -177,7 +177,15 @@ const ScheduleView = () => {
       .then((response) => {
         if (response.status == HttpStatusCode.Created)
           alert(response.data.length + " lessen toegevoegd.");
-        setExistingClasses([...existingClasses, ...response.data]);
+        setExistingClasses(
+          [...response.data, ...existingClasses].sort((a, b) =>
+            a.dateAsString < b.dateAsString
+              ? 1
+              : b.dateAsString < a.dateAsString
+              ? -1
+              : 0
+          )
+        );
       })
       .catch((error) => {
         if (error.response.status == HttpStatusCode.BadRequest) {
@@ -203,10 +211,11 @@ const ScheduleView = () => {
           }
         )
         .then(() => {
+          debugger;
           alert(`${scheduledClass.dateAsString} is verwijderd.`);
           setExistingClasses(
-            existingClasses.filter((existingClasses) => {
-              existingClasses.groupId !== scheduledClass.groupId;
+            existingClasses.filter((existingClass) => {
+              existingClass.dateAsString !== scheduledClass.dateAsString;
             })
           );
         })
