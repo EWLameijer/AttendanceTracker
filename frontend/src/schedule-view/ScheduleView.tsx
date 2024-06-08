@@ -179,11 +179,7 @@ const ScheduleView = () => {
           alert(response.data.length + " lessen toegevoegd.");
         setExistingClasses(
           [...response.data, ...existingClasses].sort((a, b) =>
-            a.dateAsString < b.dateAsString
-              ? 1
-              : b.dateAsString < a.dateAsString
-              ? -1
-              : 0
+            b.dateAsString.localeCompare(a.dateAsString)
           )
         );
       })
@@ -211,13 +207,13 @@ const ScheduleView = () => {
           }
         )
         .then(() => {
-          debugger;
           alert(`${scheduledClass.dateAsString} is verwijderd.`);
-          setExistingClasses(
-            existingClasses.filter((existingClass) => {
-              existingClass.dateAsString !== scheduledClass.dateAsString;
-            })
-          );
+
+          const filteredClasses = existingClasses.filter((existingClass) => {
+            return existingClass.dateAsString !== scheduledClass.dateAsString;
+          });
+
+          setExistingClasses(filteredClasses);
         })
         .catch(() => {
           alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`);
