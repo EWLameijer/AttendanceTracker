@@ -231,12 +231,10 @@ const ScheduleView = () => {
     </p>
   ));
 
-  const sortDescending = (scheduledClassesArray: ScheduledClassInputDto[]) => {
-    return scheduledClassesArray.sort((a, b) =>
+  const sortDescending = (scheduledClassesArray: ScheduledClassInputDto[]) =>
+    scheduledClassesArray.sort((a, b) =>
       b.dateAsString.localeCompare(a.dateAsString)
     );
-  };
-
   return (
     //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
     teachers.length > 0 && (
