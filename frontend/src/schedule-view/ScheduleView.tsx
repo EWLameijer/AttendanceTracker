@@ -70,7 +70,7 @@ const ScheduleView = () => {
         },
       })
       .then((response) => {
-        setExistingClasses(response.data);
+        setExistingClasses(sortDescending(response.data));
       });
   };
 
@@ -178,9 +178,7 @@ const ScheduleView = () => {
         if (response.status == HttpStatusCode.Created)
           alert(response.data.length + " lessen toegevoegd.");
         setExistingClasses(
-          [...response.data, ...existingClasses].sort((a, b) =>
-            b.dateAsString.localeCompare(a.dateAsString)
-          )
+          sortDescending([...response.data, ...existingClasses])
         );
       })
       .catch((error) => {
@@ -232,6 +230,12 @@ const ScheduleView = () => {
       </button>
     </p>
   ));
+
+  const sortDescending = (scheduledClassesArray: ScheduledClassInputDto[]) => {
+    return scheduledClassesArray.sort((a, b) =>
+      b.dateAsString.localeCompare(a.dateAsString)
+    );
+  };
 
   return (
     //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
