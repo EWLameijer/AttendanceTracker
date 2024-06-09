@@ -41,7 +41,7 @@ public class ScheduledClassController {
         var validClasses = new ArrayList<ScheduledClass>();
 
         for (ScheduledClassDtoWithoutAttendance potentialClass : listNewClasses) {
-            LocalDate localDate = convertToLocalDate(potentialClass.dateAsString());
+            LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
             var teacher = teacherRepository.findById(potentialClass.teacherId())
                     .orElseThrow(() -> new BadRequestException("Leraar bestaat niet."));
@@ -71,7 +71,7 @@ public class ScheduledClassController {
 
     @DeleteMapping("/scheduled-classes/{groupId}/{dateAsString}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID groupId, @PathVariable String dateAsString) {
-        LocalDate localDate = convertToLocalDate(dateAsString);
+        LocalDate localDate = parseLocalDateOrThrow(dateAsString);
 
         var group = findGroup(groupId);
 
@@ -91,9 +91,5 @@ public class ScheduledClassController {
     private Group findGroup(UUID id) {
         return groupRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Groep bestaat niet."));
-    }
-
-    private LocalDate convertToLocalDate(String dateAsString) {
-        return parseLocalDateOrThrow(dateAsString);
     }
 }
