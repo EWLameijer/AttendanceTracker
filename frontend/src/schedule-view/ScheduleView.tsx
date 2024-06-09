@@ -225,6 +225,7 @@ const ScheduleView = () => {
       <button
         value={value.dateAsString}
         onClick={() => handleDeleteClass(value)}
+        hidden={new Date(value.dateAsString) <= new Date()}
       >
         X
       </button>
