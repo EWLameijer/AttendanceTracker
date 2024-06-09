@@ -18,9 +18,9 @@ const ScheduleView = () => {
     useState<string>(today);
   const [excludeEndDateAsString, setExcludeEndDateAsString] =
     useState<string>(today);
-  const [classes, setClasses] = useState<ScheduledClassDtoWithoutAttendance[]>(
-    []
-  );
+  const [proposedClasses, setProposedClasses] = useState<
+    ScheduledClassDtoWithoutAttendance[]
+  >([]);
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
   const [existingClasses, setExistingClasses] = useState<
     ScheduledClassDtoWithoutAttendance[]
@@ -121,7 +121,7 @@ const ScheduleView = () => {
         teacherId: teacherIdsWeek[dayIndex(date)],
         dateAsString: toYYYYMMDD(date),
       }));
-    setClasses(scheduledClasses);
+    setProposedClasses(scheduledClasses);
   };
 
   const handleExcludeStartDateChange = (
@@ -134,7 +134,7 @@ const ScheduleView = () => {
 
   const excludeClasses = (event: React.FormEvent) => {
     event.preventDefault();
-    if (classes.length == 0) {
+    if (proposedClasses.length == 0) {
       alert("Genereer eerst een periode");
     } else {
       const startOfExcludedPeriod = new Date(excludeStartDateAsString);
@@ -144,15 +144,15 @@ const ScheduleView = () => {
         ...dateRangeGenerator(startOfExcludedPeriod, endOfExcludedPeriod),
       ].map(toYYYYMMDD);
 
-      const remainingClasses = [...classes].filter(
+      const remainingClasses = [...proposedClasses].filter(
         (classDto) => !excludedClassesAsStrings.includes(classDto.dateAsString)
       );
 
-      setClasses(remainingClasses);
+      setProposedClasses(remainingClasses);
     }
   };
 
-  const showClassesToAdd = classes.map((value) => (
+  const showClassesToAdd = proposedClasses.map((value) => (
     <p key={value.dateAsString}>{value.dateAsString}</p>
   ));
 
@@ -162,7 +162,7 @@ const ScheduleView = () => {
     axios
       .post<ScheduledClassDtoWithoutAttendance[]>(
         `${BASE_URL}/scheduled-classes`,
-        classes,
+        proposedClasses,
         {
           auth: {
             username: user.username,
