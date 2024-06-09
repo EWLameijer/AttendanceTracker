@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
-import { ScheduledClassInputDto } from "./ScheduledClassInputDto";
+import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
 import UserContext from "../context/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
 
@@ -18,10 +18,12 @@ const ScheduleView = () => {
     useState<string>(today);
   const [excludeEndDateAsString, setExcludeEndDateAsString] =
     useState<string>(today);
-  const [classes, setClasses] = useState<ScheduledClassInputDto[]>([]);
+  const [classes, setClasses] = useState<ScheduledClassDtoWithoutAttendance[]>(
+    []
+  );
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
   const [existingClasses, setExistingClasses] = useState<
-    ScheduledClassInputDto[]
+    ScheduledClassDtoWithoutAttendance[]
   >([]);
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
@@ -164,7 +166,7 @@ const ScheduleView = () => {
     event.preventDefault();
 
     axios
-      .post<ScheduledClassInputDto[]>(
+      .post<ScheduledClassDtoWithoutAttendance[]>(
         `${BASE_URL}/scheduled-classes`,
         classes,
         {
@@ -192,7 +194,9 @@ const ScheduleView = () => {
   const dayAbbreviation = (d: string) =>
     new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
 
-  const handleDeleteClass = (scheduledClass: ScheduledClassInputDto) => {
+  const handleDeleteClass = (
+    scheduledClass: ScheduledClassDtoWithoutAttendance
+  ) => {
     if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
       axios
         .delete(
@@ -232,7 +236,9 @@ const ScheduleView = () => {
     </p>
   ));
 
-  const sortDescending = (scheduledClassesArray: ScheduledClassInputDto[]) =>
+  const sortDescending = (
+    scheduledClassesArray: ScheduledClassDtoWithoutAttendance[]
+  ) =>
     scheduledClassesArray.sort((a, b) =>
       b.dateAsString.localeCompare(a.dateAsString)
     );
