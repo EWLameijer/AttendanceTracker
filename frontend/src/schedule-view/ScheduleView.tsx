@@ -59,13 +59,12 @@ const ScheduleView = () => {
       .then((response) => {
         setGroups(response.data);
         setGroupId(response.data[0].id);
-        getExistingClassesForSelectedGroup(response.data[0].id);
       });
   }, []);
 
-  const getExistingClassesForSelectedGroup = (id: string) => {
+  useEffect(() => {
     axios
-      .get(`${BASE_URL}/scheduled-classes/${id}`, {
+      .get(`${BASE_URL}/scheduled-classes/${groupId}`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -74,15 +73,10 @@ const ScheduleView = () => {
       .then((response) => {
         setExistingClasses(sortDescending(response.data));
       });
-  };
+  }, [groupId]);
 
-  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const id: string = event.target.value;
-
-    setGroupId(id);
-
-    getExistingClassesForSelectedGroup(id);
-  };
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setGroupId(event.target.value);
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setStartDateAsString(event.target.value);
