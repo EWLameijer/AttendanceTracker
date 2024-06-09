@@ -87,8 +87,7 @@ public class ScheduledClassController {
         if (localDate.isAfter(now)) {
             scheduledClassRepository.delete(scheduledClassToBeDeleted);
         } else {
-            scheduledClassToBeDeleted.setDeleted(true);
-            scheduledClassRepository.save(scheduledClassToBeDeleted);
+            throw new BadRequestException("Deze functionaliteit bestaat nog niet.");
         }
         return ResponseEntity.noContent().build();
     }
