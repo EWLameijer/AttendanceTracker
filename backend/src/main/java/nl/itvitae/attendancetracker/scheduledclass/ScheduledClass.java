@@ -26,9 +26,6 @@ public class ScheduledClass {
 
     private LocalDate date;
 
-    @Setter
-    private boolean deleted = false;
-
     public ScheduledClass(Group group, Teacher teacher, LocalDate date) {
         this.group = group;
         this.teacher = teacher;
