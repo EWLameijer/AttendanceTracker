@@ -22,7 +22,7 @@ const ScheduleView = () => {
     ScheduledClassDtoWithoutAttendance[]
   >([]);
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
-  const [existingClasses, setExistingClasses] = useState<
+  const [scheduledClasses, setScheduledClasses] = useState<
     ScheduledClassDtoWithoutAttendance[]
   >([]);
 
@@ -71,7 +71,7 @@ const ScheduleView = () => {
         },
       })
       .then((response) => {
-        setExistingClasses(sortDescending(response.data));
+        setScheduledClasses(sortDescending(response.data));
       });
   }, [groupId]);
 
@@ -173,8 +173,8 @@ const ScheduleView = () => {
       .then((response) => {
         if (response.status == HttpStatusCode.Created)
           alert(response.data.length + " lessen toegevoegd.");
-        setExistingClasses(
-          sortDescending([...response.data, ...existingClasses])
+        setScheduledClasses(
+          sortDescending([...response.data, ...scheduledClasses])
         );
       })
       .catch((error) => {
@@ -205,12 +205,11 @@ const ScheduleView = () => {
         .then(() => {
           alert(`${scheduledClass.dateAsString} is verwijderd.`);
 
-          const filteredClasses = existingClasses.filter(
-            (existingClass) =>
-              existingClass.dateAsString !== scheduledClass.dateAsString
+          const filteredClasses = scheduledClasses.filter(
+            (sc) => sc.dateAsString !== scheduledClass.dateAsString
           );
 
-          setExistingClasses(filteredClasses);
+          setScheduledClasses(filteredClasses);
         })
         .catch(() =>
           alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`)
@@ -218,7 +217,7 @@ const ScheduleView = () => {
     }
   };
 
-  const showExistingClasses = existingClasses.map((value) => (
+  const showScheduledClasses = scheduledClasses.map((value) => (
     <p key={value.dateAsString}>
       {dayAbbreviation(value.dateAsString)} {value.dateAsString}
       <button
@@ -317,7 +316,7 @@ const ScheduleView = () => {
                   </div>
                 </form>
               </td>
-              <td>{showExistingClasses}</td>
+              <td>{showScheduledClasses}</td>
             </tr>
           </tbody>
         </table>
