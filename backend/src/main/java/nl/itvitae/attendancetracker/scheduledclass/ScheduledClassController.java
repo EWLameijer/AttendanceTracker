@@ -28,16 +28,16 @@ public class ScheduledClassController {
 
     @GetMapping("scheduled-classes/{id}")
     public Iterable<ScheduledClassDtoWithoutAttendance> getAllScheduledCLasses(@PathVariable UUID id) {
-        var possibleGroup = groupRepository.findById(id)
+        var group = groupRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
 
-        return scheduledClassRepository.findAllByGroup(possibleGroup).stream()
+        return scheduledClassRepository.findAllByGroup(group).stream()
                 .map(ScheduledClassDtoWithoutAttendance::from).toList();
     }
 
     @PostMapping("/scheduled-classes")
-    public ResponseEntity<ArrayList<ScheduledClassDtoWithoutAttendance>> createScheduledClass(@RequestBody ScheduledClassDtoWithoutAttendance[] listNewClasses,
-                                                                                              UriComponentsBuilder ucb) {
+    public ResponseEntity<Iterable<ScheduledClassDtoWithoutAttendance>> createScheduledClass(@RequestBody ScheduledClassDtoWithoutAttendance[] listNewClasses,
+                                                                                             UriComponentsBuilder ucb) {
         var validClasses = new ArrayList<ScheduledClass>();
 
         for (ScheduledClassDtoWithoutAttendance potentialClass : listNewClasses) {
@@ -62,11 +62,7 @@ public class ScheduledClassController {
 
         scheduledClassRepository.saveAll(validClasses);
 
-        ArrayList<ScheduledClassDtoWithoutAttendance> addedClasses = new ArrayList<>();
-
-        for (ScheduledClass validClass : validClasses) {
-            addedClasses.add(ScheduledClassDtoWithoutAttendance.from(validClass));
-        }
+        var addedClasses = validClasses.stream().map(ScheduledClassDtoWithoutAttendance::from).toList();
 
         URI uri = ucb.path("").buildAndExpand().toUri();
 

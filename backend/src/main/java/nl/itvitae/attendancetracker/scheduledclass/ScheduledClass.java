@@ -3,7 +3,6 @@ package nl.itvitae.attendancetracker.scheduledclass;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.teacher.Teacher;
 

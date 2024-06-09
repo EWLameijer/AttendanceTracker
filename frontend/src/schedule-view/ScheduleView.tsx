@@ -211,15 +211,16 @@ const ScheduleView = () => {
         .then(() => {
           alert(`${scheduledClass.dateAsString} is verwijderd.`);
 
-          const filteredClasses = existingClasses.filter((existingClass) => {
-            return existingClass.dateAsString !== scheduledClass.dateAsString;
-          });
+          const filteredClasses = existingClasses.filter(
+            (existingClass) =>
+              existingClass.dateAsString !== scheduledClass.dateAsString
+          );
 
           setExistingClasses(filteredClasses);
         })
-        .catch(() => {
-          alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`);
-        });
+        .catch(() =>
+          alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`)
+        );
     }
   };
 
