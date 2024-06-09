@@ -41,7 +41,7 @@ public class ScheduledClassController {
         var validClasses = new ArrayList<ScheduledClass>();
 
         for (ScheduledClassDtoWithoutAttendance potentialClass : listNewClasses) {
-            LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
+            LocalDate localDate = convertToLocalDate(potentialClass.dateAsString());
 
             var teacher = teacherRepository.findById(potentialClass.teacherId())
                     .orElseThrow(() -> new BadRequestException("Leraar bestaat niet."));
