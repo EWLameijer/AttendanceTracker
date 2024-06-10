@@ -109,7 +109,7 @@ const ScheduleView = () => {
 
     const dayIndex = (date: Date) => date.getDay() - 1;
 
-    const scheduledClasses = [
+    const newClasses = [
       ...dateRangeGenerator(
         new Date(startDateAsString),
         new Date(endDateAsString)
@@ -121,7 +121,7 @@ const ScheduleView = () => {
         teacherId: teacherIdsWeek[dayIndex(date)],
         dateAsString: toYYYYMMDD(date),
       }));
-    setProposedClasses(scheduledClasses);
+    setProposedClasses(newClasses);
   };
 
   const handleExcludeStartDateChange = (
