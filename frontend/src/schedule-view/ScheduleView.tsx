@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../utils";
 import { Group } from "../admin-view/Group";
 import { Teacher } from "./Teacher";
-import { ScheduledClassInputDto } from "./ScheduledClassInputDto";
+import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
 import UserContext from "../context/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
 
@@ -18,8 +18,13 @@ const ScheduleView = () => {
     useState<string>(today);
   const [excludeEndDateAsString, setExcludeEndDateAsString] =
     useState<string>(today);
-  const [classes, setClasses] = useState<ScheduledClassInputDto[]>([]);
+  const [proposedClasses, setProposedClasses] = useState<
+    ScheduledClassDtoWithoutAttendance[]
+  >([]);
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
+  const [scheduledClasses, setScheduledClasses] = useState<
+    ScheduledClassDtoWithoutAttendance[]
+  >([]);
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
   const user = useContext(UserContext);
@@ -57,6 +62,19 @@ const ScheduleView = () => {
       });
   }, []);
 
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/scheduled-classes/${groupId}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then((response) => {
+        setScheduledClasses(sortDescending(response.data));
+      });
+  }, [groupId]);
+
   const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setGroupId(event.target.value);
 
@@ -91,7 +109,7 @@ const ScheduleView = () => {
 
     const dayIndex = (date: Date) => date.getDay() - 1;
 
-    const scheduledClasses = [
+    const newClasses = [
       ...dateRangeGenerator(
         new Date(startDateAsString),
         new Date(endDateAsString)
@@ -103,7 +121,7 @@ const ScheduleView = () => {
         teacherId: teacherIdsWeek[dayIndex(date)],
         dateAsString: toYYYYMMDD(date),
       }));
-    setClasses(scheduledClasses);
+    setProposedClasses(newClasses);
   };
 
   const handleExcludeStartDateChange = (
@@ -116,7 +134,7 @@ const ScheduleView = () => {
 
   const excludeClasses = (event: React.FormEvent) => {
     event.preventDefault();
-    if (classes.length == 0) {
+    if (proposedClasses.length == 0) {
       alert("Genereer eerst een periode");
     } else {
       const startOfExcludedPeriod = new Date(excludeStartDateAsString);
@@ -126,15 +144,15 @@ const ScheduleView = () => {
         ...dateRangeGenerator(startOfExcludedPeriod, endOfExcludedPeriod),
       ].map(toYYYYMMDD);
 
-      const remainingClasses = [...classes].filter(
+      const remainingClasses = [...proposedClasses].filter(
         (classDto) => !excludedClassesAsStrings.includes(classDto.dateAsString)
       );
 
-      setClasses(remainingClasses);
+      setProposedClasses(remainingClasses);
     }
   };
 
-  const showClasses = classes.map((value) => (
+  const showClassesToAdd = proposedClasses.map((value) => (
     <p key={value.dateAsString}>{value.dateAsString}</p>
   ));
 
@@ -142,9 +160,9 @@ const ScheduleView = () => {
     event.preventDefault();
 
     axios
-      .post<ScheduledClassInputDto[]>(
+      .post<ScheduledClassDtoWithoutAttendance[]>(
         `${BASE_URL}/scheduled-classes`,
-        classes,
+        proposedClasses,
         {
           auth: {
             username: user.username,
@@ -153,7 +171,11 @@ const ScheduleView = () => {
         }
       )
       .then((response) => {
-        if (response.status == HttpStatusCode.Created) alert(response.data);
+        if (response.status == HttpStatusCode.Created)
+          alert(response.data.length + " lessen toegevoegd.");
+        setScheduledClasses(
+          sortDescending([...response.data, ...scheduledClasses])
+        );
       })
       .catch((error) => {
         if (error.response.status == HttpStatusCode.BadRequest) {
@@ -163,73 +185,142 @@ const ScheduleView = () => {
       });
   };
 
+  const dayAbbreviation = (d: string) =>
+    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
+
+  const handleDeleteClass = (
+    scheduledClass: ScheduledClassDtoWithoutAttendance
+  ) => {
+    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+      axios
+        .delete(
+          `${BASE_URL}/scheduled-classes/${scheduledClass.groupId}/${scheduledClass.dateAsString}`,
+          {
+            auth: {
+              username: user.username,
+              password: user.password,
+            },
+          }
+        )
+        .then(() => {
+          alert(`${scheduledClass.dateAsString} is verwijderd.`);
+
+          const filteredClasses = scheduledClasses.filter(
+            (sc) => sc.dateAsString !== scheduledClass.dateAsString
+          );
+
+          setScheduledClasses(filteredClasses);
+        })
+        .catch(() =>
+          alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`)
+        );
+    }
+  };
+
+  const showScheduledClasses = scheduledClasses.map((value) => (
+    <p key={value.dateAsString}>
+      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+      <button
+        value={value.dateAsString}
+        onClick={() => handleDeleteClass(value)}
+        hidden={new Date(value.dateAsString) <= new Date()}
+      >
+        X
+      </button>
+    </p>
+  ));
+
+  const sortDescending = (
+    scheduledClassesArray: ScheduledClassDtoWithoutAttendance[]
+  ) =>
+    scheduledClassesArray.sort((a, b) =>
+      b.dateAsString.localeCompare(a.dateAsString)
+    );
   return (
+    //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
     teachers.length > 0 && (
-      <form>
-        <h3>Voeg een nieuwe les toe:</h3>
+      <>
+        <p>Kies een groep:</p>
+        <select onChange={handleGroupChange}>
+          {groups.map((group: Group, index: number) => (
+            <option key={index} value={group.id}>
+              {group.name}
+            </option>
+          ))}
+        </select>
+        <table>
+          <thead>
+            <tr>
+              <th>Voeg nieuwe lessen toe:</th>
+              <th>Verwijder bestaande lessen:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <form>
+                  <div>
+                    <p>
+                      Kies een begin- en einddatum van de in te voeren periode:
+                    </p>
+                    Begindatum:
+                    <input
+                      type="date"
+                      value={startDateAsString}
+                      onChange={handleStartDateChange}
+                    ></input>
+                    Einddatum:
+                    <input
+                      type="date"
+                      value={endDateAsString}
+                      onChange={handleEndDateChange}
+                    ></input>
+                  </div>
 
-        <div>
-          <p>Kies een groep:</p>
-          <select onChange={handleGroupChange}>
-            {groups.map((group: Group, index: number) => (
-              <option key={index} value={group.id}>
-                {group.name}
-              </option>
-            ))}
-          </select>
-        </div>
+                  <div>
+                    <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
+                    {createTeacherIdsWeek}
+                  </div>
 
-        <div>
-          <p>Kies een begin- en einddatum van de in te voeren periode:</p>
-          Begindatum:
-          <input
-            type="date"
-            value={startDateAsString}
-            onChange={handleStartDateChange}
-          ></input>
-          Einddatum:
-          <input
-            type="date"
-            value={endDateAsString}
-            onChange={handleEndDateChange}
-          ></input>
-        </div>
+                  <div>
+                    <button onClick={generateClasses}>Genereer periode</button>
+                  </div>
 
-        <div>
-          <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-          {createTeacherIdsWeek}
-        </div>
+                  <div>
+                    <p>
+                      Kies een begin- en einddatum van de uit te sluiten
+                      periode:
+                    </p>
+                    Begindatum:
+                    <input
+                      type="date"
+                      value={excludeStartDateAsString}
+                      onChange={handleExcludeStartDateChange}
+                    ></input>
+                    Einddatum:
+                    <input
+                      type="date"
+                      value={excludeEndDateAsString}
+                      onChange={handleExcludeEndDateChange}
+                    ></input>
+                  </div>
 
-        <div>
-          <button onClick={generateClasses}>Genereer periode</button>
-        </div>
+                  <div>{showClassesToAdd}</div>
 
-        <div>
-          <p>Kies een begin- en einddatum van de uit te sluiten periode:</p>
-          Begindatum:
-          <input
-            type="date"
-            value={excludeStartDateAsString}
-            onChange={handleExcludeStartDateChange}
-          ></input>
-          Einddatum:
-          <input
-            type="date"
-            value={excludeEndDateAsString}
-            onChange={handleExcludeEndDateChange}
-          ></input>
-        </div>
+                  <div>
+                    <button onClick={excludeClasses}>Verwijder selectie</button>
+                  </div>
 
-        <div>{showClasses}</div>
-
-        <div>
-          <button onClick={excludeClasses}>Verwijder selectie</button>
-        </div>
-
-        <div>
-          <button onClick={submitClasses}>Sla alle lessen op.</button>
-        </div>
-      </form>
+                  <div>
+                    <button onClick={submitClasses}>Sla alle lessen op.</button>
+                  </div>
+                </form>
+              </td>
+              <td>{showScheduledClasses}</td>
+            </tr>
+          </tbody>
+        </table>
+      </>
     )
   );
 };

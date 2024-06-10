@@ -2,19 +2,17 @@ package nl.itvitae.attendancetracker.scheduledclass;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
 import nl.itvitae.attendancetracker.teacher.TeacherRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static nl.itvitae.attendancetracker.Utils.parseLocalDateOrThrow;
 
@@ -26,27 +24,34 @@ public class ScheduledClassController {
 
     private final GroupRepository groupRepository;
 
-    private final RegistrarRepository registrarRepository;
     private final TeacherRepository teacherRepository;
 
+    @GetMapping("scheduled-classes/{id}")
+    public Iterable<ScheduledClassDtoWithoutAttendance> getAllScheduledCLasses(@PathVariable UUID id) {
+        var group = groupRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
+
+        return scheduledClassRepository.findAllByGroup(group).stream()
+                .map(ScheduledClassDtoWithoutAttendance::from).toList();
+    }
+
     @PostMapping("/scheduled-classes")
-    public ResponseEntity<String> createScheduledClass(@RequestBody ScheduledClassInputDto[] listNewClasses,
-                                                       UriComponentsBuilder ucb) {
+    public ResponseEntity<Iterable<ScheduledClassDtoWithoutAttendance>> createScheduledClass(@RequestBody ScheduledClassDtoWithoutAttendance[] listNewClasses,
+                                                                                             UriComponentsBuilder ucb) {
         var validClasses = new ArrayList<ScheduledClass>();
 
-        for (ScheduledClassInputDto potentialClass : listNewClasses) {
+        for (ScheduledClassDtoWithoutAttendance potentialClass : listNewClasses) {
             LocalDate localDate = parseLocalDateOrThrow(potentialClass.dateAsString());
 
             var teacher = teacherRepository.findById(potentialClass.teacherId())
-                    .orElseThrow(() -> new BadRequestException("Leraar bestaat niet"));
+                    .orElseThrow(() -> new BadRequestException("Leraar bestaat niet."));
 
             if (scheduledClassRepository.findByDateAndTeacher(localDate, teacher).isPresent()) {
                 throw new BadRequestException("De geselecteerde leraar is niet beschikbaar op " +
                         potentialClass.dateAsString() + ".");
             }
 
-            var group = groupRepository.findById(potentialClass.groupId())
-                    .orElseThrow(() -> new BadRequestException("Groep bestaat niet"));
+            var group = findGroup(potentialClass.groupId());
 
             if (scheduledClassRepository.findByDateAndGroup(localDate, group).isPresent()) {
                 throw new BadRequestException("Deze groep heeft al een les op " + potentialClass.dateAsString() + ".");
@@ -57,7 +62,34 @@ public class ScheduledClassController {
 
         scheduledClassRepository.saveAll(validClasses);
 
+        var addedClasses = validClasses.stream().map(ScheduledClassDtoWithoutAttendance::from).toList();
+
         URI uri = ucb.path("").buildAndExpand().toUri();
-        return ResponseEntity.created(uri).body(validClasses.size() + " lessen toegevoegd.");
+
+        return ResponseEntity.created(uri).body(addedClasses);
+    }
+
+    @DeleteMapping("/scheduled-classes/{groupId}/{dateAsString}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID groupId, @PathVariable String dateAsString) {
+        LocalDate localDate = parseLocalDateOrThrow(dateAsString);
+
+        var group = findGroup(groupId);
+
+        LocalDate now = LocalDate.now();
+
+        var scheduledClassToBeDeleted = scheduledClassRepository.findByDateAndGroup(localDate, group).
+                orElseThrow(() -> new BadRequestException("Deze les bestaat niet."));
+
+        if (localDate.isAfter(now)) {
+            scheduledClassRepository.delete(scheduledClassToBeDeleted);
+        } else {
+            throw new BadRequestException("Deze functionaliteit bestaat nog niet.");
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    private Group findGroup(UUID id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Groep bestaat niet."));
     }
 }
