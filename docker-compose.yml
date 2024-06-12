@@ -1,11 +1,9 @@
 services:
   psql-db:
-    image: postgres:alpine3.20
+    image: postgres
     container_name: psql-db
     restart: always
     environment:
-      - TZ=Europe/Amsterdam
-      - PGTZ=Europe/Amsterdam
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=attendancetracker
