@@ -1,20 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AdminView from "./admin-view/AdminView.tsx";
+import AdminView from "./group-management-page/AdminView.tsx";
 
 import "./index.css";
-import UserContext from "./context/UserContext.ts";
-import LoginData from "./context/LoginData.ts";
-import Login from "./components/Login.tsx";
-import CoachView from "./components/CoachView.tsx";
-import ScheduleView from "./schedule-view/ScheduleView.tsx";
-import TeacherView from "./components/TeacherView.tsx";
+import UserContext from "./login-page/UserContext.ts";
+import LoginData from "./login-page/LoginData.ts";
+import Login from "./login-page/Login.tsx";
+import CoachView from "./attendance-management-page/CoachView.tsx";
+import ScheduleView from "./class-management-page/ScheduleView.tsx";
+import TeacherView from "./attendance-management-page/TeacherView.tsx";
 import HistoryView from "./HistoryView.tsx";
-import Role from "./components/shared/Role.ts";
-import Authorized from "./components/shared/Authorized.tsx";
-import PersonnelView from "./components/PersonnelView.tsx";
-import RegistrationView from "./components/RegistrationView.tsx";
+import Role from "./login-page/Role.ts";
+import Authorized from "./login-page/Authorized.tsx";
+import PersonnelView from "./worker-management-page/PersonnelView.tsx";
+import RegistrationView from "./worker-management-page/RegistrationView.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

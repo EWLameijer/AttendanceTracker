@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import GroupEditComponent from "./GroupEditComponent";
-import { Group } from "./Group";
+import { Group } from "../shared/Group";
 import { BASE_URL } from "../utils";
 import AddGroup from "./AddGroup";
-import UserContext from "../context/UserContext";
+import UserContext from "../login-page/UserContext";
 
 const groupUrl = `${BASE_URL}/groups`;
 

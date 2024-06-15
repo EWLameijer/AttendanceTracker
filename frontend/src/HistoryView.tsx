@@ -3,7 +3,7 @@ import { Attendance, Status, translateAttendanceStatus } from "./Class";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL, toYYYYMMDD } from "./utils";
-import UserContext from "./context/UserContext";
+import UserContext from "./login-page/UserContext";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);

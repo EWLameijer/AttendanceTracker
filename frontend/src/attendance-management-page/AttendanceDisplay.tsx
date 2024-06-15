@@ -3,7 +3,7 @@ import { Attendance, Status, translateAttendanceStatus } from "../Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
-import UserContext from "../context/UserContext.ts";
+import UserContext from "../login-page/UserContext.ts";
 
 let currentTimer: number | undefined = undefined;
 

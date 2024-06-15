@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-import UserContext from "../../context/UserContext";
+import UserContext from "./UserContext";
 import { Navigate } from "react-router";
 
 // from https://blog.logrocket.com/authentication-react-router-v6/ , extended with authorization

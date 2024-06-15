@@ -1,4 +1,4 @@
-import Role from "../components/shared/Role";
+import Role from "./Role";
 
 class LoginData {
   username: string = "";
