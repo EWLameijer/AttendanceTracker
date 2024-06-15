@@ -1,9 +1,9 @@
 import axios from "axios";
-import { Attendance, Class, Status, addExtraData } from "../Class.ts";
-import { BASE_URL } from "../utils.ts";
+import { Attendance, Class, Status, addExtraData } from "../-shared/Class.ts";
+import { BASE_URL } from "../-shared/utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
 import { useContext, useEffect, useState } from "react";
-import UserContext from "../context/UserContext.ts";
+import UserContext from "../-shared/UserContext.ts";
 
 const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   const [chosenClass, setChosenClass] = useState(props.chosenClass);

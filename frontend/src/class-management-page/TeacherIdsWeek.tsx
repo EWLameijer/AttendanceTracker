@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Teacher } from "./Teacher";
+import { Teacher } from "../-shared/Teacher";
 
 const TeacherIdsWeek = (props: {
   updateTeacherIdForADay: (

@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { Registrar } from "../../utils";
-import UserContext from "../../context/UserContext";
+import { Registrar } from "../-shared/utils";
+import UserContext from "../-shared/UserContext";
 
 const RegistrarList = (props: {
   title: string;

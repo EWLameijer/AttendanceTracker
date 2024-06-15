@@ -1,10 +1,10 @@
 import axios from "axios";
-import UserContext from "../context/UserContext";
+import UserContext from "../-shared/UserContext";
 import { useContext, useEffect, useState } from "react";
-import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../utils";
-import Role from "./shared/Role";
-import { Teacher } from "../schedule-view/Teacher";
-import RegistrarList from "./personnel-view-components/RegistrarList";
+import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
+import Role from "../-shared/Role";
+import { Teacher } from "../-shared/Teacher";
+import RegistrarList from "./RegistrarList";
 
 const PersonnelView = () => {
   const user = useContext(UserContext);

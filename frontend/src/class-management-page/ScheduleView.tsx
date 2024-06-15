@@ -1,10 +1,10 @@
 import axios, { HttpStatusCode } from "axios";
 import { useState, useEffect, useContext } from "react";
-import { BASE_URL, toYYYYMMDD } from "../utils";
-import { Group } from "../admin-view/Group";
-import { Teacher } from "./Teacher";
+import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
+import { Group } from "../-shared/Group";
+import { Teacher } from "../-shared/Teacher";
 import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
-import UserContext from "../context/UserContext";
+import UserContext from "../-shared/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
 
 const ScheduleView = () => {
@@ -63,6 +63,7 @@ const ScheduleView = () => {
   }, []);
 
   useEffect(() => {
+    if (!groupId) return;
     axios
       .get(`${BASE_URL}/scheduled-classes/${groupId}`, {
         auth: {
