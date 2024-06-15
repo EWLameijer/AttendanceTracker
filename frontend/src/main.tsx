@@ -10,7 +10,7 @@ import Login from "./login-page/Login.tsx";
 import CoachView from "./attendance-management-page/CoachView.tsx";
 import ScheduleView from "./class-management-page/ScheduleView.tsx";
 import TeacherView from "./attendance-management-page/TeacherView.tsx";
-import HistoryView from "./HistoryView.tsx";
+import HistoryView from "./history-page/HistoryView.tsx";
 import Role from "./login-page/Role.ts";
 import Authorized from "./login-page/Authorized.tsx";
 import PersonnelView from "./worker-management-page/PersonnelView.tsx";

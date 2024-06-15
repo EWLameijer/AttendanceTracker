@@ -1,5 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { Attendance, Status, translateAttendanceStatus } from "../Class.ts";
+import {
+  Attendance,
+  Status,
+  translateAttendanceStatus,
+} from "../class-management-page/Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";

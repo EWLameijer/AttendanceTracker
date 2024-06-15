@@ -1,9 +1,13 @@
 import { useParams } from "react-router-dom";
-import { Attendance, Status, translateAttendanceStatus } from "./Class";
+import {
+  Attendance,
+  Status,
+  translateAttendanceStatus,
+} from "../class-management-page/Class";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL, toYYYYMMDD } from "./utils";
-import UserContext from "./login-page/UserContext";
+import { BASE_URL, toYYYYMMDD } from "../shared/utils";
+import UserContext from "../login-page/UserContext";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);

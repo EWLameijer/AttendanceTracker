@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
+import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../shared/utils";
 import axios from "axios";
-import { Class, addExtraData } from "../Class";
+import { Class, addExtraData } from "../class-management-page/Class";
 import GroupElement from "./GroupElement";
 import UserContext from "../login-page/UserContext";
 

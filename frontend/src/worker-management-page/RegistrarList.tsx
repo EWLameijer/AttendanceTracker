@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Registrar } from "../utils";
+import { Registrar } from "../shared/utils";
 import UserContext from "../login-page/UserContext";
 
 const RegistrarList = (props: {

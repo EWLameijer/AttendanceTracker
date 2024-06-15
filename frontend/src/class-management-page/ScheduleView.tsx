@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 import { useState, useEffect, useContext } from "react";
-import { BASE_URL, toYYYYMMDD } from "../utils";
+import { BASE_URL, toYYYYMMDD } from "../shared/utils";
 import { Group } from "../shared/Group";
 import { Teacher } from "./Teacher";
 import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";

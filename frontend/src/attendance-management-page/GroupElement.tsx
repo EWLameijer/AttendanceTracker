@@ -1,6 +1,11 @@
 import axios from "axios";
-import { Attendance, Class, Status, addExtraData } from "../Class.ts";
-import { BASE_URL } from "../utils.ts";
+import {
+  Attendance,
+  Class,
+  Status,
+  addExtraData,
+} from "../class-management-page/Class.ts";
+import { BASE_URL } from "../shared/utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../login-page/UserContext.ts";
