@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import DatePicker from "./DatePicker";
-import UserContext from "../login-page/UserContext";
+import UserContext from "../-shared/UserContext";
 
 const TeacherView = () => {
   const loginData = useContext(UserContext);

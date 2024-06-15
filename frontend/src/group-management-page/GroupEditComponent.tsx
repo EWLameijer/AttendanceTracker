@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import { Group } from "../shared/Group";
+import { Group } from "../-shared/Group";
 import MemberEditComponent from "./MemberEditComponent";
 import axios from "axios";
-import { BASE_URL } from "../shared/utils";
+import { BASE_URL } from "../-shared/utils";
 import UserContext from "../login-page/UserContext";
 
 const GroupEditComponent = (props: {

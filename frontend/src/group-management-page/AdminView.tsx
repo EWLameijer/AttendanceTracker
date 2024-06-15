@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import GroupEditComponent from "./GroupEditComponent";
-import { Group } from "../shared/Group";
-import { BASE_URL } from "../shared/utils";
+import { Group } from "../-shared/Group";
+import { BASE_URL } from "../-shared/utils";
 import AddGroup from "./AddGroup";
 import UserContext from "../login-page/UserContext";
 

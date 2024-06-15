@@ -6,7 +6,7 @@ import {
 } from "../class-management-page/Class";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL, toYYYYMMDD } from "../shared/utils";
+import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
 import UserContext from "../login-page/UserContext";
 
 const HistoryView = () => {

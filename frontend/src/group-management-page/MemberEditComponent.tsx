@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Student } from "../shared/Student";
-import { BASE_URL } from "../shared/utils";
+import { Student } from "../-shared/Student";
+import { BASE_URL } from "../-shared/utils";
 import UserContext from "../login-page/UserContext";
 import { useContext } from "react";
 

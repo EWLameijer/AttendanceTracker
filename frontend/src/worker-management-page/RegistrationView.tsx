@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL } from "../shared/utils";
+import { BASE_URL } from "../-shared/utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
 

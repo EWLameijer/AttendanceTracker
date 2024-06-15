@@ -1,7 +1,7 @@
 import axios from "axios";
 import UserContext from "../login-page/UserContext";
 import { useContext, useEffect, useState } from "react";
-import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../shared/utils";
+import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
 import Role from "../login-page/Role";
 import { Teacher } from "../class-management-page/Teacher";
 import RegistrarList from "./RegistrarList";
