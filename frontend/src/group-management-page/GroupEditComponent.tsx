@@ -3,7 +3,7 @@ import { Group } from "../-shared/Group";
 import MemberEditComponent from "./MemberEditComponent";
 import axios from "axios";
 import { BASE_URL } from "../-shared/utils";
-import UserContext from "../login-page/UserContext";
+import UserContext from "../-shared/UserContext";
 
 const GroupEditComponent = (props: {
   group: Group;

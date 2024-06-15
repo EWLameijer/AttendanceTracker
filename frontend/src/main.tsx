@@ -4,14 +4,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminView from "./group-management-page/AdminView.tsx";
 
 import "./index.css";
-import UserContext from "./login-page/UserContext.ts";
-import LoginData from "./login-page/LoginData.ts";
+import UserContext from "./-shared/UserContext.ts";
+import LoginData from "./-shared/LoginData.ts";
 import Login from "./login-page/Login.tsx";
 import CoachView from "./attendance-management-page/CoachView.tsx";
 import ScheduleView from "./class-management-page/ScheduleView.tsx";
 import TeacherView from "./attendance-management-page/TeacherView.tsx";
 import HistoryView from "./history-page/HistoryView.tsx";
-import Role from "./login-page/Role.ts";
+import Role from "./-shared/Role.ts";
 import Authorized from "./login-page/Authorized.tsx";
 import PersonnelView from "./worker-management-page/PersonnelView.tsx";
 import RegistrationView from "./worker-management-page/RegistrationView.tsx";

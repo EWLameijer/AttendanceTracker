@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import UserContext from "./UserContext";
+import UserContext from "../-shared/UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../-shared/utils";

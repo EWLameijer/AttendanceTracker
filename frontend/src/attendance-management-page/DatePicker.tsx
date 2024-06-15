@@ -6,9 +6,9 @@ import {
   toYYYYMMDD,
 } from "../-shared/utils";
 import axios from "axios";
-import { Class, addExtraData } from "../class-management-page/Class";
+import { Class, addExtraData } from "../-shared/Class";
 import GroupElement from "./GroupElement";
-import UserContext from "../login-page/UserContext";
+import UserContext from "../-shared/UserContext";
 
 // there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
 let lastDate = new Date();

@@ -2,9 +2,9 @@ import axios, { HttpStatusCode } from "axios";
 import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
 import { Group } from "../-shared/Group";
-import { Teacher } from "./Teacher";
+import { Teacher } from "../-shared/Teacher";
 import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
-import UserContext from "../login-page/UserContext";
+import UserContext from "../-shared/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
 
 const ScheduleView = () => {

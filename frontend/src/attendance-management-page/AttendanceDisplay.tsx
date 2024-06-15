@@ -3,11 +3,11 @@ import {
   Attendance,
   Status,
   translateAttendanceStatus,
-} from "../class-management-page/Class.ts";
+} from "../-shared/Class.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
-import UserContext from "../login-page/UserContext.ts";
+import UserContext from "../-shared/UserContext.ts";
 
 let currentTimer: number | undefined = undefined;
 

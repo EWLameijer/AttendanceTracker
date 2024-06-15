@@ -4,7 +4,7 @@ import GroupEditComponent from "./GroupEditComponent";
 import { Group } from "../-shared/Group";
 import { BASE_URL } from "../-shared/utils";
 import AddGroup from "./AddGroup";
-import UserContext from "../login-page/UserContext";
+import UserContext from "../-shared/UserContext";
 
 const groupUrl = `${BASE_URL}/groups`;
 
