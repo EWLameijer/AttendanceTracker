@@ -38,7 +38,7 @@ const RegistrarList = (props: {
                         key={role}
                         onClick={() => props.changeRole(registrar.id, role)}
                       >
-                        maak {roleNames[role]}
+                        Maak {roleNames[role]}
                       </button>
                     ))}
                 </>
