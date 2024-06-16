@@ -49,8 +49,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.POST,
-                                        "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin))
-
+                                        "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin)
+                                .requestMatchers("groups").hasRole(superAdmin))
                 .build();
     }
 
