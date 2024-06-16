@@ -97,6 +97,11 @@ const DatePicker = () => {
         <button onClick={nextLessonDay} disabled={!nextDate}>
           Volgende lesdag
         </button>
+        <input
+          type="date"
+          value={toYYYYMMDD(lastDate)}
+          onChange={(event) => loadDate(event?.currentTarget.value)}
+        />
       </h3>
       {user.isTeacher() ? (
         <GroupElement
