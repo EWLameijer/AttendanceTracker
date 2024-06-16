@@ -27,7 +27,7 @@ class LoginData {
   };
 
   isTeacher = () => this.role === Role.TEACHER;
-  isAdmin = () => this.role === Role.ADMIN || this.role === Role.SUPER_ADMIN;
+  isAnyAdmin = () => this.role === Role.ADMIN || this.role === Role.SUPER_ADMIN;
   isSuperAdmin = () => this.role === Role.SUPER_ADMIN;
 }
 

@@ -21,7 +21,7 @@ const CoachView = () => {
             </button>
           </>
         )}
-        {user.isAdmin() && (
+        {user.isAnyAdmin() && (
           <button onClick={() => navigate("/worker-management")}>
             Beheer gebruikers
           </button>
