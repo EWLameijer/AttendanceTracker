@@ -192,6 +192,10 @@ const PersonnelView = () => {
     }
   };
 
+  const withdrawInvitation = (id: string) => {
+    setInvitees(invitees.filter((invitee) => invitee.id !== id));
+  };
+
   const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
 
   return (
@@ -249,7 +253,10 @@ const PersonnelView = () => {
       <ul>
         {inviteesForDisplay.map((invitee) => (
           <li key={invitee.name}>
-            {invitee.name} ({invitee.role})
+            {invitee.name} ({invitee.role}){" "}
+            <button onClick={() => withdrawInvitation(invitee.id)}>
+              Uitnodiging intrekken
+            </button>
           </li>
         ))}
       </ul>
