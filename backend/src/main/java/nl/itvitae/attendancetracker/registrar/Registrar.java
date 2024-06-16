@@ -27,6 +27,7 @@ public class Registrar {
     private boolean enabled = true;
 
     @Enumerated(EnumType.STRING)
+    @Setter
     private ATRole role;
 
     public Registrar(WorkerIdentity identity, String password, ATRole role) {
