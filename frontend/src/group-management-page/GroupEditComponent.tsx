@@ -8,13 +8,17 @@ import UserContext from "../-shared/UserContext";
 const GroupEditComponent = ({
   group,
   remove,
+  changeName,
 }: {
   group: Group;
   remove: (id: string) => void;
+  changeName: (id: string, newName: string) => void;
 }) => {
   const [students, setStudents] = useState(group.members);
   const [newStudentName, setNewStudentName] = useState("");
   const user = useContext(UserContext);
+  const [inEditMode, setEditMode] = useState(false);
+  const [name, setName] = useState(group.name);
 
   const removeStudent = (studentId: string) =>
     setStudents(students.filter((student) => student.id != studentId));
@@ -59,9 +63,29 @@ const GroupEditComponent = ({
   const change = (event: React.FormEvent<HTMLInputElement>) =>
     setNewStudentName(event.currentTarget.value);
 
+  const editOrSave = () => {
+    if (inEditMode) {
+      changeName(group.id, name);
+      setName(group.name);
+    }
+    setEditMode(!inEditMode);
+  };
+
   return (
     <li>
-      {group.name}
+      {inEditMode ? (
+        <input value={name} onChange={(e) => setName(e.currentTarget.value)} />
+      ) : (
+        <span>{name}</span>
+      )}
+      <button
+        onClick={editOrSave}
+        disabled={
+          inEditMode && (!name?.trim() || name?.trim() === group.name.trim())
+        }
+      >
+        {inEditMode ? "Opslaan" : "Groepsnaam wijzigen"}
+      </button>
       <button onClick={removeGroupIfPermitted}>
         {group.hasPastClasses ? "Archiveer groep" : "Verwijder groep"}
       </button>
