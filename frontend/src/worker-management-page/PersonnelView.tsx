@@ -63,6 +63,10 @@ const PersonnelView = () => {
       alert("Geen naam opgegeven!");
       return;
     }
+    inviteRegistrar(name, backendTitle);
+  };
+
+  const inviteRegistrar = (name: string, backendTitle: string) => {
     axios
       .post(
         `${BASE_URL}/invitations/for-${backendTitle}`,
@@ -79,7 +83,7 @@ const PersonnelView = () => {
           `Stuur de ander de link ${FRONTEND_URL}/registration-view/${response.data.code} Deze blijft 24 uur geldig.`
         );
         setInvitees([
-          ...invitees,
+          ...invitees.filter((invitee) => invitee.name !== name),
           {
             id: response.data.code,
             name,
@@ -209,6 +213,13 @@ const PersonnelView = () => {
 
   const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
 
+  const toUrlCase = (text: string) => text.toLowerCase().replace(/_/, "-");
+
+  const recreateInvitation = (name: string) => {
+    const role = invitees.find((invitee) => invitee.name === name)!.role;
+    inviteRegistrar(name, toUrlCase(role));
+  };
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
@@ -269,6 +280,9 @@ const PersonnelView = () => {
             {invitee.name} ({invitee.role}){" "}
             <button onClick={() => withdrawInvitation(invitee.name)}>
               Uitnodiging intrekken
+            </button>
+            <button onClick={() => recreateInvitation(invitee.name)}>
+              Opnieuw uitnodigingslink produceren (maakt oude link ongeldig)
             </button>
           </li>
         ))}
