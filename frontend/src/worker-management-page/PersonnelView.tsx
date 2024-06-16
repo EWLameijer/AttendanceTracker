@@ -46,6 +46,15 @@ const PersonnelView = () => {
       .then((response) => setInvitees(response.data));
   }, []);
 
+  const roleNames = {
+    [Role.TEACHER]: "docent",
+    [Role.COACH]: "studentbegeleider",
+    [Role.ADMIN]: "administrator",
+    [Role.SUPER_ADMIN]: "super-administrator",
+  };
+
+  const toEnumCase = (text: string) => text.toUpperCase().replace(/-/, "_");
+
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
       `Geef de naam van de ${dutchTitle} om uit te nodigen:`
@@ -74,7 +83,7 @@ const PersonnelView = () => {
           {
             id: response.data.code,
             name,
-            role: backendTitle === "teacher" ? Role.TEACHER : Role.ADMIN,
+            role: toEnumCase(backendTitle),
           },
         ]);
       })
@@ -133,13 +142,6 @@ const PersonnelView = () => {
   const externalTeachers = teachers
     .filter((teacher) => !registeringTeacherNames.includes(teacher.name))
     .sort(byName);
-
-  const roleNames = {
-    [Role.TEACHER]: "docent",
-    [Role.COACH]: "studentbegeleider",
-    [Role.ADMIN]: "administrator",
-    [Role.SUPER_ADMIN]: "super-administrator",
-  };
 
   const inviteesForDisplay = invitees
     .map((invitee) => ({
@@ -201,18 +203,19 @@ const PersonnelView = () => {
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
-      <button onClick={inviteCoach}>Nodig coach uit</button>
+      <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
       {user.isSuperAdmin() && (
         <>
           <button onClick={inviteAdmin}>Nodig administrator uit</button>
           <button onClick={inviteSuperAdmin}>
             Nodig super-administrator uit
           </button>
+          <button onClick={addExternalTeacher}>
+            Voeg externe docent toe die zich nog niet hoeft te registreren
+          </button>
         </>
       )}
-      <button onClick={addExternalTeacher}>
-        Voeg externe docent toe die zich nog niet hoeft te registreren
-      </button>
+
       <RegistrarList
         title="Docenten (die aanwezigheid kunnen registreren)"
         registrars={registeringTeachers}
@@ -228,6 +231,7 @@ const PersonnelView = () => {
             {externalTeacher.name}
             <button
               onClick={() => removeFromLessonPlanning(externalTeacher.id)}
+              disabled={!user.isSuperAdmin()}
             >
               Verwijderen
             </button>

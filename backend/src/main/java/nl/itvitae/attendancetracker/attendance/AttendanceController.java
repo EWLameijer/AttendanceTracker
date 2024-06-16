@@ -83,7 +83,9 @@ public class AttendanceController {
         var attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
         // if the requested day does not have a schedule, return the most recent lesson date instead
         if (classes.isEmpty()) {
-            chosenDate = findPreviousDate(LocalDate.now(), registrar).orElseThrow(() -> new BadRequestException("No nearby lesson date!"));
+            chosenDate = findPreviousDate(LocalDate.now(), registrar).
+                    orElse(findNextDate(LocalDate.now(), registrar).
+                            orElseThrow(() -> new BadRequestException("No nearby lesson date!")));
             attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
         }
         var previousDate = findPreviousDate(chosenDate, registrar);
