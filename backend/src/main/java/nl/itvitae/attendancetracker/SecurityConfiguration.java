@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/invitations/*").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/invitations/*").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/teachers").hasAnyRole(admin, superAdmin)

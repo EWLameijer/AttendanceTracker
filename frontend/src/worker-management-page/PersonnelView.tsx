@@ -194,8 +194,17 @@ const PersonnelView = () => {
     }
   };
 
-  const withdrawInvitation = (id: string) => {
-    setInvitees(invitees.filter((invitee) => invitee.id !== id));
+  const withdrawInvitation = (name: string) => {
+    axios
+      .delete(`${BASE_URL}/invitations/${name}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then(() => {
+        setInvitees(invitees.filter((invitee) => invitee.name !== name));
+      });
   };
 
   const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
@@ -258,7 +267,7 @@ const PersonnelView = () => {
         {inviteesForDisplay.map((invitee) => (
           <li key={invitee.name}>
             {invitee.name} ({invitee.role}){" "}
-            <button onClick={() => withdrawInvitation(invitee.id)}>
+            <button onClick={() => withdrawInvitation(invitee.name)}>
               Uitnodiging intrekken
             </button>
           </li>

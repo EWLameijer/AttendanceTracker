@@ -1,6 +1,7 @@
 package nl.itvitae.attendancetracker.invitation;
 
 import lombok.RequiredArgsConstructor;
+import nl.itvitae.attendancetracker.NotFoundException;
 import nl.itvitae.attendancetracker.registrar.ATRole;
 import nl.itvitae.attendancetracker.registrar.RegistrarDto;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,13 @@ public class InvitationController {
     @GetMapping("{id}")
     public ResponseEntity<InvitationDtoWithCode> getInvitation(@PathVariable UUID id) {
         return invitationRepository.findById(id).map(InvitationDtoWithCode::from).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{name}")
+    public ResponseEntity<Void> deleteByName(@PathVariable String name) {
+        var invitation = invitationRepository.findByName(name).orElseThrow(NotFoundException::new);
+        invitationRepository.delete(invitation);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
