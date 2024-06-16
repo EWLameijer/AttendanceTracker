@@ -3,6 +3,13 @@
 
 == Frontend:
 
+=== Group-management-page
+    * Access only for Super-admins
+    * required endpoints:
+        ** groups GET
+        ** groups POST
+        ** groups/{id} DELETE
+
 === Registration-page
 
     * Access to everyone
