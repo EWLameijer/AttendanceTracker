@@ -46,6 +46,13 @@ const PersonnelView = () => {
       .then((response) => setInvitees(response.data));
   }, []);
 
+  const roleNames = {
+    [Role.TEACHER]: "docent",
+    [Role.COACH]: "studentbegeleider",
+    [Role.ADMIN]: "administrator",
+    [Role.SUPER_ADMIN]: "super-administrator",
+  };
+
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
       `Geef de naam van de ${dutchTitle} om uit te nodigen:`
@@ -74,7 +81,7 @@ const PersonnelView = () => {
           {
             id: response.data.code,
             name,
-            role: backendTitle === "teacher" ? Role.TEACHER : Role.ADMIN,
+            role: roleNames[backendTitle],
           },
         ]);
       })
@@ -133,13 +140,6 @@ const PersonnelView = () => {
   const externalTeachers = teachers
     .filter((teacher) => !registeringTeacherNames.includes(teacher.name))
     .sort(byName);
-
-  const roleNames = {
-    [Role.TEACHER]: "docent",
-    [Role.COACH]: "studentbegeleider",
-    [Role.ADMIN]: "administrator",
-    [Role.SUPER_ADMIN]: "super-administrator",
-  };
 
   const inviteesForDisplay = invitees
     .map((invitee) => ({

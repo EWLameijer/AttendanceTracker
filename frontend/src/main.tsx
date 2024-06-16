@@ -14,7 +14,7 @@ import HistoryView from "./history-page/HistoryView.tsx";
 import Role from "./-shared/Role.ts";
 import Authorized from "./login-page/Authorized.tsx";
 import PersonnelView from "./worker-management-page/PersonnelView.tsx";
-import RegistrationView from "./worker-management-page/RegistrationView.tsx";
+import RegistrationView from "./registration-page/RegistrationView.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
