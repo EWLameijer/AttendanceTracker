@@ -31,18 +31,25 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         var admin = ATRole.ADMIN.name();
+        var coach = ATRole.COACH.name();
+        var superAdmin = ATRole.SUPER_ADMIN.name();
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers(
-                                        "/students/**",
-                                        "/groups/**",
+                        requests.requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin)
+                                .requestMatchers(
                                         "/scheduled-classes/**",
-                                        "/personnel/teachers/**").hasRole(admin)
-                                .requestMatchers("/attendances/**").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/invitations/**").hasRole(admin)
-                                .requestMatchers("/**").permitAll())
+                                        "/personnel/teachers/**").hasAnyRole(admin, superAdmin)
+                                .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/invitations/**").permitAll()
+                                .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin)
+                                .requestMatchers(HttpMethod.POST,
+                                        "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin)
+                                .requestMatchers(HttpMethod.POST,
+                                        "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin))
+
                 .build();
     }
 

@@ -5,7 +5,7 @@ import UserContext from "../-shared/UserContext";
 const RegistrarList = (props: {
   title: string;
   registrars: Registrar[];
-  disableRegistrar: (id: string) => void;
+  disableRegistrar?: (id: string) => void;
 }) => {
   const user = useContext(UserContext);
   return (
@@ -16,8 +16,10 @@ const RegistrarList = (props: {
           <li key={registrar.id}>
             {registrar.name}
             <button
-              onClick={() => props.disableRegistrar(registrar.id)}
-              disabled={user.username == registrar.name}
+              onClick={() => props.disableRegistrar?.(registrar.id)}
+              disabled={
+                !props.disableRegistrar || user.username == registrar.name
+              }
             >
               Account deactiveren
             </button>

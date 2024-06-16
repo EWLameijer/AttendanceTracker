@@ -26,7 +26,9 @@ class LoginData {
     sessionStorage.setItem("role", role);
   };
 
-  isTeacher = () => this.role == Role.TEACHER;
+  isTeacher = () => this.role === Role.TEACHER;
+  isAdmin = () => this.role === Role.ADMIN || this.role === Role.SUPER_ADMIN;
+  isSuperAdmin = () => this.role === Role.SUPER_ADMIN;
 }
 
 export default LoginData;

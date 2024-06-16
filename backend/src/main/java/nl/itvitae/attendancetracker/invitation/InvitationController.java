@@ -24,9 +24,19 @@ public class InvitationController {
         return getInvitationDtoWithCode(registrarDto, ATRole.TEACHER);
     }
 
-    @PostMapping("for-coach-or-admin")
-    public InvitationDtoWithCode getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+    @PostMapping("for-coach")
+    public InvitationDtoWithCode getCoachOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationDtoWithCode(registrarDto, ATRole.COACH);
+    }
+
+    @PostMapping("for-admin")
+    public InvitationDtoWithCode getAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
         return getInvitationDtoWithCode(registrarDto, ATRole.ADMIN);
+    }
+
+    @PostMapping("for-super-admin")
+    public InvitationDtoWithCode getSuperAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationDtoWithCode(registrarDto, ATRole.SUPER_ADMIN);
     }
 
     private InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
