@@ -48,11 +48,12 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/teachers").hasAnyRole(admin, superAdmin)
+                                .requestMatchers("/teachers/*").hasRole(superAdmin)
+                                .requestMatchers("/groups/**").hasRole(superAdmin)
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.POST,
-                                        "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin)
-                                .requestMatchers("groups").hasRole(superAdmin))
+                                        "/invitations/for-admin", "/invitations/for-super-admin").hasRole(superAdmin))
                 .build();
     }
 
