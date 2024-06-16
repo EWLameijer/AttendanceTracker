@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +23,14 @@ public class GroupController {
     private final ScheduledClassRepository scheduledClassRepository;
 
     @GetMapping
-    public Iterable<GroupDto> getAll() {
-        return groupRepository.findAllActive().stream().map(GroupDto::from).toList();
+    public Stream<GroupWithHistoryDto> getAll() {
+        var today = LocalDate.now();
+        return groupRepository.findAllActive().stream().map(group -> {
+                    var hasPastClasses = scheduledClassRepository.findAllByGroup(group).
+                            stream().anyMatch(scheduledClass -> scheduledClass.getDate().isBefore(today));
+                    return GroupWithHistoryDto.of(group, hasPastClasses);
+                }
+        );
     }
 
     @PostMapping
