@@ -235,7 +235,7 @@ const PersonnelView = () => {
         ))}
       </ul>
       <RegistrarList
-        title="Coaches"
+        title="Studentbegeleiders"
         registrars={coaches}
         disableRegistrar={disableRegistrar}
       />

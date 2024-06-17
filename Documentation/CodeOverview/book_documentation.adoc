@@ -1,3 +1,5 @@
+= Documentation
+:toc:
 
 == Backend
 
@@ -33,55 +35,55 @@
 == Testing
 
 === Super-admin
-* can log in
-* wijzig groepen
-* groep aanmaken (x2)
-* maak deelnemers aan (x2)
-* plan 1 les in het verleden voor een groep
-* plan 1 les in de toekomst
+* kan inloggen
+* kan groepen verwijderen
+* kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
+* kan deelnemers aanmaken (test voor 2 groepen)
+* kan deelnemers verwijderen uit een groep
+* kan les in het verleden voor een groep plannen
+* kan les in de toekomst voor een groep plannen
 * kan externe docenten aanmaken
 * kan docenten aanmaken
 * kan studentbegeleiders aanmaken
 * kan administratoren aanmaken
 * kan superadministratoren aanmaken
-* verleden-groep kan worden gearchiveerd
-* toekomst-groep kan worden verwijderd
-* Kan lessen plannen
-* Kan toekomstige lessen verwijderen
-* Moet aanwezigheidsstatus kunnen veranderen
-* Moet aanwezigheidsnotitie kunnen veranderen
-* Moet vooruit en achteruit kunnen in attendances
-* Moet geschiedenis van student kunnen zien
+* kan verleden-groep archiveren
+* kan toekomst-groep verwijderen
+* kan lessen plannen
+* kan toekomstige lessen verwijderen
+* kan aanwezigheid van alle groepen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan geschiedenis van student zien
 
 === Admin
 * kan inloggen
 * kan docenten aanmaken
 * kan studentbegeleiders aanmaken
-* Moet aanwezigheidsstatus kunnen veranderen
-* Moet aanwezigheidsnotitie kunnen veranderen
-* Moet vooruit en achteruit kunnen in attendances
-* Moet geschiedenis van student kunnen zien
+* kan aanwezigheid van alle groepen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan geschiedenis van student zien
 
 === Coach
 * kan inloggen
-* Moet aanwezigheidsstatus kunnen veranderen
-* Moet aanwezigheidsnotitie kunnen veranderen
-* Moet vooruit en achteruit kunnen in attendances
-* Moet geschiedenis van student kunnen zien
+* kan aanwezigheid van alle groepen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan geschiedenis van student zien
 
 === Teacher
 * kan inloggen
-* Moet aanwezigheidsstatus kunnen veranderen
-* Moet aanwezigheidsnotitie kunnen veranderen
-* Moet vooruit en achteruit kunnen in attendances
-* Moet alle ongeregistreerde attendances op aanwezig kunnen zetten
+* kan (voorlopig) alleen aanwezigheid op eigen lessen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan alle ongeregistreerde attendances op aanwezig zetten
 
-
-
-
-
-
-=== Role of the components
+== Role of the components
 * Getting all attendances in all groups at a certain date: DatePicker
    ** Getting all attendances in _one_ group at a certain date: GroupElement
      *** Getting the attendance of one person at a certain date: AttendanceDisplay
