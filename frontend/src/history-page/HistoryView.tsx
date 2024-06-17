@@ -122,7 +122,7 @@ const HistoryView = () => {
 
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
-      <ol>
+      <ol className="striping">
         {filteredAttendances
           .sort((a, b) => b.date.localeCompare(a.date))
           .map((attendance) => (
