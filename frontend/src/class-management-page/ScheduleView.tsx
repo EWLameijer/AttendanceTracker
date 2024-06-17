@@ -153,8 +153,13 @@ const ScheduleView = () => {
     }
   };
 
+  const dayAbbreviation = (d: string) =>
+    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
+
   const showClassesToAdd = proposedClasses.map((value) => (
-    <p key={value.dateAsString}>{value.dateAsString}</p>
+    <p key={value.dateAsString}>
+      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+    </p>
   ));
 
   const submitClasses = (event: React.FormEvent) => {
@@ -185,9 +190,6 @@ const ScheduleView = () => {
         } else alert(error.response.status + " " + error.response.data);
       });
   };
-
-  const dayAbbreviation = (d: string) =>
-    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
 
   const handleDeleteClass = (
     scheduledClass: ScheduledClassDtoWithoutAttendance
@@ -287,6 +289,8 @@ const ScheduleView = () => {
                     <button onClick={generateClasses}>Genereer periode</button>
                   </div>
 
+                  <hr />
+
                   <div>
                     <p>
                       Kies een begin- en einddatum van de uit te sluiten
@@ -311,6 +315,8 @@ const ScheduleView = () => {
                   <div>
                     <button onClick={excludeClasses}>Verwijder selectie</button>
                   </div>
+
+                  <hr />
 
                   <div>
                     <button onClick={submitClasses}>Sla alle lessen op.</button>
