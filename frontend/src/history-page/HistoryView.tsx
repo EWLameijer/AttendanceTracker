@@ -126,7 +126,7 @@ const HistoryView = () => {
         {filteredAttendances
           .sort((a, b) => b.date.localeCompare(a.date))
           .map((attendance) => (
-            <li className="row" key={attendance.date}>
+            <li key={attendance.date}>
               {attendance.date}: {translateAttendanceStatus(attendance.status)}
               {getNote(attendance.note)}
             </li>
