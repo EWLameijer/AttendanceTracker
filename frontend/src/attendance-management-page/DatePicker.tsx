@@ -54,22 +54,24 @@ const DatePicker = () => {
     return () => clearInterval(heartbeat);
   }, []);
 
-  function loadDate(dateAsString: string, byPicker: boolean = false) {
+  function loadDate(dateAsString: string, exactDateRequired: boolean = false) {
+    const datePath = exactDateRequired ? "by-date-exact" : "by-date";
     axios
-      .get<DateSchedule>(`${BASE_URL}/attendances/by-date/${dateAsString}`, {
-        auth: {
-          username: user.username,
-          password: user.password,
-        },
-      })
+      .get<DateSchedule>(
+        `${BASE_URL}/attendances/${datePath}/${dateAsString}`,
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
       .then((response) => {
         const schedule = response.data;
         latestUpdateProcessed = schedule.timeOfLatestUpdate;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
         const returnedDateAsString = schedule.currentDate;
-        if (byPicker && returnedDateAsString !== dateAsString)
-          alert(`Geen les gevonden op ${dateAsString}`);
         lastDate = new Date(Date.parse(returnedDateAsString));
         const rawClasses = schedule.classes;
         for (const rawClass of rawClasses) {
@@ -88,7 +90,7 @@ const DatePicker = () => {
 
   const nextLessonDay = () => loadDate(nextDate!);
 
-  return classes.length == 0 ? (
+  return classes.length === 0 && !previousDate && !nextDate ? (
     <h3>Geen lessen ingepland in nabij verleden of toekomst!</h3>
   ) : (
     <>
@@ -106,7 +108,9 @@ const DatePicker = () => {
           onChange={(event) => loadDate(event.currentTarget.value, true)}
         />
       </h3>
-      {user.isTeacher() ? (
+      {classes.length === 0 ? (
+        <h3>Geen lessen op deze dag</h3>
+      ) : user.isTeacher() ? (
         <GroupElement
           chosenClass={classes[0]}
           dateAsString={toYYYYMMDD(lastDate)}
