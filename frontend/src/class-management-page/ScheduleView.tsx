@@ -177,8 +177,11 @@ const ScheduleView = () => {
         }
       )
       .then((response) => {
-        if (response.status == HttpStatusCode.Created)
-          alert(response.data.length + " lessen toegevoegd.");
+        if (response.status == HttpStatusCode.Created) {
+          const numberOfClasses = response.data.length;
+          const lessonTerm = "les" + (numberOfClasses !== 1 ? "sen" : "");
+          alert(`${numberOfClasses} ${lessonTerm} toegevoegd.`);
+        }
         setScheduledClasses(
           sortDescending([...response.data, ...scheduledClasses])
         );
