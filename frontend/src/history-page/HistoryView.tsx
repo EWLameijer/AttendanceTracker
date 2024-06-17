@@ -122,11 +122,11 @@ const HistoryView = () => {
 
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
-      <ol className="alternating-background">
+      <ol className="striping">
         {filteredAttendances
           .sort((a, b) => b.date.localeCompare(a.date))
           .map((attendance) => (
-            <li key={attendance.date}>
+            <li className="row" key={attendance.date}>
               {attendance.date}: {translateAttendanceStatus(attendance.status)}
               {getNote(attendance.note)}
             </li>

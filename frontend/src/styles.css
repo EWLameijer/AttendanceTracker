@@ -27,10 +27,15 @@
   background-color: #ffff00;
 }
 
-.alternating-background {
+.striping {
   li:nth-child(odd) {
-    background: rgb(200, 200, 200);
+    background: rgb(225, 225, 225);
   }
+}
+
+.no-bullets {
+  list-style-type: none;
+  padding: 0;
 }
 
 table,
@@ -44,6 +49,7 @@ td {
 
 button {
   margin: 5px;
+  padding: 2px;
 }
 
 select {

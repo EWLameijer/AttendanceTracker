@@ -157,9 +157,9 @@ const ScheduleView = () => {
     new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
 
   const showClassesToAdd = proposedClasses.map((value) => (
-    <p key={value.dateAsString}>
+    <li key={value.dateAsString}>
       {dayAbbreviation(value.dateAsString)} {value.dateAsString}
-    </p>
+    </li>
   ));
 
   const submitClasses = (event: React.FormEvent) => {
@@ -221,7 +221,7 @@ const ScheduleView = () => {
   };
 
   const showScheduledClasses = scheduledClasses.map((value) => (
-    <p key={value.dateAsString}>
+    <li key={value.dateAsString}>
       {dayAbbreviation(value.dateAsString)} {value.dateAsString}
       <button
         value={value.dateAsString}
@@ -230,7 +230,7 @@ const ScheduleView = () => {
       >
         X
       </button>
-    </p>
+    </li>
   ));
 
   const sortDescending = (
@@ -310,7 +310,9 @@ const ScheduleView = () => {
                     ></input>
                   </div>
 
-                  <div>{showClassesToAdd}</div>
+                  <div>
+                    <ul className="striping no-bullets">{showClassesToAdd}</ul>
+                  </div>
 
                   <div>
                     <button onClick={excludeClasses}>Verwijder selectie</button>
@@ -323,7 +325,9 @@ const ScheduleView = () => {
                   </div>
                 </form>
               </td>
-              <td>{showScheduledClasses}</td>
+              <td>
+                <ul className="striping no-bullets">{showScheduledClasses}</ul>
+              </td>
             </tr>
           </tbody>
         </table>
