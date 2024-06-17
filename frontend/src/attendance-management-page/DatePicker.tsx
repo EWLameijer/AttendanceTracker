@@ -71,8 +71,7 @@ const DatePicker = () => {
         latestUpdateProcessed = schedule.timeOfLatestUpdate;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
-        const returnedDateAsString = schedule.currentDate;
-        lastDate = new Date(Date.parse(returnedDateAsString));
+        lastDate = new Date(Date.parse(schedule.currentDate));
         const rawClasses = schedule.classes;
         for (const rawClass of rawClasses) {
           const fullFormatAttendances = rawClass.attendances.map((attendance) =>
