@@ -213,11 +213,11 @@ const PersonnelView = () => {
 
   const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
 
-  const toUrlCase = (text: string) => text.toLowerCase().replace(/_/, "-");
+  const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
 
   const recreateInvitation = (name: string) => {
     const role = invitees.find((invitee) => invitee.name === name)!.role;
-    inviteRegistrar(name, toUrlCase(role));
+    inviteRegistrar(name, toKebabCase(role));
   };
 
   return (
