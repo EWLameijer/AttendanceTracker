@@ -153,8 +153,13 @@ const ScheduleView = () => {
     }
   };
 
+  const dayAbbreviation = (d: string) =>
+    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
+
   const showClassesToAdd = proposedClasses.map((value) => (
-    <p key={value.dateAsString}>{value.dateAsString}</p>
+    <li key={value.dateAsString}>
+      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+    </li>
   ));
 
   const submitClasses = (event: React.FormEvent) => {
@@ -186,9 +191,6 @@ const ScheduleView = () => {
       });
   };
 
-  const dayAbbreviation = (d: string) =>
-    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
-
   const handleDeleteClass = (
     scheduledClass: ScheduledClassDtoWithoutAttendance
   ) => {
@@ -219,7 +221,7 @@ const ScheduleView = () => {
   };
 
   const showScheduledClasses = scheduledClasses.map((value) => (
-    <p key={value.dateAsString}>
+    <li key={value.dateAsString}>
       {dayAbbreviation(value.dateAsString)} {value.dateAsString}
       <button
         value={value.dateAsString}
@@ -228,7 +230,7 @@ const ScheduleView = () => {
       >
         X
       </button>
-    </p>
+    </li>
   ));
 
   const sortDescending = (
@@ -287,6 +289,8 @@ const ScheduleView = () => {
                     <button onClick={generateClasses}>Genereer periode</button>
                   </div>
 
+                  <hr />
+
                   <div>
                     <p>
                       Kies een begin- en einddatum van de uit te sluiten
@@ -306,18 +310,24 @@ const ScheduleView = () => {
                     ></input>
                   </div>
 
-                  <div>{showClassesToAdd}</div>
-
                   <div>
                     <button onClick={excludeClasses}>Verwijder selectie</button>
                   </div>
+
+                  <div>
+                    <ul className="striping no-bullets">{showClassesToAdd}</ul>
+                  </div>
+
+                  <hr />
 
                   <div>
                     <button onClick={submitClasses}>Sla alle lessen op.</button>
                   </div>
                 </form>
               </td>
-              <td>{showScheduledClasses}</td>
+              <td>
+                <ul className="striping no-bullets">{showScheduledClasses}</ul>
+              </td>
             </tr>
           </tbody>
         </table>
