@@ -59,10 +59,10 @@ public class Seeder implements CommandLineRunner {
             ));
             var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER);
             var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER);
-            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.ADMIN);
+            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH);
             var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN);
             var dan = workerService.saveExternalTeacher("Dan");
-            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.ADMIN);
+            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN);
             var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
             var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 
@@ -72,14 +72,13 @@ public class Seeder implements CommandLineRunner {
             var dataClass = new ScheduledClass(data, dan, scheduledDate);
             scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
 
-            //var ariesAttendance = new TypeOfAttendanceRegistration(arie, scheduledDate, juan, AttendanceStatus.SICK);
+            var ariesAttendance = AttendanceRegistrationDto.of(arie, scheduledDate, juan, AttendanceStatus.SICK);
             var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubboAsRegistrar, AttendanceStatus.LATE, "10:30 (trein)");
-            //var zebeAttendance = new LateAttendanceRegistration(bas, scheduledDate, wubbo, LocalTime.of(10, 30));
             var celiasAttendance = AttendanceRegistrationDto.of(celia, scheduledDate, nielsAsRegistrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
             var davidsAttendance = AttendanceRegistrationDto.of(david, scheduledDate, juan, AttendanceStatus.PRESENT);
             var eduardsAttendance = AttendanceRegistrationDto.of(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
             var filippasAttendance = AttendanceRegistrationDto.of(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
-            attendanceService.saveAll(List.of(basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
+            attendanceService.saveAll(List.of(ariesAttendance, basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
 
             createHistory(java, 90, wubboAsTeacher, juan);
             createHistory(cyber, 180, nielsAsTeacher, juan);

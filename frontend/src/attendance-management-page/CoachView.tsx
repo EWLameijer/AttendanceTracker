@@ -11,11 +11,21 @@ const CoachView = () => {
     <>
       <h2>Hallo {user.username}!</h2>
       <>
-        <button onClick={() => navigate("/admin-view")}>Wijzig groepen</button>
-        <button onClick={() => navigate("/schedule-view")}>Plan lessen</button>
-        <button onClick={() => navigate("/personnel-view")}>
-          Beheer gebruikers
-        </button>
+        {user.isSuperAdmin() && (
+          <>
+            <button onClick={() => navigate("/group-management")}>
+              Wijzig groepen
+            </button>
+            <button onClick={() => navigate("/class-management")}>
+              Plan lessen
+            </button>
+          </>
+        )}
+        {user.isAnyAdmin() && (
+          <button onClick={() => navigate("/worker-management")}>
+            Beheer gebruikers
+          </button>
+        )}
       </>
       <DatePicker />
     </>

@@ -46,6 +46,15 @@ const PersonnelView = () => {
       .then((response) => setInvitees(response.data));
   }, []);
 
+  const roleNames = {
+    [Role.TEACHER]: "docent",
+    [Role.COACH]: "studentbegeleider",
+    [Role.ADMIN]: "administrator",
+    [Role.SUPER_ADMIN]: "super-administrator",
+  };
+
+  const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
+
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
       `Geef de naam van de ${dutchTitle} om uit te nodigen:`
@@ -74,7 +83,7 @@ const PersonnelView = () => {
           {
             id: response.data.code,
             name,
-            role: backendTitle === "teacher" ? Role.TEACHER : Role.ADMIN,
+            role: toMacroCase(backendTitle),
           },
         ]);
       })
@@ -83,8 +92,11 @@ const PersonnelView = () => {
 
   const inviteTeacher = () => invite("docent", "teacher");
 
-  const inviteCoachOrAdmin = () =>
-    invite("coach of administrator", "coach-or-admin");
+  const inviteCoach = () => invite("studentbegeleider", "coach");
+
+  const inviteAdmin = () => invite("administrator", "admin");
+
+  const inviteSuperAdmin = () => invite("super-administrator", "super-admin");
 
   const addExternalTeacher = () => {
     const name = prompt(
@@ -112,13 +124,16 @@ const PersonnelView = () => {
       .catch(() => alert("Deze gebruiker bestaat al!"));
   };
 
-  const registeringTeachers = registrars
-    .filter((registrar) => registrar.role == Role.TEACHER)
-    .sort(byName);
+  const byRoleSorted = (role: string) =>
+    registrars.filter((registrar) => registrar.role == role).sort(byName);
 
-  const admins = registrars
-    .filter((registrar) => registrar.role == Role.ADMIN)
-    .sort(byName);
+  const registeringTeachers = byRoleSorted(Role.TEACHER);
+
+  const admins = byRoleSorted(Role.ADMIN);
+
+  const coaches = byRoleSorted(Role.COACH);
+
+  const superAdmins = byRoleSorted(Role.SUPER_ADMIN);
 
   const registeringTeacherNames = registeringTeachers.map(
     (registeredTeacher) => registeredTeacher.name
@@ -131,7 +146,7 @@ const PersonnelView = () => {
   const inviteesForDisplay = invitees
     .map((invitee) => ({
       ...invitee,
-      role: invitee.role == Role.TEACHER ? "docent" : "administrator",
+      role: roleNames[invitee.role],
     }))
     .sort(byName);
 
@@ -179,13 +194,24 @@ const PersonnelView = () => {
     }
   };
 
+  const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
-      <button onClick={inviteCoachOrAdmin}>Nodig coach/admin uit</button>
-      <button onClick={addExternalTeacher}>
-        Voeg externe docent toe die zich nog niet hoeft te registreren
-      </button>
+      <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
+      {user.isSuperAdmin() && (
+        <>
+          <button onClick={inviteAdmin}>Nodig administrator uit</button>
+          <button onClick={inviteSuperAdmin}>
+            Nodig super-administrator uit
+          </button>
+          <button onClick={addExternalTeacher}>
+            Voeg externe docent toe die zich nog niet hoeft te registreren
+          </button>
+        </>
+      )}
+
       <RegistrarList
         title="Docenten (die aanwezigheid kunnen registreren)"
         registrars={registeringTeachers}
@@ -201,6 +227,7 @@ const PersonnelView = () => {
             {externalTeacher.name}
             <button
               onClick={() => removeFromLessonPlanning(externalTeacher.id)}
+              disabled={!user.isSuperAdmin()}
             >
               Verwijderen
             </button>
@@ -208,9 +235,19 @@ const PersonnelView = () => {
         ))}
       </ul>
       <RegistrarList
+        title="Studentbegeleiders"
+        registrars={coaches}
+        disableRegistrar={disableRegistrar}
+      />
+      <RegistrarList
         title="Administratoren"
         registrars={admins}
-        disableRegistrar={disableRegistrar}
+        disableRegistrar={superAdminDisable}
+      />
+      <RegistrarList
+        title="Super-administratoren"
+        registrars={superAdmins}
+        disableRegistrar={superAdminDisable}
       />
       <h3>Uitgenodigden</h3>
       <ul>

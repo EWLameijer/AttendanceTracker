@@ -31,18 +31,23 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         var admin = ATRole.ADMIN.name();
+        var coach = ATRole.COACH.name();
+        var superAdmin = ATRole.SUPER_ADMIN.name();
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers(
-                                        "/students/**",
-                                        "/groups/**",
-                                        "/scheduled-classes/**",
-                                        "/personnel/teachers/**").hasRole(admin)
-                                .requestMatchers("/attendances/**").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/invitations/**").hasRole(admin)
-                                .requestMatchers("/**").permitAll())
+                        requests.requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin)
+                                .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/invitations/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin)
+                                .requestMatchers("/personnel/**", "/teachers", "/scheduled-classes/**").hasAnyRole(admin, superAdmin)
+                                .requestMatchers("/teachers/*", "/groups/**").hasRole(superAdmin)
+                                .requestMatchers(HttpMethod.POST,
+                                        "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin)
+                                .requestMatchers(HttpMethod.POST,
+                                        "/invitations/for-admin", "/invitations/for-super-admin").hasRole(superAdmin))
                 .build();
     }
 
