@@ -23,7 +23,7 @@ Main folders (in src)
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
-Accepted
+Superseded by 012
 
 ## Consequences
 
