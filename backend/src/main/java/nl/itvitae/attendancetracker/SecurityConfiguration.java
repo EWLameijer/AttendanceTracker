@@ -38,17 +38,12 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin)
-                                .requestMatchers(
-                                        "/scheduled-classes/**",
-                                        "/personnel/teachers/**").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/invitations/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin)
-                                .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin)
-                                .requestMatchers("/teachers").hasAnyRole(admin, superAdmin)
-                                .requestMatchers("/teachers/*").hasRole(superAdmin)
-                                .requestMatchers("/groups/**").hasRole(superAdmin)
+                                .requestMatchers("/personnel/**", "/teachers", "/scheduled-classes/**").hasAnyRole(admin, superAdmin)
+                                .requestMatchers("/teachers/*", "/groups/**").hasRole(superAdmin)
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.POST,
