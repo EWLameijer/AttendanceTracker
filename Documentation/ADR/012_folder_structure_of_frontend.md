@@ -21,7 +21,7 @@ Main folders (in src)
 
 ## Status [Proposed, Accepted, Deprecated, Superseded]
 
-Proposed
+Accepted
 
 ## Consequences
 
