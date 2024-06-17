@@ -71,6 +71,11 @@ const GroupEditComponent = ({
     setEditMode(!inEditMode);
   };
 
+  const stopEditing = () => {
+    setEditMode(false);
+    setName(group.name);
+  };
+
   return (
     <li>
       {inEditMode ? (
@@ -86,6 +91,7 @@ const GroupEditComponent = ({
       >
         {inEditMode ? "Opslaan" : "Groepsnaam wijzigen"}
       </button>
+      {inEditMode && <button onClick={stopEditing}>Stop met wijzigen</button>}
       <button onClick={removeGroupIfPermitted}>
         {group.hasPastClasses ? "Archiveer groep" : "Verwijder groep"}
       </button>
