@@ -54,7 +54,7 @@ const DatePicker = () => {
     return () => clearInterval(heartbeat);
   }, []);
 
-  function loadDate(dateAsString: string) {
+  function loadDate(dateAsString: string, byPicker: boolean = false) {
     axios
       .get<DateSchedule>(`${BASE_URL}/attendances/by-date/${dateAsString}`, {
         auth: {
@@ -67,7 +67,10 @@ const DatePicker = () => {
         latestUpdateProcessed = schedule.timeOfLatestUpdate;
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
-        lastDate = new Date(Date.parse(schedule.currentDate));
+        const returnedDateAsString = schedule.currentDate;
+        if (byPicker && returnedDateAsString !== dateAsString)
+          alert(`Geen les gevonden op ${dateAsString}`);
+        lastDate = new Date(Date.parse(returnedDateAsString));
         const rawClasses = schedule.classes;
         for (const rawClass of rawClasses) {
           const fullFormatAttendances = rawClass.attendances.map((attendance) =>
@@ -100,7 +103,7 @@ const DatePicker = () => {
         <input
           type="date"
           value={toYYYYMMDD(lastDate)}
-          onChange={(event) => loadDate(event.currentTarget.value)}
+          onChange={(event) => loadDate(event.currentTarget.value, true)}
         />
       </h3>
       {user.isTeacher() ? (
