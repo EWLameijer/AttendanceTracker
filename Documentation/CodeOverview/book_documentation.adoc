@@ -1,3 +1,5 @@
+= Documentation
+:toc:
 
 == Backend
 
@@ -30,7 +32,58 @@
         ** teachers POST // create external teacher
         ** teachers/{id} DELETE // remove an external teacher
 
-=== Role of the components
+== Testing
+
+=== Super-admin
+* kan inloggen
+* kan groepen verwijderen
+* kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
+* kan deelnemers aanmaken (test voor 2 groepen)
+* kan deelnemers verwijderen uit een groep
+* kan les in het verleden voor een groep plannen
+* kan les in de toekomst voor een groep plannen
+* kan externe docenten aanmaken
+* kan docenten aanmaken
+* kan studentbegeleiders aanmaken
+* kan administratoren aanmaken
+* kan superadministratoren aanmaken
+* kan verleden-groep archiveren
+* kan toekomst-groep verwijderen
+* kan lessen plannen
+* kan toekomstige lessen verwijderen
+* kan aanwezigheid van alle groepen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan geschiedenis van student zien
+
+=== Admin
+* kan inloggen
+* kan docenten aanmaken
+* kan studentbegeleiders aanmaken
+* kan aanwezigheid van alle groepen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan geschiedenis van student zien
+
+=== Coach
+* kan inloggen
+* kan aanwezigheid van alle groepen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan geschiedenis van student zien
+
+=== Teacher
+* kan inloggen
+* kan (voorlopig) alleen aanwezigheid op eigen lessen zien
+* kan aanwezigheidsstatus veranderen
+* kan aanwezigheidsnotitie veranderen
+* kan vooruit en achteruit in attendances
+* kan alle ongeregistreerde attendances op aanwezig zetten
+
+== Role of the components
 * Getting all attendances in all groups at a certain date: DatePicker
    ** Getting all attendances in _one_ group at a certain date: GroupElement
      *** Getting the attendance of one person at a certain date: AttendanceDisplay

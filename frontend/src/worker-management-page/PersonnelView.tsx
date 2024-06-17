@@ -53,7 +53,7 @@ const PersonnelView = () => {
     [Role.SUPER_ADMIN]: "super-administrator",
   };
 
-  const toEnumCase = (text: string) => text.toUpperCase().replace(/-/, "_");
+  const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
@@ -83,7 +83,7 @@ const PersonnelView = () => {
           {
             id: response.data.code,
             name,
-            role: toEnumCase(backendTitle),
+            role: toMacroCase(backendTitle),
           },
         ]);
       })
@@ -248,7 +248,7 @@ const PersonnelView = () => {
         ))}
       </ul>
       <RegistrarList
-        title="Coaches"
+        title="Studentbegeleiders"
         registrars={coaches}
         disableRegistrar={disableRegistrar}
       />
