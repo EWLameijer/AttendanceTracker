@@ -55,7 +55,7 @@ const DatePicker = () => {
   }, []);
 
   function loadDate(dateAsString: string, exactDateRequired: boolean = false) {
-    const datePath = exactDateRequired ? "by-date-exact" : "by-date";
+    const datePath = exactDateRequired ? "by-exact-date" : "by-date";
     axios
       .get<DateSchedule>(
         `${BASE_URL}/attendances/${datePath}/${dateAsString}`,
