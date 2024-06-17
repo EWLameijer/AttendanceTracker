@@ -100,7 +100,7 @@ const DatePicker = () => {
         <input
           type="date"
           value={toYYYYMMDD(lastDate)}
-          onChange={(event) => loadDate(event?.currentTarget.value)}
+          onChange={(event) => loadDate(event.currentTarget.value)}
         />
       </h3>
       {user.isTeacher() ? (
