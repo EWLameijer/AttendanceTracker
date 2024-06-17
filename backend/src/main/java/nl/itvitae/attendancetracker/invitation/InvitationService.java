@@ -1,5 +1,6 @@
 package nl.itvitae.attendancetracker.invitation;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
@@ -15,6 +16,7 @@ public class InvitationService {
 
     private final RegistrarRepository registrarRepository;
 
+    @Transactional
     public void checkInvitationIsValidAndCleanExpiredInvitations(String name) {
         if (name.isEmpty()) throw new BadRequestException("Name should not be blank!");
         if (registrarRepository.existsByIdentityName(name))
