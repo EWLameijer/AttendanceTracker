@@ -311,11 +311,11 @@ const ScheduleView = () => {
                   </div>
 
                   <div>
-                    <ul className="striping no-bullets">{showClassesToAdd}</ul>
+                    <button onClick={excludeClasses}>Verwijder selectie</button>
                   </div>
 
                   <div>
-                    <button onClick={excludeClasses}>Verwijder selectie</button>
+                    <ul className="striping no-bullets">{showClassesToAdd}</ul>
                   </div>
 
                   <hr />
