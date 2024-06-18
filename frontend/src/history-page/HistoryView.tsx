@@ -62,7 +62,7 @@ const HistoryView = () => {
   };
 
   const getCount = (status: string) =>
-    filteredAttendances.filter((attendance) => attendance.status == status)
+    filteredAttendances.filter((attendance) => attendance.status === status)
       .length;
 
   const late = getCount(Status.LATE);

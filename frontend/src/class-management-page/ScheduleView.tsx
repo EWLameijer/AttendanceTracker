@@ -135,7 +135,7 @@ const ScheduleView = () => {
 
   const excludeClasses = (event: React.FormEvent) => {
     event.preventDefault();
-    if (proposedClasses.length == 0) {
+    if (!proposedClasses.length) {
       alert("Genereer eerst een periode");
     } else {
       const startOfExcludedPeriod = new Date(excludeStartDateAsString);
@@ -177,7 +177,7 @@ const ScheduleView = () => {
         }
       )
       .then((response) => {
-        if (response.status == HttpStatusCode.Created) {
+        if (response.status === HttpStatusCode.Created) {
           const numberOfClasses = response.data.length;
           const lessonTerm = "les" + (numberOfClasses !== 1 ? "sen" : "");
           alert(`${numberOfClasses} ${lessonTerm} toegevoegd.`);
@@ -187,7 +187,7 @@ const ScheduleView = () => {
         );
       })
       .catch((error) => {
-        if (error.response.status == HttpStatusCode.BadRequest) {
+        if (error.response.status === HttpStatusCode.BadRequest) {
           console.log(error);
           alert(error.response.data.detail);
         } else alert(error.response.status + " " + error.response.data);
