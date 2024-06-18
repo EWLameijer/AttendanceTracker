@@ -17,7 +17,7 @@ const GroupEditComponent = ({
   const [students, setStudents] = useState(group.members);
   const [newStudentName, setNewStudentName] = useState("");
   const user = useContext(UserContext);
-  const [inEditMode, setEditMode] = useState(false);
+  const [isEditMode, setEditMode] = useState(false);
   const [name, setName] = useState(group.name);
 
   const removeStudent = (studentId: string) =>
@@ -64,11 +64,11 @@ const GroupEditComponent = ({
     setNewStudentName(event.currentTarget.value);
 
   const editOrSave = () => {
-    if (inEditMode) {
+    if (isEditMode) {
       changeName(group.id, name);
       setName(group.name);
     }
-    setEditMode(!inEditMode);
+    setEditMode(!isEditMode);
   };
 
   const stopEditing = () => {
@@ -78,7 +78,7 @@ const GroupEditComponent = ({
 
   return (
     <li>
-      {inEditMode ? (
+      {isEditMode ? (
         <input value={name} onChange={(e) => setName(e.currentTarget.value)} />
       ) : (
         <span>{name}</span>
@@ -86,12 +86,12 @@ const GroupEditComponent = ({
       <button
         onClick={editOrSave}
         disabled={
-          inEditMode && (!name?.trim() || name?.trim() === group.name.trim())
+          isEditMode && (!name?.trim() || name?.trim() === group.name.trim())
         }
       >
-        {inEditMode ? "Opslaan" : "Groepsnaam wijzigen"}
+        {isEditMode ? "Opslaan" : "Groepsnaam wijzigen"}
       </button>
-      {inEditMode && <button onClick={stopEditing}>Stop met wijzigen</button>}
+      {isEditMode && <button onClick={stopEditing}>Stop met wijzigen</button>}
       <button onClick={removeGroupIfPermitted}>
         {group.hasPastClasses ? "Archiveer groep" : "Verwijder groep"}
       </button>
