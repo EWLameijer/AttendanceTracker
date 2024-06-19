@@ -47,7 +47,14 @@ const PersonnelView = () => {
       .then((response) => setInvitees(response.data));
   }, []);
 
-  const toEnumCase = (text: string) => text.toUpperCase().replace(/-/, "_");
+  const roleNames = {
+    [Role.TEACHER]: "docent",
+    [Role.COACH]: "studentbegeleider",
+    [Role.ADMIN]: "administrator",
+    [Role.SUPER_ADMIN]: "super-administrator",
+  };
+
+  const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
@@ -81,7 +88,7 @@ const PersonnelView = () => {
           {
             id: response.data.code,
             name,
-            role: toEnumCase(backendTitle),
+            role: toMacroCase(backendTitle),
           },
         ]);
       })
@@ -234,11 +241,11 @@ const PersonnelView = () => {
 
   const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
 
-  const toUrlCase = (text: string) => text.toLowerCase().replace(/_/, "-");
+  const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
 
   const recreateInvitation = (name: string) => {
     const role = invitees.find((invitee) => invitee.name === name)!.role;
-    inviteRegistrar(name, toUrlCase(role));
+    inviteRegistrar(name, toKebabCase(role));
   };
 
   return (
@@ -281,7 +288,7 @@ const PersonnelView = () => {
         ))}
       </ul>
       <RegistrarList
-        title="Coaches"
+        title="Studentbegeleiders"
         registrars={coaches}
         disableRegistrar={disableRegistrar}
         changeRole={changeRole}
