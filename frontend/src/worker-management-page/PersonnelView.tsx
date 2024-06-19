@@ -5,6 +5,7 @@ import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
 import Role from "../-shared/Role";
 import { Teacher } from "../-shared/Teacher";
 import RegistrarList from "./RegistrarList";
+import roleNames from "./roleNames";
 
 const PersonnelView = () => {
   const user = useContext(UserContext);
@@ -45,13 +46,6 @@ const PersonnelView = () => {
       })
       .then((response) => setInvitees(response.data));
   }, []);
-
-  const roleNames = {
-    [Role.TEACHER]: "docent",
-    [Role.COACH]: "studentbegeleider",
-    [Role.ADMIN]: "administrator",
-    [Role.SUPER_ADMIN]: "super-administrator",
-  };
 
   const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
