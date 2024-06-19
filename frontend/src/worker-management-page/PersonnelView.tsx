@@ -129,7 +129,7 @@ const PersonnelView = () => {
   };
 
   const byRoleSorted = (role: string) =>
-    registrars.filter((registrar) => registrar.role == role).sort(byName);
+    registrars.filter((registrar) => registrar.role === role).sort(byName);
 
   const registeringTeachers = byRoleSorted(Role.TEACHER);
 

@@ -89,7 +89,7 @@ const DatePicker = () => {
 
   const nextLessonDay = () => loadDate(nextDate!);
 
-  return classes.length === 0 && !previousDate && !nextDate ? (
+  return !classes.length && !previousDate && !nextDate ? (
     <h3>Geen lessen ingepland in nabij verleden of toekomst!</h3>
   ) : (
     <>

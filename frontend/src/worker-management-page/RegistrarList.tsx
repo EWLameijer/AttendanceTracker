@@ -18,7 +18,7 @@ const RegistrarList = (props: {
             <button
               onClick={() => props.disableRegistrar?.(registrar.id)}
               disabled={
-                !props.disableRegistrar || user.username == registrar.name
+                !props.disableRegistrar || user.username === registrar.name
               }
             >
               Account deactiveren

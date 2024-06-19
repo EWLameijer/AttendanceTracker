@@ -22,7 +22,7 @@ const RegistrationView = () => {
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (password != repeatedPassword) {
+    if (password !== repeatedPassword) {
       alert("Wachtwoorden zijn ongelijk");
       return;
     }

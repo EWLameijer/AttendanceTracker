@@ -21,7 +21,7 @@ const GroupEditComponent = ({
   const [name, setName] = useState(group.name);
 
   const removeStudent = (studentId: string) =>
-    setStudents(students.filter((student) => student.id != studentId));
+    setStudents(students.filter((student) => student.id !== studentId));
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -51,7 +51,7 @@ const AdminView = () => {
         },
       })
       .then(() => {
-        setGroups(groups.filter((group) => group.id != groupId));
+        setGroups(groups.filter((group) => group.id !== groupId));
       });
   };
 
