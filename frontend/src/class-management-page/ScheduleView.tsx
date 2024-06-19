@@ -153,12 +153,30 @@ const ScheduleView = () => {
     }
   };
 
+  const handleDeleteProposedClass = (
+    scheduledClass: ScheduledClassDtoWithoutAttendance
+  ) => {
+    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+      const filteredClasses = proposedClasses.filter(
+        (sc) => sc.dateAsString !== scheduledClass.dateAsString
+      );
+
+      setProposedClasses(filteredClasses);
+    }
+  };
+
   const dayAbbreviation = (d: string) =>
     new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
 
   const showClassesToAdd = proposedClasses.map((value) => (
     <li key={value.dateAsString}>
       {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+      <button
+        value={value.dateAsString}
+        onClick={() => handleDeleteProposedClass(value)}
+      >
+        X
+      </button>
     </li>
   ));
 
@@ -194,7 +212,7 @@ const ScheduleView = () => {
       });
   };
 
-  const handleDeleteClass = (
+  const handleDeleteScheduledClass = (
     scheduledClass: ScheduledClassDtoWithoutAttendance
   ) => {
     if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
@@ -228,7 +246,7 @@ const ScheduleView = () => {
       {dayAbbreviation(value.dateAsString)} {value.dateAsString}
       <button
         value={value.dateAsString}
-        onClick={() => handleDeleteClass(value)}
+        onClick={() => handleDeleteScheduledClass(value)}
         hidden={new Date(value.dateAsString) <= new Date()}
       >
         X
@@ -338,5 +356,4 @@ const ScheduleView = () => {
     )
   );
 };
-
 export default ScheduleView;
