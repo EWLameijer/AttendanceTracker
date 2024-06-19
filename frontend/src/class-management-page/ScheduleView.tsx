@@ -154,11 +154,11 @@ const ScheduleView = () => {
   };
 
   const handleDeleteProposedClass = (
-    scheduledClass: ScheduledClassDtoWithoutAttendance
+    proposedClass: ScheduledClassDtoWithoutAttendance
   ) => {
-    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+    if (confirm(proposedClass.dateAsString + " verwijderen?")) {
       const filteredClasses = proposedClasses.filter(
-        (sc) => sc.dateAsString !== scheduledClass.dateAsString
+        (sc) => sc.dateAsString !== proposedClass.dateAsString
       );
 
       setProposedClasses(filteredClasses);
