@@ -203,6 +203,8 @@ const ScheduleView = () => {
         setScheduledClasses(
           sortDescending([...response.data, ...scheduledClasses])
         );
+
+        setProposedClasses(new Array<ScheduledClassDtoWithoutAttendance>());
       })
       .catch((error) => {
         if (error.response.status === HttpStatusCode.BadRequest) {
