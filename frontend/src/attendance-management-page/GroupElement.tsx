@@ -35,14 +35,14 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   const saveModifiedAttendances = (attendances: Attendance[]) => {
     if (
       attendances.some(
-        (attendance) => attendance.status == Status.NOT_REGISTERED_YET
+        (attendance) => attendance.status === Status.NOT_REGISTERED_YET
       )
     )
       return;
 
     const updatedAttendances = attendances.filter(isUpdated);
 
-    if (updatedAttendances.length == 0) return;
+    if (!updatedAttendances.length) return;
 
     const formattedAttendances = updatedAttendances.map((attendance) => {
       const newAttendance: Attendance = {
@@ -80,7 +80,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
 
   const unregisteredAttendancesExist = () =>
     chosenClass!.attendances.some(
-      (attendance) => attendance.status == Status.NOT_REGISTERED_YET
+      (attendance) => attendance.status === Status.NOT_REGISTERED_YET
     );
 
   return (
