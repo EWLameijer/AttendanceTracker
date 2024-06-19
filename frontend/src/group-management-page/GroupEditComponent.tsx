@@ -5,17 +5,23 @@ import axios from "axios";
 import { BASE_URL } from "../-shared/utils";
 import UserContext from "../-shared/UserContext";
 
-const GroupEditComponent = (props: {
+const GroupEditComponent = ({
+  group,
+  remove,
+  changeName,
+}: {
   group: Group;
   remove: (id: string) => void;
+  changeName: (id: string, newName: string) => void;
 }) => {
-  const [students, setStudents] = useState(props.group.members);
+  const [students, setStudents] = useState(group.members);
   const [newStudentName, setNewStudentName] = useState("");
-  const group = props.group;
   const user = useContext(UserContext);
+  const [isEditing, setEditing] = useState(false);
+  const [name, setName] = useState(group.name);
 
-  const remove = (studentId: string) =>
-    setStudents(students.filter((student) => student.id !== studentId));
+  const removeStudent = (studentId: string) =>
+    setStudents(students.filter((student) => student.id != studentId));
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,7 +31,7 @@ const GroupEditComponent = (props: {
         `${BASE_URL}/students`,
         {
           name: trimmedName,
-          groupId: props.group.id,
+          groupId: group.id,
         },
         {
           auth: {
@@ -43,20 +49,52 @@ const GroupEditComponent = (props: {
       });
   };
 
-  const removeGroup = () => {
-    const really = confirm(`Wilt u echt '${props.group.name}' verwijderen?`);
+  const removeGroupIfPermitted = () => {
+    const really = confirm(
+      `Wilt u echt '${group.name}' ${
+        group.hasPastClasses ? "archiveren" : "verwijderen"
+      }?`
+    );
     if (really) {
-      props.remove(props.group.id);
+      remove(group.id);
     }
   };
 
   const change = (event: React.FormEvent<HTMLInputElement>) =>
     setNewStudentName(event.currentTarget.value);
 
+  const editOrSave = () => {
+    if (isEditing) {
+      changeName(group.id, name);
+      setName(group.name);
+    }
+    setEditing(!isEditing);
+  };
+
+  const stopEditing = () => {
+    setEditing(false);
+    setName(group.name);
+  };
+
   return (
     <li>
-      {group.name}
-      <button onClick={removeGroup}>Verwijder groep!</button>
+      {isEditing ? (
+        <input value={name} onChange={(e) => setName(e.currentTarget.value)} />
+      ) : (
+        <span>{name}</span>
+      )}
+      <button
+        onClick={editOrSave}
+        disabled={
+          isEditing && (!name?.trim() || name?.trim() === group.name.trim())
+        }
+      >
+        {isEditing ? "Opslaan" : "Groepsnaam wijzigen"}
+      </button>
+      {isEditing && <button onClick={stopEditing}>Stop met wijzigen</button>}
+      <button onClick={removeGroupIfPermitted}>
+        {group.hasPastClasses ? "Archiveer groep" : "Verwijder groep"}
+      </button>
       <ul>
         {students
           .sort((a, b) => a.name.localeCompare(b.name))
@@ -64,7 +102,7 @@ const GroupEditComponent = (props: {
             <MemberEditComponent
               key={member.name}
               member={member}
-              remove={remove}
+              remove={removeStudent}
             />
           ))}
       </ul>
