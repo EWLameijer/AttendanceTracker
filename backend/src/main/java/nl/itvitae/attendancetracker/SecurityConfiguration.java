@@ -25,6 +25,7 @@ public class SecurityConfiguration {
         // for implementation, see:
         // https://stackoverflow.com/questions/67634569/how-to-change-jdbc-schema-users-with-mytable-in-oauth2-spring-boot
         jdbcUserDetailsManager.setUsersByUsernameQuery("select identity_name,password,enabled from registrar where identity_name = ?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select identity_name,role from registrar where identity_name = ?");
         return jdbcUserDetailsManager;
     }
 

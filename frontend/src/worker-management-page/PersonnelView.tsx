@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
 import Role from "../-shared/Role";
 import { Teacher } from "../-shared/Teacher";
-import roleNames from "./roleNames";
 import RegistrarList from "./RegistrarList";
 
 const PersonnelView = () => {

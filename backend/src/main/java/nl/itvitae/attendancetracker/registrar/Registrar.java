@@ -26,13 +26,19 @@ public class Registrar {
     @Setter
     private boolean enabled = true;
 
-    @Enumerated(EnumType.STRING)
-    @Setter
-    private ATRole role;
+    private String role;
+
+    public ATRole getRole() {
+        return ATRole.valueOf(role.substring("ROLE_".length()));
+    }
+
+    public void setRole(ATRole role) {
+        this.role = role.asSpringSecurityRole();
+    }
 
     public Registrar(WorkerIdentity identity, String password, ATRole role) {
         this.identity = identity;
         this.password = password;
-        this.role = role;
+        setRole(role);
     }
 }
