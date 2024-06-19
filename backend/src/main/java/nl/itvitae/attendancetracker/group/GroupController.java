@@ -2,6 +2,7 @@ package nl.itvitae.attendancetracker.group;
 
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.NotFoundException;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +47,22 @@ public class GroupController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<GroupDto> getById(@PathVariable UUID id) {
-        var possibleGroup = groupRepository.findById(id);
-        return possibleGroup.map(group -> ResponseEntity.ok(GroupDto.from(group))).orElseGet(() -> ResponseEntity.notFound().build());
+    public GroupDto getById(@PathVariable UUID id) {
+        return groupRepository.findById(id).map(GroupDto::from).orElseThrow(NotFoundException::new);
+    }
+
+    @PatchMapping("{id}")
+    public GroupDto changeName(@PathVariable UUID id, @RequestBody GroupDto groupDto) {
+        var group = groupRepository.findById(id).orElseThrow(NotFoundException::new);
+        var newName = groupDto.name();
+        if (newName == null) throw new BadRequestException("A new name should be specified!");
+        var formattedName = newName.trim();
+        if (formattedName.isEmpty()) throw new BadRequestException("New name should not be blank!");
+        if (groupRepository.findByName(formattedName).isPresent())
+            throw new BadRequestException("Name is already used by another group!");
+        group.setName(formattedName);
+        groupRepository.save(group);
+        return GroupDto.from(group);
     }
 
     @DeleteMapping("{id}")
