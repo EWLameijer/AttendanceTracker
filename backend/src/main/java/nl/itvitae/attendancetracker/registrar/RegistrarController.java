@@ -65,6 +65,16 @@ public class RegistrarController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("{id}")
+    public RegistrarDto changeRole(@PathVariable UUID id, @RequestBody RegistrarDto registrarDto, Principal principal) {
+        var registrarToChangeRole = registrarRepository.findById(id).
+                orElseThrow(() -> new BadRequestException("Registrar with this id not found!"));
+        if (principal.getName().equals(registrarToChangeRole.getIdentity().getName()))
+            throw new BadRequestException("You cannot change your own role!");
+        registrarToChangeRole.setRole(ATRole.valueOf(registrarDto.role()));
+        return RegistrarDto.from(registrarRepository.save(registrarToChangeRole));
+    }
+
     private boolean isStrongEnoughPassword(String password) {
         var isLongEnough = password.length() >= 16;
         var containsUpperCase = containsAny(password, Character::isUpperCase);
