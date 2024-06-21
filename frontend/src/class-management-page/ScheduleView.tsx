@@ -153,10 +153,13 @@ const ScheduleView = () => {
     }
   };
 
+  const deleteMessage = (message: string) =>
+    dayAbbreviation(message) + " " + message + " verwijderen?";
+
   const handleDeleteProposedClass = (
     proposedClass: ScheduledClassDtoWithoutAttendance
   ) => {
-    if (confirm(proposedClass.dateAsString + " verwijderen?")) {
+    if (confirm(deleteMessage(proposedClass.dateAsString))) {
       const filteredClasses = proposedClasses.filter(
         (sc) => sc.dateAsString !== proposedClass.dateAsString
       );
@@ -217,7 +220,7 @@ const ScheduleView = () => {
   const handleDeleteScheduledClass = (
     scheduledClass: ScheduledClassDtoWithoutAttendance
   ) => {
-    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+    if (confirm(deleteMessage(scheduledClass.dateAsString))) {
       axios
         .delete(
           `${BASE_URL}/scheduled-classes/${scheduledClass.groupId}/${scheduledClass.dateAsString}`,
