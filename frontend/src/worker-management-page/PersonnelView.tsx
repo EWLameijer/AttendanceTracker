@@ -5,6 +5,7 @@ import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
 import Role from "../-shared/Role";
 import { Teacher } from "../-shared/Teacher";
 import RegistrarList from "./RegistrarList";
+import roleNames from "./roleNames";
 
 const PersonnelView = () => {
   const user = useContext(UserContext);
@@ -45,13 +46,6 @@ const PersonnelView = () => {
       })
       .then((response) => setInvitees(response.data));
   }, []);
-
-  const roleNames = {
-    [Role.TEACHER]: "docent",
-    [Role.COACH]: "studentbegeleider",
-    [Role.ADMIN]: "administrator",
-    [Role.SUPER_ADMIN]: "super-administrator",
-  };
 
   const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
@@ -211,6 +205,33 @@ const PersonnelView = () => {
       });
   };
 
+  const changeRole = (id: string, newRole: string) => {
+    const name = registrars.find((registrar) => registrar.id == id)!.name;
+    const sure = confirm(
+      `Weet u zeker dat u ${name} nu de rol ${roleNames[newRole]} wilt geven?`
+    );
+    if (!sure) return;
+    axios
+      .patch(
+        `${BASE_URL}/personnel/${id}`,
+        {
+          role: newRole,
+        },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
+      .then((response) => {
+        const otherRegistars = registrars.filter(
+          (registrar) => registrar.id !== id
+        );
+        setRegistrars([...otherRegistars, response.data]);
+      });
+  };
+
   const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
 
   const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
@@ -240,6 +261,7 @@ const PersonnelView = () => {
         title="Docenten (die aanwezigheid kunnen registreren)"
         registrars={registeringTeachers}
         disableRegistrar={disableRegistrar}
+        changeRole={changeRole}
       />
       <h3>
         Externe docenten (die geen aanwezigheid kunnen registreren, maar wel
@@ -262,16 +284,19 @@ const PersonnelView = () => {
         title="Studentbegeleiders"
         registrars={coaches}
         disableRegistrar={disableRegistrar}
+        changeRole={changeRole}
       />
       <RegistrarList
         title="Administratoren"
         registrars={admins}
         disableRegistrar={superAdminDisable}
+        changeRole={changeRole}
       />
       <RegistrarList
         title="Super-administratoren"
         registrars={superAdmins}
         disableRegistrar={superAdminDisable}
+        changeRole={changeRole}
       />
       <h3>Uitgenodigden</h3>
       <ul>

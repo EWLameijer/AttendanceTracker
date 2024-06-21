@@ -25,6 +25,7 @@ public class SecurityConfiguration {
         // for implementation, see:
         // https://stackoverflow.com/questions/67634569/how-to-change-jdbc-schema-users-with-mytable-in-oauth2-spring-boot
         jdbcUserDetailsManager.setUsersByUsernameQuery("select identity_name,password,enabled from registrar where identity_name = ?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select identity_name,role from registrar where identity_name = ?");
         return jdbcUserDetailsManager;
     }
 
@@ -38,11 +39,15 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin)
+                                .requestMatchers(
+                                        "/scheduled-classes/**",
+                                        "/personnel/teachers/**").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/invitations/*").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/invitations/*").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin)
+                                .requestMatchers(HttpMethod.PATCH, "/personnel/*").hasRole(superAdmin)
                                 .requestMatchers("/personnel/**", "/teachers", "/scheduled-classes/**").hasAnyRole(admin, superAdmin)
                                 .requestMatchers("/teachers/*", "/groups/**").hasRole(superAdmin)
                                 .requestMatchers(HttpMethod.POST,
