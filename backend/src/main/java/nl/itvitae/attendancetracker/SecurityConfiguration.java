@@ -25,6 +25,7 @@ public class SecurityConfiguration {
         // for implementation, see:
         // https://stackoverflow.com/questions/67634569/how-to-change-jdbc-schema-users-with-mytable-in-oauth2-spring-boot
         jdbcUserDetailsManager.setUsersByUsernameQuery("select identity_name,password,enabled from registrar where identity_name = ?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select identity_name,role from registrar where identity_name = ?");
         return jdbcUserDetailsManager;
     }
 
@@ -47,10 +48,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.DELETE, "/invitations/*").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.PATCH, "/personnel/*").hasRole(superAdmin)
-                                .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin)
-                                .requestMatchers("/teachers").hasAnyRole(admin, superAdmin)
-                                .requestMatchers("/teachers/*").hasRole(superAdmin)
-                                .requestMatchers("/groups/**").hasRole(superAdmin)
+                                .requestMatchers("/personnel/**", "/teachers", "/scheduled-classes/**").hasAnyRole(admin, superAdmin)
+                                .requestMatchers("/teachers/*", "/groups/**").hasRole(superAdmin)
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin)
                                 .requestMatchers(HttpMethod.POST,

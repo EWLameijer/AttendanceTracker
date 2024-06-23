@@ -75,16 +75,17 @@ public class AttendanceController {
                 .filter(attendanceStatus -> attendanceStatus.name().equals(status)).findFirst().orElseThrow();
     }
 
-    private ScheduledDateDto getDateDtoForDateAndRegistrar(String dateAsString, String nameOfRegistrar) {
+    private ScheduledDateDto getDateDtoForDateAndRegistrar(String dateAsString, String nameOfRegistrar, boolean dateShouldBeExact) {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
         var registrar = registrarRepository.findByIdentityNameIgnoringCase(nameOfRegistrar)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
         var classes = findClassesByDateAndRegistrar(chosenDate, registrar);
         var attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
-        // if the requested day does not have a schedule, return the most recent lesson date instead
-        if (classes.isEmpty()) {
+        // if the requested day does not have a schedule and the match need not be exact,
+        // return the most recent lesson date instead
+        if (classes.isEmpty() && !dateShouldBeExact) {
             chosenDate = findPreviousDate(LocalDate.now(), registrar).
-                    orElse(findNextDate(LocalDate.now(), registrar).
+                    orElseGet(() -> findNextDate(LocalDate.now(), registrar).
                             orElseThrow(() -> new BadRequestException("No nearby lesson date!")));
             attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
         }
@@ -152,7 +153,12 @@ public class AttendanceController {
 
     @GetMapping("by-date/{dateAsString}")
     public ScheduledDateDto getByDateAndTeacher(@PathVariable String dateAsString, Principal principal) {
-        return getDateDtoForDateAndRegistrar(dateAsString, principal.getName());
+        return getDateDtoForDateAndRegistrar(dateAsString, principal.getName(), false);
+    }
+
+    @GetMapping("by-exact-date/{dateAsString}")
+    public ScheduledDateDto getByExactDateAndTeacher(@PathVariable String dateAsString, Principal principal) {
+        return getDateDtoForDateAndRegistrar(dateAsString, principal.getName(), true);
     }
 
     private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {

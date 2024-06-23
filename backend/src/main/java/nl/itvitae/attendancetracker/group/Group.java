@@ -1,6 +1,5 @@
 package nl.itvitae.attendancetracker.group;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +24,6 @@ public class Group {
     private boolean isTerminated = false;
 
     @OneToMany(mappedBy = "group")
-    @JsonManagedReference
     private final Set<Student> members = new HashSet<>();
 
     public Group(String name) {

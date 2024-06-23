@@ -62,7 +62,7 @@ const HistoryView = () => {
   };
 
   const getCount = (status: string) =>
-    filteredAttendances.filter((attendance) => attendance.status == status)
+    filteredAttendances.filter((attendance) => attendance.status === status)
       .length;
 
   const late = getCount(Status.LATE);
@@ -122,7 +122,7 @@ const HistoryView = () => {
 
       {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
 
-      <ol>
+      <ol className="striping">
         {filteredAttendances
           .sort((a, b) => b.date.localeCompare(a.date))
           .map((attendance) => (
