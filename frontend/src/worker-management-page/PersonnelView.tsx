@@ -4,15 +4,19 @@ import { useContext, useEffect, useState } from "react";
 import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
 import Role from "../-shared/Role";
 import { Teacher } from "../-shared/Teacher";
-import RegistrarList from "./RegistrarList";
 import roleNames from "./roleNames";
+import RegistrarList from "./RegistrarList";
+
+interface Invitee extends Registrar {
+  hasExpired: boolean;
+}
 
 const PersonnelView = () => {
   const user = useContext(UserContext);
 
   const [registrars, setRegistrars] = useState<Registrar[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [invitees, setInvitees] = useState<Registrar[]>([]);
+  const [invitees, setInvitees] = useState<Invitee[]>([]);
 
   useEffect(() => {
     axios
@@ -38,7 +42,7 @@ const PersonnelView = () => {
       });
 
     axios
-      .get<Registrar[]>(`${BASE_URL}/invitations`, {
+      .get<Invitee[]>(`${BASE_URL}/invitations`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -82,6 +86,7 @@ const PersonnelView = () => {
             id: response.data.code,
             name,
             role: toMacroCase(backendTitle),
+            hasExpired: false,
           },
         ]);
       })
@@ -206,7 +211,7 @@ const PersonnelView = () => {
   };
 
   const changeRole = (id: string, newRole: string) => {
-    const name = registrars.find((registrar) => registrar.id == id)!.name;
+    const name = registrars.find((registrar) => registrar.id === id)!.name;
     const sure = confirm(
       `Weet u zeker dat u ${name} nu de rol ${roleNames[newRole]} wilt geven?`
     );
@@ -302,7 +307,8 @@ const PersonnelView = () => {
       <ul>
         {inviteesForDisplay.map((invitee) => (
           <li key={invitee.name}>
-            {invitee.name} ({invitee.role}){" "}
+            {invitee.name} ({invitee.role})
+            {invitee.hasExpired && " - UITNODIGING VERLOPEN!"}
             <button onClick={() => withdrawInvitation(invitee.name)}>
               Uitnodiging intrekken
             </button>
