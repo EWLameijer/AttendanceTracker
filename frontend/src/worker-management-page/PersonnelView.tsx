@@ -128,7 +128,7 @@ const PersonnelView = () => {
   };
 
   const byRoleSorted = (role: string) =>
-    registrars.filter((registrar) => registrar.role == role).sort(byName);
+    registrars.filter((registrar) => registrar.role === role).sort(byName);
 
   const registeringTeachers = byRoleSorted(Role.TEACHER);
 
@@ -211,7 +211,7 @@ const PersonnelView = () => {
   };
 
   const changeRole = (id: string, newRole: string) => {
-    const name = registrars.find((registrar) => registrar.id == id)!.name;
+    const name = registrars.find((registrar) => registrar.id === id)!.name;
     const sure = confirm(
       `Weet u zeker dat u ${name} nu de rol ${roleNames[newRole]} wilt geven?`
     );
