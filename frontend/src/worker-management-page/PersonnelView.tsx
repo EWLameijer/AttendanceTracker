@@ -51,7 +51,7 @@ const PersonnelView = () => {
       .then((response) => setInvitees(response.data));
   }, []);
 
-  const toEnumCase = (text: string) => text.toUpperCase().replace(/-/, "_");
+  const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
@@ -85,7 +85,7 @@ const PersonnelView = () => {
           {
             id: response.data.code,
             name,
-            role: toEnumCase(backendTitle),
+            role: toMacroCase(backendTitle),
             hasExpired: false,
           },
         ]);
