@@ -27,12 +27,19 @@ public class InvitationService {
 
     private final static Duration invitationExpirationDuration = Duration.ofDays(1);
 
+    private static LocalDateTime lastCreationMomentOfUnexpiredInvitations() {
+        return LocalDateTime.now().minus(invitationExpirationDuration);
+    }
+
     private void removeAllExpiredInvitations() {
-        var oneDayAgo = LocalDateTime.now().minus(invitationExpirationDuration);
-        invitationRepository.deleteByTimeOfCreationIsBefore(oneDayAgo);
+        invitationRepository.deleteByTimeOfCreationIsBefore(lastCreationMomentOfUnexpiredInvitations());
     }
 
     private void removeAllInvitationsToSamePerson(String name) {
         invitationRepository.deleteByName(name);
+    }
+
+    public static boolean isExpired(Invitation invitation) {
+        return invitation.getTimeOfCreation().isBefore(lastCreationMomentOfUnexpiredInvitations());
     }
 }
