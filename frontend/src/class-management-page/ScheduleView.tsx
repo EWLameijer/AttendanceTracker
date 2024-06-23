@@ -153,12 +153,39 @@ const ScheduleView = () => {
     }
   };
 
-  const dayAbbreviation = (d: string) =>
-    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
+  const deleteMessage = (classDto: ScheduledClassDtoWithoutAttendance) =>
+    getFormattedClass(classDto) + " verwijderen?";
 
-  const showClassesToAdd = proposedClasses.map((value) => (
+  const handleDeleteProposedClass = (
+    proposedClass: ScheduledClassDtoWithoutAttendance
+  ) => {
+    if (confirm(deleteMessage(proposedClass))) {
+      const filteredClasses = proposedClasses.filter(
+        (sc) => sc.dateAsString !== proposedClass.dateAsString
+      );
+
+      setProposedClasses(filteredClasses);
+    }
+  };
+
+  const getFormattedClass = (classDto: ScheduledClassDtoWithoutAttendance) => {
+    const dayAbbreviation = new Date(classDto.dateAsString)
+      .toLocaleString("nl-NL", { weekday: "long" })
+      .substring(0, 2);
+    const teacherName = teachers.find((x) => x.id === classDto.teacherId)?.name;
+
+    return dayAbbreviation + " " + classDto.dateAsString + " " + teacherName;
+  };
+
+  const showProposedClasses = proposedClasses.map((value) => (
     <li key={value.dateAsString}>
-      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+      {getFormattedClass(value)};
+      <button
+        value={value.dateAsString}
+        onClick={() => handleDeleteProposedClass(value)}
+      >
+        X
+      </button>
     </li>
   ));
 
@@ -185,6 +212,8 @@ const ScheduleView = () => {
         setScheduledClasses(
           sortDescending([...response.data, ...scheduledClasses])
         );
+
+        setProposedClasses(new Array<ScheduledClassDtoWithoutAttendance>());
       })
       .catch((error) => {
         if (error.response.status === HttpStatusCode.BadRequest) {
@@ -194,10 +223,10 @@ const ScheduleView = () => {
       });
   };
 
-  const handleDeleteClass = (
+  const handleDeleteScheduledClass = (
     scheduledClass: ScheduledClassDtoWithoutAttendance
   ) => {
-    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+    if (confirm(deleteMessage(scheduledClass))) {
       axios
         .delete(
           `${BASE_URL}/scheduled-classes/${scheduledClass.groupId}/${scheduledClass.dateAsString}`,
@@ -223,13 +252,13 @@ const ScheduleView = () => {
     }
   };
 
-  const showScheduledClasses = scheduledClasses.map((value) => (
-    <li key={value.dateAsString}>
-      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+  const showScheduledClasses = scheduledClasses.map((classDto) => (
+    <li key={classDto.dateAsString}>
+      {getFormattedClass(classDto)}
       <button
-        value={value.dateAsString}
-        onClick={() => handleDeleteClass(value)}
-        hidden={new Date(value.dateAsString) <= new Date()}
+        value={classDto.dateAsString}
+        onClick={() => handleDeleteScheduledClass(classDto)}
+        hidden={new Date(classDto.dateAsString) <= new Date()}
       >
         X
       </button>
@@ -318,7 +347,9 @@ const ScheduleView = () => {
                   </div>
 
                   <div>
-                    <ul className="striping no-bullets">{showClassesToAdd}</ul>
+                    <ul className="striping no-bullets">
+                      {showProposedClasses}
+                    </ul>
                   </div>
 
                   <hr />
@@ -338,5 +369,4 @@ const ScheduleView = () => {
     )
   );
 };
-
 export default ScheduleView;
