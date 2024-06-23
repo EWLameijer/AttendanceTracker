@@ -308,7 +308,7 @@ const PersonnelView = () => {
         {inviteesForDisplay.map((invitee) => (
           <li key={invitee.name}>
             {invitee.name} ({invitee.role})
-            {invitee.hasExpired ? " - UITNODIGING VERLOPEN!" : ""}
+            {invitee.hasExpired && " - UITNODIGING VERLOPEN!"}
             <button onClick={() => withdrawInvitation(invitee.name)}>
               Uitnodiging intrekken
             </button>

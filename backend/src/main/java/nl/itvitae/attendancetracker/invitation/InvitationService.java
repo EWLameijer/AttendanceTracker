@@ -21,25 +21,16 @@ public class InvitationService {
         if (name.isEmpty()) throw new BadRequestException("Name should not be blank!");
         if (registrarRepository.existsByIdentityName(name))
             throw new BadRequestException("There is already a personnel member with this name!");
-        removeAllExpiredInvitations();
         removeAllInvitationsToSamePerson(name);
     }
 
     private final static Duration invitationExpirationDuration = Duration.ofDays(1);
-
-    private static LocalDateTime lastCreationMomentOfUnexpiredInvitations() {
-        return LocalDateTime.now().minus(invitationExpirationDuration);
-    }
-
-    private void removeAllExpiredInvitations() {
-        invitationRepository.deleteByTimeOfCreationIsBefore(lastCreationMomentOfUnexpiredInvitations());
-    }
 
     private void removeAllInvitationsToSamePerson(String name) {
         invitationRepository.deleteByName(name);
     }
 
     public static boolean isExpired(Invitation invitation) {
-        return invitation.getTimeOfCreation().isBefore(lastCreationMomentOfUnexpiredInvitations());
+        return invitation.getTimeOfCreation().isBefore(LocalDateTime.now().minus(invitationExpirationDuration));
     }
 }
