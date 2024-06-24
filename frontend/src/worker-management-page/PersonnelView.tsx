@@ -6,6 +6,7 @@ import Role from "../-shared/Role";
 import { Teacher } from "../-shared/Teacher";
 import roleNames from "./roleNames";
 import RegistrarList from "./RegistrarList";
+import { useNavigate } from "react-router-dom";
 
 interface Invitee extends Registrar {
   hasExpired: boolean;
@@ -246,8 +247,12 @@ const PersonnelView = () => {
     inviteRegistrar(name, toKebabCase(role));
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
+      <button onClick={() => navigate("/coach-view")}>Home</button>
+      <br />
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
       {user.isSuperAdmin() && (
