@@ -7,14 +7,13 @@ import "./index.css";
 import UserContext from "./-shared/UserContext.ts";
 import LoginData from "./-shared/LoginData.ts";
 import Login from "./login-page/Login.tsx";
-import CoachView from "./attendance-management-page/CoachView.tsx";
 import ScheduleView from "./class-management-page/ScheduleView.tsx";
-import TeacherView from "./attendance-management-page/TeacherView.tsx";
 import HistoryView from "./history-page/HistoryView.tsx";
 import Role from "./-shared/Role.ts";
 import Authorized from "./login-page/Authorized.tsx";
 import PersonnelView from "./worker-management-page/PersonnelView.tsx";
 import RegistrationView from "./registration-page/RegistrationView.tsx";
+import AttendanceManagement from "./attendance-management-page/AttendanceManagement.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -33,8 +32,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route
             path="/coach-view"
             element={
-              <Authorized roles={[Role.SUPER_ADMIN, Role.ADMIN, Role.COACH]}>
-                <CoachView />
+              <Authorized
+                roles={[Role.SUPER_ADMIN, Role.ADMIN, Role.COACH, Role.TEACHER]}
+              >
+                <AttendanceManagement />
               </Authorized>
             }
           />
@@ -51,14 +52,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             element={
               <Authorized roles={[Role.SUPER_ADMIN]}>
                 <ScheduleView />
-              </Authorized>
-            }
-          />
-          <Route
-            path="/teacher-view"
-            element={
-              <Authorized roles={[Role.TEACHER]}>
-                <TeacherView />
               </Authorized>
             }
           />
