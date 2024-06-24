@@ -3,7 +3,7 @@ import DatePicker from "./DatePicker";
 import UserContext from "../-shared/UserContext";
 import { useNavigate } from "react-router-dom";
 
-const CoachView = () => {
+const AttendanceManagement = () => {
   const user = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -32,4 +32,4 @@ const CoachView = () => {
   );
 };
 
-export default CoachView;
+export default AttendanceManagement;

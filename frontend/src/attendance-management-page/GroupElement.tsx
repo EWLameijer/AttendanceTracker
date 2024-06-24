@@ -89,16 +89,12 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
         {chosenClass.groupName}
         {user.isTeacher() ? "" : ` (${chosenClass.teacherName})`}
       </h3>
-      {user.isTeacher() ? (
-        <button
-          onClick={setAllUnregisteredAsPresent}
-          disabled={!unregisteredAttendancesExist()}
-        >
-          Zet alle ongeregistreerden op aanwezig
-        </button>
-      ) : (
-        <></>
-      )}
+      <button
+        onClick={setAllUnregisteredAsPresent}
+        disabled={!unregisteredAttendancesExist()}
+      >
+        Zet alle ongeregistreerden op aanwezig
+      </button>
       <ol>
         {chosenClass.attendances
           .sort((a, b) => a.studentName.localeCompare(b.studentName))
