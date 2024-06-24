@@ -22,8 +22,7 @@ const Login = () => {
       .then((response) => {
         const role = response.data.role;
         user.update(loginData.username, loginData.password, role);
-        if (user.isTeacher()) navigate("/teacher-view");
-        else navigate("/coach-view");
+        navigate("/attendance-management");
       })
       .catch(() => alert("Gebruikersnaam/wachtwoord-combinatie onbekend!"));
   };
