@@ -6,6 +6,7 @@ import Role from "../-shared/Role";
 import { Teacher } from "../-shared/Teacher";
 import roleNames from "./roleNames";
 import RegistrarList from "./RegistrarList";
+import HomeButton from "../-shared/HomeButton";
 
 interface Invitee extends Registrar {
   hasExpired: boolean;
@@ -248,6 +249,8 @@ const PersonnelView = () => {
 
   return (
     <>
+      <HomeButton />
+      <br />
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
       {user.isSuperAdmin() && (

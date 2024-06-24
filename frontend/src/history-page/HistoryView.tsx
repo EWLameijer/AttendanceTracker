@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
 import UserContext from "../-shared/UserContext";
+import HomeButton from "../-shared/HomeButton";
 
 const HistoryView = () => {
   const [attendances, setAttendances] = useState<Attendance[]>([]);
@@ -107,6 +108,8 @@ const HistoryView = () => {
 
   return (
     <>
+      <HomeButton />
+
       <h2>Aanwezigheidsgeschiedenis van {name}</h2>
 
       <p>
