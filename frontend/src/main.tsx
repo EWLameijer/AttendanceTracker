@@ -30,7 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           />
           <Route
-            path="/coach-view"
+            path="/attendance-management"
             element={
               <Authorized
                 roles={[Role.SUPER_ADMIN, Role.ADMIN, Role.COACH, Role.TEACHER]}

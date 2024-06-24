@@ -22,7 +22,7 @@ const Login = () => {
       .then((response) => {
         const role = response.data.role;
         user.update(loginData.username, loginData.password, role);
-        navigate("/coach-view");
+        navigate("/attendance-management");
       })
       .catch(() => alert("Gebruikersnaam/wachtwoord-combinatie onbekend!"));
   };
