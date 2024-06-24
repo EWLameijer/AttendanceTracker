@@ -62,14 +62,23 @@ const PersonnelView = () => {
       alert("Geen naam opgegeven!");
       return;
     }
-    inviteRegistrar(name, backendTitle);
+    const emailAddress = prompt(`Geef het e-mailadres van ${name}:`)?.trim();
+    if (!emailAddress) {
+      alert("Geen e-mailadres opgegeven!");
+      return;
+    }
+    inviteRegistrar(name, backendTitle, emailAddress);
   };
 
-  const inviteRegistrar = (name: string, backendTitle: string) => {
+  const inviteRegistrar = (
+    name: string,
+    backendTitle: string,
+    emailAddress: string
+  ) => {
     axios
       .post(
         `${BASE_URL}/invitations/for-${backendTitle}`,
-        { name },
+        { name, emailAddress },
         {
           auth: {
             username: user.username,

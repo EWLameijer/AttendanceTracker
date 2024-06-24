@@ -23,7 +23,7 @@ public class Registrar {
 
     private String password;
 
-    private String email;
+    private String emailAddress;
 
     @Setter
     private boolean enabled = true;
@@ -38,10 +38,10 @@ public class Registrar {
         this.role = role.asSpringSecurityRole();
     }
 
-    public Registrar(WorkerIdentity identity, String password, ATRole role, String email) {
+    public Registrar(WorkerIdentity identity, String password, ATRole role, String emailAddress) {
         this.identity = identity;
         this.password = password;
-        this.email = email;
+        this.emailAddress = emailAddress;
         setRole(role);
     }
 }
