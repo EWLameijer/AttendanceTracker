@@ -8,8 +8,7 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
-
-export const FRONTEND_URL = import.meta.env.BASE_URL; // when in production, need to get this from some kind of settings?
+export const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
 export const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
