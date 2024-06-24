@@ -6,7 +6,6 @@ import { Teacher } from "../-shared/Teacher";
 import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
 import UserContext from "../-shared/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
-import { useNavigate } from "react-router-dom";
 
 const ScheduleView = () => {
   const today = toYYYYMMDD(new Date());
@@ -272,14 +271,10 @@ const ScheduleView = () => {
     scheduledClassesArray.sort((a, b) =>
       b.dateAsString.localeCompare(a.dateAsString)
     );
-
-  const navigate = useNavigate();
-
   return (
     //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
     teachers.length > 0 && (
       <>
-        <button onClick={() => navigate("/coach-view")}>Home</button>
         <p>Kies een groep:</p>
         <select onChange={handleGroupChange}>
           {groups.map((group: Group, index: number) => (

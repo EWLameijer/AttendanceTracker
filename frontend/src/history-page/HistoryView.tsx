@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Attendance,
   Status,
@@ -105,12 +105,8 @@ const HistoryView = () => {
 
   const getNote = (note: string | undefined) => (note ? ` (${note})` : "");
 
-  const navigate = useNavigate();
-
   return (
     <>
-      <button onClick={() => navigate("/coach-view")}>Home</button>
-
       <h2>Aanwezigheidsgeschiedenis van {name}</h2>
 
       <p>
