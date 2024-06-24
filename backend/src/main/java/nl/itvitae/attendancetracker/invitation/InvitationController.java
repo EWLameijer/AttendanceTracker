@@ -44,7 +44,7 @@ public class InvitationController {
         var name = registrarDto.name().trim();
         var email = registrarDto.email().trim();
         invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name, email);
-        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role)));
+        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role, email)));
     }
 
     @GetMapping("{id}")

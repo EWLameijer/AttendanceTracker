@@ -32,10 +32,10 @@ public class WorkerService {
     }
 
     @Transactional
-    public Registrar saveRegistrar(String username, String password, ATRole role) {
+    public Registrar saveRegistrar(String username, String password, ATRole role, String email) {
         var workerIdentity = saveOrThrow(username);
         if (role == ATRole.TEACHER) teacherRepository.save(new Teacher(workerIdentity));
-        var registrar = new Registrar(workerIdentity, passwordEncoder.encode(password), role);
+        var registrar = new Registrar(workerIdentity, passwordEncoder.encode(password), role, email);
         return registrarRepository.save(registrar);
     }
 

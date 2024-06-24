@@ -57,12 +57,12 @@ public class Seeder implements CommandLineRunner {
             studentRepository.saveAll(List.of(
                     arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
-            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER);
-            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER);
-            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH);
-            var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN);
+            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER, "wubbo@itvitae.nl");
+            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER, "niels@itvitae.nl");
+            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH, "juan@itvitae.nl");
+            var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN, "nouchka@itvitae.nl");
             var dan = workerService.saveExternalTeacher("Dan");
-            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN);
+            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN, "chantal@itvitae.nl");
             var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
             var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 

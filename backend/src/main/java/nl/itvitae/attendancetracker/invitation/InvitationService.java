@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +18,21 @@ public class InvitationService {
     private final RegistrarRepository registrarRepository;
 
     @Transactional
-    public void checkInvitationIsValidAndCleanExpiredInvitations(String name) {
+    public void checkInvitationIsValidAndCleanExpiredInvitations(String name, String emailAddress) {
         if (name.isEmpty()) throw new BadRequestException("Name should not be blank!");
-        
+        if (!isValidEmailAddress(emailAddress)) throw new BadRequestException("Email address is invalid!");
+
         if (registrarRepository.existsByIdentityName(name))
             throw new BadRequestException("There is already a personnel member with this name!");
         removeAllInvitationsToSamePerson(name);
+    }
+
+    // from https://www.baeldung.com/java-email-validation-regex
+    private boolean isValidEmailAddress(String emailAddress) {
+        return Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                        + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+                .matcher(emailAddress)
+                .matches();
     }
 
     private final static Duration invitationExpirationDuration = Duration.ofDays(1);

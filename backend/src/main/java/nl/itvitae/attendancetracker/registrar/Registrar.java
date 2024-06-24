@@ -38,9 +38,10 @@ public class Registrar {
         this.role = role.asSpringSecurityRole();
     }
 
-    public Registrar(WorkerIdentity identity, String password, ATRole role) {
+    public Registrar(WorkerIdentity identity, String password, ATRole role, String email) {
         this.identity = identity;
         this.password = password;
+        this.email = email;
         setRole(role);
     }
 }
