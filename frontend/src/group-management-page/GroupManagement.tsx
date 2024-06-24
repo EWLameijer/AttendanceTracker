@@ -5,6 +5,7 @@ import { Group } from "../-shared/Group";
 import { BASE_URL } from "../-shared/utils";
 import AddGroup from "./AddGroup";
 import UserContext from "../-shared/UserContext";
+import HomeButton from "../-shared/HomeButton";
 
 const groupUrl = `${BASE_URL}/groups`;
 
@@ -84,6 +85,8 @@ const AdminView = () => {
 
   return (
     <>
+      <HomeButton />
+
       <h2>Hallo {user.username}!</h2>
       <AddGroup add={addGroup} />
       <ol>
