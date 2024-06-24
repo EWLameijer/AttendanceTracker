@@ -21,10 +21,14 @@ interface DateSchedule {
   classes: Class[];
 }
 
+let manuallyEditing = false;
+
 const DatePicker = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
+
+  const [dateInPicker, setDateInPicker] = useState(toYYYYMMDD(lastDate));
 
   const user = useContext(UserContext);
 
@@ -72,6 +76,7 @@ const DatePicker = () => {
         setPreviousDate(schedule.previousDate);
         setNextDate(schedule.nextDate);
         lastDate = new Date(Date.parse(schedule.currentDate));
+        setDateInPicker(toYYYYMMDD(lastDate));
         const rawClasses = schedule.classes;
         for (const rawClass of rawClasses) {
           const fullFormatAttendances = rawClass.attendances.map((attendance) =>
@@ -89,6 +94,11 @@ const DatePicker = () => {
 
   const nextLessonDay = () => loadDate(nextDate!);
 
+  const updateDateAndRerenderUnlessStillTyping = (newDateAsString: string) => {
+    if (manuallyEditing) setDateInPicker(newDateAsString);
+    else loadDate(newDateAsString, true);
+  };
+
   return !classes.length && !previousDate && !nextDate ? (
     <h3>Geen lessen ingepland in nabij verleden of toekomst!</h3>
   ) : (
@@ -103,8 +113,16 @@ const DatePicker = () => {
         </button>
         <input
           type="date"
-          value={toYYYYMMDD(lastDate)}
-          onChange={(event) => loadDate(event.currentTarget.value, true)}
+          value={dateInPicker}
+          onKeyDown={(event) => {
+            if (event.key === "Enter")
+              updateDateAndRerenderUnlessStillTyping(event.currentTarget.value);
+            else manuallyEditing = true;
+          }}
+          onKeyUp={() => (manuallyEditing = false)}
+          onChange={(event) =>
+            updateDateAndRerenderUnlessStillTyping(event.currentTarget.value)
+          }
         />
       </h3>
       {classes.length === 0 ? (
