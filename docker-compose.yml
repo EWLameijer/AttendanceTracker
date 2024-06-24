@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=attendancetracker
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -22,7 +22,7 @@ services:
       - AT_URL=jdbc:postgresql://psql-db:5432/attendancetracker
       - AT_USERNAME=admin
       - AT_PASSWORD=1234
-      - AT_CORS=http://localhost:5173
+      - AT_CORS=http://dockerserv:5173
     depends_on:
       - psql-db
 
@@ -32,7 +32,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_BACKEND_URL=http://localhost:8080
+      - VITE_BACKEND_URL=http://dockerserv:8080
     depends_on:
       - attendancetracker-backend
 
