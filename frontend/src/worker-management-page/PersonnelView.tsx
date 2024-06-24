@@ -54,6 +54,11 @@ const PersonnelView = () => {
 
   const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
+  const isValidEmailAddress = (emailAddress: string) =>
+    /^(?=.{1,64}@)[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/.test(
+      emailAddress
+    );
+
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
       `Geef de naam van de ${dutchTitle} om uit te nodigen:`
@@ -65,6 +70,10 @@ const PersonnelView = () => {
     const emailAddress = prompt(`Geef het e-mailadres van ${name}:`)?.trim();
     if (!emailAddress) {
       alert("Geen e-mailadres opgegeven!");
+      return;
+    }
+    if (!isValidEmailAddress(emailAddress)) {
+      alert(`E-mailadres '${emailAddress}' ongeldig!`);
       return;
     }
     inviteRegistrar(name, backendTitle, emailAddress);
