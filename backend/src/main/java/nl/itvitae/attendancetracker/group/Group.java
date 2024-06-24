@@ -1,6 +1,5 @@
 package nl.itvitae.attendancetracker.group;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,7 @@ import java.util.UUID;
 
 @Entity(name = "groups") // "group" is apparently a (Postgre)SQL statement?
 @Getter
+@Setter
 @NoArgsConstructor
 public class Group {
     @Id
@@ -21,11 +21,9 @@ public class Group {
 
     private String name;
 
-    @Setter
     private boolean isTerminated = false;
 
     @OneToMany(mappedBy = "group")
-    @JsonManagedReference
     private final Set<Student> members = new HashSet<>();
 
     public Group(String name) {

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Student } from "./Student";
-import { BASE_URL } from "../utils";
-import UserContext from "../context/UserContext";
+import { Student } from "../-shared/Student";
+import { BASE_URL } from "../-shared/utils";
+import UserContext from "../-shared/UserContext";
 import { useContext } from "react";
 
 const MemberEditComponent = (props: {

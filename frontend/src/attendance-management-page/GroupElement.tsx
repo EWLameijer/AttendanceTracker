@@ -1,9 +1,9 @@
 import axios from "axios";
-import { Attendance, Class, Status, addExtraData } from "../Class.ts";
-import { BASE_URL } from "../utils.ts";
+import { Attendance, Class, Status, addExtraData } from "../-shared/Class.ts";
+import { BASE_URL } from "../-shared/utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
 import { useContext, useEffect, useState } from "react";
-import UserContext from "../context/UserContext.ts";
+import UserContext from "../-shared/UserContext.ts";
 
 const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   const [chosenClass, setChosenClass] = useState(props.chosenClass);
@@ -35,14 +35,14 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   const saveModifiedAttendances = (attendances: Attendance[]) => {
     if (
       attendances.some(
-        (attendance) => attendance.status == Status.NOT_REGISTERED_YET
+        (attendance) => attendance.status === Status.NOT_REGISTERED_YET
       )
     )
       return;
 
     const updatedAttendances = attendances.filter(isUpdated);
 
-    if (updatedAttendances.length == 0) return;
+    if (!updatedAttendances.length) return;
 
     const formattedAttendances = updatedAttendances.map((attendance) => {
       const newAttendance: Attendance = {
@@ -80,7 +80,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
 
   const unregisteredAttendancesExist = () =>
     chosenClass!.attendances.some(
-      (attendance) => attendance.status == Status.NOT_REGISTERED_YET
+      (attendance) => attendance.status === Status.NOT_REGISTERED_YET
     );
 
   return (

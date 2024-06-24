@@ -1,6 +1,7 @@
 package nl.itvitae.attendancetracker.invitation;
 
 import lombok.RequiredArgsConstructor;
+import nl.itvitae.attendancetracker.NotFoundException;
 import nl.itvitae.attendancetracker.registrar.ATRole;
 import nl.itvitae.attendancetracker.registrar.RegistrarDto;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,19 @@ public class InvitationController {
         return getInvitationDtoWithCode(registrarDto, ATRole.TEACHER);
     }
 
-    @PostMapping("for-coach-or-admin")
-    public InvitationDtoWithCode getCoachOrAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+    @PostMapping("for-coach")
+    public InvitationDtoWithCode getCoachOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationDtoWithCode(registrarDto, ATRole.COACH);
+    }
+
+    @PostMapping("for-admin")
+    public InvitationDtoWithCode getAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
         return getInvitationDtoWithCode(registrarDto, ATRole.ADMIN);
+    }
+
+    @PostMapping("for-super-admin")
+    public InvitationDtoWithCode getSuperAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
+        return getInvitationDtoWithCode(registrarDto, ATRole.SUPER_ADMIN);
     }
 
     private InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
@@ -38,6 +49,13 @@ public class InvitationController {
     @GetMapping("{id}")
     public ResponseEntity<InvitationDtoWithCode> getInvitation(@PathVariable UUID id) {
         return invitationRepository.findById(id).map(InvitationDtoWithCode::from).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{name}")
+    public ResponseEntity<Void> deleteByName(@PathVariable String name) {
+        var invitation = invitationRepository.findByName(name).orElseThrow(NotFoundException::new);
+        invitationRepository.delete(invitation);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

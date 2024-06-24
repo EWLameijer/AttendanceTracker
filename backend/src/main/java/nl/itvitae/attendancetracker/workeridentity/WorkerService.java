@@ -3,8 +3,6 @@ package nl.itvitae.attendancetracker.workeridentity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
-import nl.itvitae.attendancetracker.authority.Authority;
-import nl.itvitae.attendancetracker.authority.AuthorityRepository;
 import nl.itvitae.attendancetracker.registrar.ATRole;
 import nl.itvitae.attendancetracker.registrar.Registrar;
 import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
@@ -24,8 +22,6 @@ public class WorkerService {
 
     private final RegistrarRepository registrarRepository;
 
-    private final AuthorityRepository authorityRepository;
-
     public boolean nameHasBadFormatOrIsAlreadyInUse(String name) {
         return name == null || !name.trim().equals(name) || workerIdentityRepository.existsById(name);
     }
@@ -40,10 +36,7 @@ public class WorkerService {
         var workerIdentity = saveOrThrow(username);
         if (role == ATRole.TEACHER) teacherRepository.save(new Teacher(workerIdentity));
         var registrar = new Registrar(workerIdentity, passwordEncoder.encode(password), role);
-        registrarRepository.save(registrar);
-        var authority = new Authority(username, role.asSpringSecurityRole());
-        authorityRepository.save(authority);
-        return registrar;
+        return registrarRepository.save(registrar);
     }
 
     @Transactional

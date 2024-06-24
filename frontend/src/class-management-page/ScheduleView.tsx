@@ -1,10 +1,10 @@
 import axios, { HttpStatusCode } from "axios";
 import { useState, useEffect, useContext } from "react";
-import { BASE_URL, toYYYYMMDD } from "../utils";
-import { Group } from "../admin-view/Group";
-import { Teacher } from "./Teacher";
+import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
+import { Group } from "../-shared/Group";
+import { Teacher } from "../-shared/Teacher";
 import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
-import UserContext from "../context/UserContext";
+import UserContext from "../-shared/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
 
 const ScheduleView = () => {
@@ -63,6 +63,7 @@ const ScheduleView = () => {
   }, []);
 
   useEffect(() => {
+    if (!groupId) return;
     axios
       .get(`${BASE_URL}/scheduled-classes/${groupId}`, {
         auth: {
@@ -134,7 +135,7 @@ const ScheduleView = () => {
 
   const excludeClasses = (event: React.FormEvent) => {
     event.preventDefault();
-    if (proposedClasses.length == 0) {
+    if (!proposedClasses.length) {
       alert("Genereer eerst een periode");
     } else {
       const startOfExcludedPeriod = new Date(excludeStartDateAsString);
@@ -152,8 +153,40 @@ const ScheduleView = () => {
     }
   };
 
-  const showClassesToAdd = proposedClasses.map((value) => (
-    <p key={value.dateAsString}>{value.dateAsString}</p>
+  const deleteMessage = (classDto: ScheduledClassDtoWithoutAttendance) =>
+    getFormattedClass(classDto) + " verwijderen?";
+
+  const handleDeleteProposedClass = (
+    proposedClass: ScheduledClassDtoWithoutAttendance
+  ) => {
+    if (confirm(deleteMessage(proposedClass))) {
+      const filteredClasses = proposedClasses.filter(
+        (sc) => sc.dateAsString !== proposedClass.dateAsString
+      );
+
+      setProposedClasses(filteredClasses);
+    }
+  };
+
+  const getFormattedClass = (classDto: ScheduledClassDtoWithoutAttendance) => {
+    const dayAbbreviation = new Date(classDto.dateAsString)
+      .toLocaleString("nl-NL", { weekday: "long" })
+      .substring(0, 2);
+    const teacherName = teachers.find((x) => x.id === classDto.teacherId)?.name;
+
+    return dayAbbreviation + " " + classDto.dateAsString + " " + teacherName;
+  };
+
+  const showProposedClasses = proposedClasses.map((value) => (
+    <li key={value.dateAsString}>
+      {getFormattedClass(value)};
+      <button
+        value={value.dateAsString}
+        onClick={() => handleDeleteProposedClass(value)}
+      >
+        X
+      </button>
+    </li>
   ));
 
   const submitClasses = (event: React.FormEvent) => {
@@ -171,27 +204,29 @@ const ScheduleView = () => {
         }
       )
       .then((response) => {
-        if (response.status == HttpStatusCode.Created)
-          alert(response.data.length + " lessen toegevoegd.");
+        if (response.status === HttpStatusCode.Created) {
+          const numberOfClasses = response.data.length;
+          const lessonTerm = "les" + (numberOfClasses !== 1 ? "sen" : "");
+          alert(`${numberOfClasses} ${lessonTerm} toegevoegd.`);
+        }
         setScheduledClasses(
           sortDescending([...response.data, ...scheduledClasses])
         );
+
+        setProposedClasses(new Array<ScheduledClassDtoWithoutAttendance>());
       })
       .catch((error) => {
-        if (error.response.status == HttpStatusCode.BadRequest) {
+        if (error.response.status === HttpStatusCode.BadRequest) {
           console.log(error);
           alert(error.response.data.detail);
         } else alert(error.response.status + " " + error.response.data);
       });
   };
 
-  const dayAbbreviation = (d: string) =>
-    new Date(d).toLocaleString("nl-NL", { weekday: "long" }).substring(0, 2);
-
-  const handleDeleteClass = (
+  const handleDeleteScheduledClass = (
     scheduledClass: ScheduledClassDtoWithoutAttendance
   ) => {
-    if (confirm(scheduledClass.dateAsString + " verwijderen?")) {
+    if (confirm(deleteMessage(scheduledClass))) {
       axios
         .delete(
           `${BASE_URL}/scheduled-classes/${scheduledClass.groupId}/${scheduledClass.dateAsString}`,
@@ -217,17 +252,17 @@ const ScheduleView = () => {
     }
   };
 
-  const showScheduledClasses = scheduledClasses.map((value) => (
-    <p key={value.dateAsString}>
-      {dayAbbreviation(value.dateAsString)} {value.dateAsString}
+  const showScheduledClasses = scheduledClasses.map((classDto) => (
+    <li key={classDto.dateAsString}>
+      {getFormattedClass(classDto)}
       <button
-        value={value.dateAsString}
-        onClick={() => handleDeleteClass(value)}
-        hidden={new Date(value.dateAsString) <= new Date()}
+        value={classDto.dateAsString}
+        onClick={() => handleDeleteScheduledClass(classDto)}
+        hidden={new Date(classDto.dateAsString) <= new Date()}
       >
         X
       </button>
-    </p>
+    </li>
   ));
 
   const sortDescending = (
@@ -286,6 +321,8 @@ const ScheduleView = () => {
                     <button onClick={generateClasses}>Genereer periode</button>
                   </div>
 
+                  <hr />
+
                   <div>
                     <p>
                       Kies een begin- en einddatum van de uit te sluiten
@@ -305,18 +342,26 @@ const ScheduleView = () => {
                     ></input>
                   </div>
 
-                  <div>{showClassesToAdd}</div>
-
                   <div>
                     <button onClick={excludeClasses}>Verwijder selectie</button>
                   </div>
+
+                  <div>
+                    <ul className="striping no-bullets">
+                      {showProposedClasses}
+                    </ul>
+                  </div>
+
+                  <hr />
 
                   <div>
                     <button onClick={submitClasses}>Sla alle lessen op.</button>
                   </div>
                 </form>
               </td>
-              <td>{showScheduledClasses}</td>
+              <td>
+                <ul className="striping no-bullets">{showScheduledClasses}</ul>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -324,5 +369,4 @@ const ScheduleView = () => {
     )
   );
 };
-
 export default ScheduleView;

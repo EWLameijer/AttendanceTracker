@@ -1,17 +1,22 @@
 import axios from "axios";
-import UserContext from "../context/UserContext";
+import UserContext from "../-shared/UserContext";
 import { useContext, useEffect, useState } from "react";
-import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../utils";
-import Role from "./shared/Role";
-import { Teacher } from "../schedule-view/Teacher";
-import RegistrarList from "./personnel-view-components/RegistrarList";
+import { BASE_URL, FRONTEND_URL, Registrar, byName } from "../-shared/utils";
+import Role from "../-shared/Role";
+import { Teacher } from "../-shared/Teacher";
+import roleNames from "./roleNames";
+import RegistrarList from "./RegistrarList";
+
+interface Invitee extends Registrar {
+  hasExpired: boolean;
+}
 
 const PersonnelView = () => {
   const user = useContext(UserContext);
 
   const [registrars, setRegistrars] = useState<Registrar[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [invitees, setInvitees] = useState<Registrar[]>([]);
+  const [invitees, setInvitees] = useState<Invitee[]>([]);
 
   useEffect(() => {
     axios
@@ -37,7 +42,7 @@ const PersonnelView = () => {
       });
 
     axios
-      .get<Registrar[]>(`${BASE_URL}/invitations`, {
+      .get<Invitee[]>(`${BASE_URL}/invitations`, {
         auth: {
           username: user.username,
           password: user.password,
@@ -45,6 +50,8 @@ const PersonnelView = () => {
       })
       .then((response) => setInvitees(response.data));
   }, []);
+
+  const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
@@ -54,6 +61,10 @@ const PersonnelView = () => {
       alert("Geen naam opgegeven!");
       return;
     }
+    inviteRegistrar(name, backendTitle);
+  };
+
+  const inviteRegistrar = (name: string, backendTitle: string) => {
     axios
       .post(
         `${BASE_URL}/invitations/for-${backendTitle}`,
@@ -70,11 +81,12 @@ const PersonnelView = () => {
           `Stuur de ander de link ${FRONTEND_URL}/registration-view/${response.data.code} Deze blijft 24 uur geldig.`
         );
         setInvitees([
-          ...invitees,
+          ...invitees.filter((invitee) => invitee.name !== name),
           {
             id: response.data.code,
             name,
-            role: backendTitle === "teacher" ? Role.TEACHER : Role.ADMIN,
+            role: toMacroCase(backendTitle),
+            hasExpired: false,
           },
         ]);
       })
@@ -83,8 +95,11 @@ const PersonnelView = () => {
 
   const inviteTeacher = () => invite("docent", "teacher");
 
-  const inviteCoachOrAdmin = () =>
-    invite("coach of administrator", "coach-or-admin");
+  const inviteCoach = () => invite("studentbegeleider", "coach");
+
+  const inviteAdmin = () => invite("administrator", "admin");
+
+  const inviteSuperAdmin = () => invite("super-administrator", "super-admin");
 
   const addExternalTeacher = () => {
     const name = prompt(
@@ -112,13 +127,16 @@ const PersonnelView = () => {
       .catch(() => alert("Deze gebruiker bestaat al!"));
   };
 
-  const registeringTeachers = registrars
-    .filter((registrar) => registrar.role == Role.TEACHER)
-    .sort(byName);
+  const byRoleSorted = (role: string) =>
+    registrars.filter((registrar) => registrar.role === role).sort(byName);
 
-  const admins = registrars
-    .filter((registrar) => registrar.role == Role.ADMIN)
-    .sort(byName);
+  const registeringTeachers = byRoleSorted(Role.TEACHER);
+
+  const admins = byRoleSorted(Role.ADMIN);
+
+  const coaches = byRoleSorted(Role.COACH);
+
+  const superAdmins = byRoleSorted(Role.SUPER_ADMIN);
 
   const registeringTeacherNames = registeringTeachers.map(
     (registeredTeacher) => registeredTeacher.name
@@ -131,7 +149,7 @@ const PersonnelView = () => {
   const inviteesForDisplay = invitees
     .map((invitee) => ({
       ...invitee,
-      role: invitee.role == Role.TEACHER ? "docent" : "administrator",
+      role: roleNames[invitee.role],
     }))
     .sort(byName);
 
@@ -179,17 +197,76 @@ const PersonnelView = () => {
     }
   };
 
+  const withdrawInvitation = (name: string) => {
+    axios
+      .delete(`${BASE_URL}/invitations/${name}`, {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      })
+      .then(() => {
+        setInvitees(invitees.filter((invitee) => invitee.name !== name));
+      });
+  };
+
+  const changeRole = (id: string, newRole: string) => {
+    const name = registrars.find((registrar) => registrar.id === id)!.name;
+    const sure = confirm(
+      `Weet u zeker dat u ${name} nu de rol ${roleNames[newRole]} wilt geven?`
+    );
+    if (!sure) return;
+    axios
+      .patch(
+        `${BASE_URL}/personnel/${id}`,
+        {
+          role: newRole,
+        },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
+      .then((response) => {
+        const otherRegistars = registrars.filter(
+          (registrar) => registrar.id !== id
+        );
+        setRegistrars([...otherRegistars, response.data]);
+      });
+  };
+
+  const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
+
+  const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
+
+  const recreateInvitation = (name: string) => {
+    const role = invitees.find((invitee) => invitee.name === name)!.role;
+    inviteRegistrar(name, toKebabCase(role));
+  };
+
   return (
     <>
       <button onClick={inviteTeacher}>Nodig docent uit</button>
-      <button onClick={inviteCoachOrAdmin}>Nodig coach/admin uit</button>
-      <button onClick={addExternalTeacher}>
-        Voeg externe docent toe die zich nog niet hoeft te registreren
-      </button>
+      <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
+      {user.isSuperAdmin() && (
+        <>
+          <button onClick={inviteAdmin}>Nodig administrator uit</button>
+          <button onClick={inviteSuperAdmin}>
+            Nodig super-administrator uit
+          </button>
+          <button onClick={addExternalTeacher}>
+            Voeg externe docent toe die zich nog niet hoeft te registreren
+          </button>
+        </>
+      )}
+
       <RegistrarList
         title="Docenten (die aanwezigheid kunnen registreren)"
         registrars={registeringTeachers}
         disableRegistrar={disableRegistrar}
+        changeRole={changeRole}
       />
       <h3>
         Externe docenten (die geen aanwezigheid kunnen registreren, maar wel
@@ -201,6 +278,7 @@ const PersonnelView = () => {
             {externalTeacher.name}
             <button
               onClick={() => removeFromLessonPlanning(externalTeacher.id)}
+              disabled={!user.isSuperAdmin()}
             >
               Verwijderen
             </button>
@@ -208,15 +286,35 @@ const PersonnelView = () => {
         ))}
       </ul>
       <RegistrarList
+        title="Studentbegeleiders"
+        registrars={coaches}
+        disableRegistrar={disableRegistrar}
+        changeRole={changeRole}
+      />
+      <RegistrarList
         title="Administratoren"
         registrars={admins}
-        disableRegistrar={disableRegistrar}
+        disableRegistrar={superAdminDisable}
+        changeRole={changeRole}
+      />
+      <RegistrarList
+        title="Super-administratoren"
+        registrars={superAdmins}
+        disableRegistrar={superAdminDisable}
+        changeRole={changeRole}
       />
       <h3>Uitgenodigden</h3>
       <ul>
         {inviteesForDisplay.map((invitee) => (
           <li key={invitee.name}>
             {invitee.name} ({invitee.role})
+            {invitee.hasExpired && " - UITNODIGING VERLOPEN!"}
+            <button onClick={() => withdrawInvitation(invitee.name)}>
+              Uitnodiging intrekken
+            </button>
+            <button onClick={() => recreateInvitation(invitee.name)}>
+              Opnieuw uitnodigingslink produceren (maakt oude link ongeldig)
+            </button>
           </li>
         ))}
       </ul>

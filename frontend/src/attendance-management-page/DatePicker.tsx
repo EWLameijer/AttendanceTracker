@@ -1,9 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { BASE_URL, capitalize, dateOptions, toYYYYMMDD } from "../utils";
+import {
+  BASE_URL,
+  capitalize,
+  dateOptions,
+  toYYYYMMDD,
+} from "../-shared/utils";
 import axios from "axios";
-import { Class, addExtraData } from "../Class";
+import { Class, addExtraData } from "../-shared/Class";
 import GroupElement from "./GroupElement";
-import UserContext from "../context/UserContext";
+import UserContext from "../-shared/UserContext";
 
 // there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
 let lastDate = new Date();
@@ -49,14 +54,18 @@ const DatePicker = () => {
     return () => clearInterval(heartbeat);
   }, []);
 
-  function loadDate(dateAsString: string) {
+  function loadDate(dateAsString: string, exactDateRequired: boolean = false) {
+    const datePath = exactDateRequired ? "by-exact-date" : "by-date";
     axios
-      .get<DateSchedule>(`${BASE_URL}/attendances/by-date/${dateAsString}`, {
-        auth: {
-          username: user.username,
-          password: user.password,
-        },
-      })
+      .get<DateSchedule>(
+        `${BASE_URL}/attendances/${datePath}/${dateAsString}`,
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
       .then((response) => {
         const schedule = response.data;
         latestUpdateProcessed = schedule.timeOfLatestUpdate;
@@ -80,41 +89,46 @@ const DatePicker = () => {
 
   const nextLessonDay = () => loadDate(nextDate!);
 
-  return (
-    classes.length > 0 && (
-      <>
-        <h3>
-          <button onClick={previousLessonDay} disabled={!previousDate}>
-            Vorige lesdag
-          </button>
-          {capitalize(
-            getDisplayedDay().toLocaleDateString("nl-NL", dateOptions)
-          )}
-          <button onClick={nextLessonDay} disabled={!nextDate}>
-            Volgende lesdag
-          </button>
-        </h3>
-        {user.isTeacher() ? (
-          <GroupElement
-            chosenClass={classes[0]}
-            dateAsString={toYYYYMMDD(lastDate)}
-          />
-        ) : (
-          <ol>
-            {classes
-              .sort((a, b) => a.groupName.localeCompare(b.groupName))
-              .map((currentClass) => (
-                <li key={currentClass.groupName}>
-                  <GroupElement
-                    chosenClass={currentClass}
-                    dateAsString={toYYYYMMDD(lastDate)}
-                  />
-                </li>
-              ))}
-          </ol>
-        )}
-      </>
-    )
+  return !classes.length && !previousDate && !nextDate ? (
+    <h3>Geen lessen ingepland in nabij verleden of toekomst!</h3>
+  ) : (
+    <>
+      <h3>
+        <button onClick={previousLessonDay} disabled={!previousDate}>
+          Vorige lesdag
+        </button>
+        {capitalize(getDisplayedDay().toLocaleDateString("nl-NL", dateOptions))}
+        <button onClick={nextLessonDay} disabled={!nextDate}>
+          Volgende lesdag
+        </button>
+        <input
+          type="date"
+          value={toYYYYMMDD(lastDate)}
+          onChange={(event) => loadDate(event.currentTarget.value, true)}
+        />
+      </h3>
+      {classes.length === 0 ? (
+        <h3>Geen lessen op deze dag</h3>
+      ) : user.isTeacher() ? (
+        <GroupElement
+          chosenClass={classes[0]}
+          dateAsString={toYYYYMMDD(lastDate)}
+        />
+      ) : (
+        <ol>
+          {classes
+            .sort((a, b) => a.groupName.localeCompare(b.groupName))
+            .map((currentClass) => (
+              <li key={currentClass.groupName}>
+                <GroupElement
+                  chosenClass={currentClass}
+                  dateAsString={toYYYYMMDD(lastDate)}
+                />
+              </li>
+            ))}
+        </ol>
+      )}
+    </>
   );
 };
 

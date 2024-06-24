@@ -14,4 +14,6 @@ public interface GroupRepository extends CrudRepository<Group, UUID> {
     List<Group> findAllActive();
 
     Optional<Group> findByMembersContaining(Student student);
+
+    Optional<Group> findByName(String name);
 }

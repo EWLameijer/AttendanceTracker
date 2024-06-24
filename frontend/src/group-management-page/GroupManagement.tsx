@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import GroupEditComponent from "./GroupEditComponent";
-import { Group } from "./Group";
-import { BASE_URL } from "../utils";
+import { Group } from "../-shared/Group";
+import { BASE_URL } from "../-shared/utils";
 import AddGroup from "./AddGroup";
-import UserContext from "../context/UserContext";
+import UserContext from "../-shared/UserContext";
 
 const groupUrl = `${BASE_URL}/groups`;
 
@@ -51,8 +51,35 @@ const AdminView = () => {
         },
       })
       .then(() => {
-        setGroups(groups.filter((group) => group.id != groupId));
+        setGroups(groups.filter((group) => group.id !== groupId));
       });
+  };
+
+  const changeName = (id: string, newName: string) => {
+    if (groups.map((group) => group.name).includes(newName)) {
+      alert(`De naam ${newName} wordt al gebruikt!`);
+    } else {
+      const confirmChange = confirm(
+        `Verander de naam van deze groep in ${newName}?`
+      );
+      if (confirmChange) {
+        axios
+          .patch<Group>(
+            groupUrl + `/${id}`,
+            { name: newName },
+            {
+              auth: {
+                username: user.username,
+                password: user.password,
+              },
+            }
+          )
+          .then((response) => {
+            const newGroup = response.data;
+            setGroups([...groups.filter((group) => group.id !== id), newGroup]);
+          });
+      }
+    }
   };
 
   return (
@@ -67,6 +94,7 @@ const AdminView = () => {
               key={group.name}
               group={group}
               remove={removeGroup}
+              changeName={changeName}
             />
           ))}
       </ol>

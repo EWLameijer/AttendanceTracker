@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL } from "../utils";
+import { BASE_URL } from "../-shared/utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -22,7 +22,7 @@ const RegistrationView = () => {
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (password != repeatedPassword) {
+    if (password !== repeatedPassword) {
       alert("Wachtwoorden zijn ongelijk");
       return;
     }
