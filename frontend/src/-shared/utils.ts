@@ -8,9 +8,10 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
-export const FRONTEND_URL = "http://localhost:5173"; // when in production, need to get this from some kind of settings?
 
-export const BASE_URL = "http://localhost:8080";
+export const FRONTEND_URL = import.meta.env.BASE_URL; // when in production, need to get this from some kind of settings?
+
+export const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const toYYYYMMDD = (date: Date) => date.toISOString().substring(0, 10);
 
