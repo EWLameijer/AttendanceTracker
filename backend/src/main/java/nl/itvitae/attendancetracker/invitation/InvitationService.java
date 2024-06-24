@@ -19,6 +19,7 @@ public class InvitationService {
     @Transactional
     public void checkInvitationIsValidAndCleanExpiredInvitations(String name) {
         if (name.isEmpty()) throw new BadRequestException("Name should not be blank!");
+        
         if (registrarRepository.existsByIdentityName(name))
             throw new BadRequestException("There is already a personnel member with this name!");
         removeAllInvitationsToSamePerson(name);

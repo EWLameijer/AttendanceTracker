@@ -23,6 +23,8 @@ public class Registrar {
 
     private String password;
 
+    private String email;
+
     @Setter
     private boolean enabled = true;
 

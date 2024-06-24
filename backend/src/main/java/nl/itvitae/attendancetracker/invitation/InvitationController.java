@@ -42,7 +42,8 @@ public class InvitationController {
 
     private InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
         var name = registrarDto.name().trim();
-        invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name);
+        var email = registrarDto.email().trim();
+        invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name, email);
         return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role)));
     }
 
