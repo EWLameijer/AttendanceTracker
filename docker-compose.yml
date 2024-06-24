@@ -1,0 +1,42 @@
+services:
+  psql-db:
+    image: postgres
+    container_name: psql-db
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=attendancetracker
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  attendancetracker-backend:
+    image: ewlameijer/attendancetracker-backend
+    container_name: attendancetracker-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=Europe/Amsterdam
+      - AT_URL=jdbc:postgresql://psql-db:5432/attendancetracker
+      - AT_USERNAME=admin
+      - AT_PASSWORD=1234
+      - AT_CORS=http://dockerserv:5173
+    depends_on:
+      - psql-db
+
+  attendancetracker-frontend:
+    image: ewlameijer/attendancetracker-frontend
+    container_name: attendancetracker-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://dockerserv:8080
+    depends_on:
+      - attendancetracker-backend
+
+volumes:
+  postgres-data:
+  
+
