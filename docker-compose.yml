@@ -33,6 +33,7 @@ services:
       - "5173:5173"
     environment:
       - VITE_BACKEND_URL=http://dockerserv:8080
+      - VITE_FRONTEND_URL=http://dockerserv:5173
     depends_on:
       - attendancetracker-backend
 
