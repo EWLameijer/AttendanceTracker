@@ -12,7 +12,7 @@ interface Invitee extends Registrar {
   hasExpired: boolean;
 }
 
-const PersonnelView = () => {
+const WorkerManagement = () => {
   const user = useContext(UserContext);
 
   const [registrars, setRegistrars] = useState<Registrar[]>([]);
@@ -60,6 +60,11 @@ const PersonnelView = () => {
     )?.trim();
     if (!name) {
       alert("Geen naam opgegeven!");
+      return;
+    }
+    const validName = /^[\p{Alphabetic} -]+$/gu;
+    if (!validName.test(name)) {
+      alert(`Naam '${name}' bevat ongeldige leestekens.`);
       return;
     }
     inviteRegistrar(name, backendTitle);
@@ -325,4 +330,4 @@ const PersonnelView = () => {
   );
 };
 
-export default PersonnelView;
+export default WorkerManagement;
