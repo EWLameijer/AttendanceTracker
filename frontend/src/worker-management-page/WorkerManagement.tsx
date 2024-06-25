@@ -62,7 +62,7 @@ const WorkerManagement = () => {
       alert("Geen naam opgegeven!");
       return;
     }
-    const validName = /^(\p{Alphabetic}|[ -])+$/gu;
+    const validName = /^[\p{Alphabetic} -]+$/gu;
     if (!validName.test(name)) {
       alert(`Naam '${name}' bevat ongeldige leestekens.`);
       return;
