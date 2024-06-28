@@ -9,7 +9,6 @@ const Authorized: FC<{
   children: React.ReactElement;
 }> = ({ roles, children }) => {
   const user = useContext(UserContext);
-
   if (roles.includes(user.role)) {
     return children;
   }

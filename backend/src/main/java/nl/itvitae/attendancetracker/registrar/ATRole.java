@@ -1,7 +1,7 @@
 package nl.itvitae.attendancetracker.registrar;
 
 public enum ATRole {
-    ADMIN, COACH, SUPER_ADMIN, TEACHER;
+    ADMIN, COACH, PURE_ADMIN, SUPER_ADMIN, TEACHER;
 
     public String asSpringSecurityRole() {
         return "ROLE_" + name();

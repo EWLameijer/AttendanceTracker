@@ -22,29 +22,22 @@ public class InvitationController {
 
     @PostMapping("for-teacher")
     public InvitationDtoWithCode getTeacherOneTimePassword(@RequestBody RegistrarDto registrarDto) {
-        return getInvitationDtoWithCode(registrarDto, ATRole.TEACHER);
+        return invitationService.getInvitationDtoWithCode(registrarDto, ATRole.TEACHER);
     }
 
     @PostMapping("for-coach")
     public InvitationDtoWithCode getCoachOneTimePassword(@RequestBody RegistrarDto registrarDto) {
-        return getInvitationDtoWithCode(registrarDto, ATRole.COACH);
+        return invitationService.getInvitationDtoWithCode(registrarDto, ATRole.COACH);
     }
 
     @PostMapping("for-admin")
     public InvitationDtoWithCode getAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
-        return getInvitationDtoWithCode(registrarDto, ATRole.ADMIN);
+        return invitationService.getInvitationDtoWithCode(registrarDto, ATRole.ADMIN);
     }
 
     @PostMapping("for-super-admin")
     public InvitationDtoWithCode getSuperAdminOneTimePassword(@RequestBody RegistrarDto registrarDto) {
-        return getInvitationDtoWithCode(registrarDto, ATRole.SUPER_ADMIN);
-    }
-
-    private InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
-        var name = registrarDto.name().trim();
-        var email = registrarDto.emailAddress().trim();
-        invitationService.checkInvitationIsValidAndCleanExpiredInvitations(name, email);
-        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role, email)));
+        return invitationService.getInvitationDtoWithCode(registrarDto, ATRole.SUPER_ADMIN);
     }
 
     @GetMapping("{id}")

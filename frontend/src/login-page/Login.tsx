@@ -3,6 +3,7 @@ import UserContext from "../-shared/UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../-shared/utils";
+import Role from "../-shared/Role";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({ username: "", password: "" });
@@ -22,7 +23,8 @@ const Login = () => {
       .then((response) => {
         const role = response.data.role;
         user.update(loginData.username, loginData.password, role);
-        navigate("/attendance-management");
+        if (role === Role.PURE_ADMIN) navigate("/worker-management")
+        else navigate("/attendance-management");
       })
       .catch(() => alert("Gebruikersnaam/wachtwoord-combinatie onbekend!"));
   };

@@ -10,6 +10,7 @@ import HomeButton from "../-shared/HomeButton";
 
 interface Invitee extends Registrar {
   hasExpired: boolean;
+  emailAddress: string;
 }
 
 const WorkerManagement = () => {
@@ -59,6 +60,36 @@ const WorkerManagement = () => {
       emailAddress
     );
 
+  const inviteRegistrar = (name: string, backendTitle: string, emailAddress: string) => {
+    axios
+      .post(
+        `${BASE_URL}/invitations/for-${backendTitle}`,
+        { name, emailAddress },
+        {
+          auth: {
+            username: user.username,
+            password: user.password,
+          },
+        }
+      )
+      .then((response) => {
+        alert(
+          `Stuur de ander de link ${FRONTEND_URL}/registration-view/${response.data.code} Deze blijft 24 uur geldig.`
+        );
+        setInvitees([
+          ...invitees.filter((invitee) => invitee.name !== name),
+          {
+            id: response.data.code,
+            name,
+            role: toMacroCase(backendTitle),
+            hasExpired: false,
+            emailAddress
+          },
+        ]);
+      })
+      .catch(() => alert("Deze gebruiker bestaat al!"));
+  };
+
   const invite = (dutchTitle: string, backendTitle: string) => {
     const name = prompt(
       `Geef de naam van de ${dutchTitle} om uit te nodigen:`
@@ -84,34 +115,7 @@ const WorkerManagement = () => {
     inviteRegistrar(name, backendTitle, emailAddress);
   };
 
-  const inviteRegistrar = (name: string, backendTitle: string) => {
-    axios
-      .post(
-        `${BASE_URL}/invitations/for-${backendTitle}`,
-        { name, emailAddress },
-        {
-          auth: {
-            username: user.username,
-            password: user.password,
-          },
-        }
-      )
-      .then((response) => {
-        alert(
-          `Stuur de ander de link ${FRONTEND_URL}/registration-view/${response.data.code} Deze blijft 24 uur geldig.`
-        );
-        setInvitees([
-          ...invitees.filter((invitee) => invitee.name !== name),
-          {
-            id: response.data.code,
-            name,
-            role: toMacroCase(backendTitle),
-            hasExpired: false,
-          },
-        ]);
-      })
-      .catch(() => alert("Deze gebruiker bestaat al!"));
-  };
+
 
   const inviteTeacher = () => invite("docent", "teacher");
 
@@ -262,13 +266,13 @@ const WorkerManagement = () => {
   const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
 
   const recreateInvitation = (name: string) => {
-    const role = invitees.find((invitee) => invitee.name === name)!.role;
-    inviteRegistrar(name, toKebabCase(role));
+    const invitee = invitees.find((invitee) => invitee.name === name)!;
+    inviteRegistrar(name, toKebabCase(invitee.role), invitee.emailAddress);
   };
 
   return (
     <>
-      <HomeButton />
+      {user.role !== Role.PURE_ADMIN && <HomeButton />}
       <br />
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>

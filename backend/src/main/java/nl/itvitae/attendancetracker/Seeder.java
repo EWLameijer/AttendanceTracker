@@ -6,9 +6,8 @@ import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.registrar.ATRole;
-import nl.itvitae.attendancetracker.registrar.Registrar;
-import nl.itvitae.attendancetracker.registrar.RegistrarService;
+import nl.itvitae.attendancetracker.invitation.InvitationService;
+import nl.itvitae.attendancetracker.registrar.*;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
@@ -23,6 +22,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -38,53 +38,62 @@ public class Seeder implements CommandLineRunner {
     private final ScheduledClassRepository scheduledClassRepository;
     private final WorkerService workerService;
 
+    private final RegistrarRepository registrarRepository;
+    private final InvitationService invitationService;
+
     @Override
     public void run(String... args) throws Exception {
-        if (studentRepository.count() == 0) {
-            var java = new Group("Java53");
-            var cyber = new Group("Cyber52");
-            var data = new Group("Data51");
-
-            groupRepository.saveAll(List.of(java, cyber, data));
-            var arie = new Student("Arie", java);
-            var bas = new Student("Bas", java);
-            var zebedeus = new Student("Zebedeus", java);
-            var celia = new Student("Celine", cyber);
-            var xerxes = new Student("Xerxes", cyber);
-            var david = new Student("David", data);
-            var eduard = new Student("Eduard", data);
-            var filippa = new Student("Filippa", data);
-            studentRepository.saveAll(List.of(
-                    arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
-            ));
-            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER, "wubbo@itvitae.nl");
-            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER, "niels@itvitae.nl");
-            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH, "juan@itvitae.nl");
-            var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN, "nouchka@itvitae.nl");
-            var dan = workerService.saveExternalTeacher("Dan");
-            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN, "chantal@itvitae.nl");
-            var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
-            var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
-
-            var scheduledDate = LocalDate.now();
-            var javaClass = new ScheduledClass(java, wubboAsTeacher, scheduledDate);
-            var cyberClass = new ScheduledClass(cyber, nielsAsTeacher, scheduledDate);
-            var dataClass = new ScheduledClass(data, dan, scheduledDate);
-            scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
-
-            var ariesAttendance = AttendanceRegistrationDto.of(arie, scheduledDate, juan, AttendanceStatus.SICK);
-            var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubboAsRegistrar, AttendanceStatus.LATE, "10:30 (trein)");
-            var celiasAttendance = AttendanceRegistrationDto.of(celia, scheduledDate, nielsAsRegistrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
-            var davidsAttendance = AttendanceRegistrationDto.of(david, scheduledDate, juan, AttendanceStatus.PRESENT);
-            var eduardsAttendance = AttendanceRegistrationDto.of(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
-            var filippasAttendance = AttendanceRegistrationDto.of(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
-            attendanceService.saveAll(List.of(ariesAttendance, basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
-
-            createHistory(java, 90, wubboAsTeacher, juan);
-            createHistory(cyber, 180, nielsAsTeacher, juan);
-            createHistory(data, 270, dan, juan);
-            System.out.println("Students seeded!");
+        if (registrarRepository.count() == 0) {
+            var registrar = new RegistrarDto(UUID.randomUUID(), "SenS", "support@itvitae.nl",
+                    ATRole.PURE_ADMIN.asSpringSecurityRole());
+            var invitation = invitationService.getInvitationDtoWithCode(registrar, ATRole.PURE_ADMIN);
+            System.out.println(invitation.code());
         }
+//        if (studentRepository.count() == 0) {
+//            var java = new Group("Java53");
+//            var cyber = new Group("Cyber52");
+//            var data = new Group("Data51");
+//
+//            groupRepository.saveAll(List.of(java, cyber, data));
+//            var arie = new Student("Arie", java);
+//            var bas = new Student("Bas", java);
+//            var zebedeus = new Student("Zebedeus", java);
+//            var celia = new Student("Celine", cyber);
+//            var xerxes = new Student("Xerxes", cyber);
+//            var david = new Student("David", data);
+//            var eduard = new Student("Eduard", data);
+//            var filippa = new Student("Filippa", data);
+//            studentRepository.saveAll(List.of(
+//                    arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
+//            ));
+//            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER, "wubbo@itvitae.nl");
+//            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER, "niels@itvitae.nl");
+//            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH, "juan@itvitae.nl");
+//            var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN, "nouchka@itvitae.nl");
+//            var dan = workerService.saveExternalTeacher("Dan");
+//            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN, "chantal@itvitae.nl");
+//            var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
+//            var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
+//
+//            var scheduledDate = LocalDate.now();
+//            var javaClass = new ScheduledClass(java, wubboAsTeacher, scheduledDate);
+//            var cyberClass = new ScheduledClass(cyber, nielsAsTeacher, scheduledDate);
+//            var dataClass = new ScheduledClass(data, dan, scheduledDate);
+//            scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
+//
+//            var ariesAttendance = AttendanceRegistrationDto.of(arie, scheduledDate, juan, AttendanceStatus.SICK);
+//            var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubboAsRegistrar, AttendanceStatus.LATE, "10:30 (trein)");
+//            var celiasAttendance = AttendanceRegistrationDto.of(celia, scheduledDate, nielsAsRegistrar, AttendanceStatus.ABSENT_WITHOUT_NOTICE);
+//            var davidsAttendance = AttendanceRegistrationDto.of(david, scheduledDate, juan, AttendanceStatus.PRESENT);
+//            var eduardsAttendance = AttendanceRegistrationDto.of(eduard, scheduledDate, juan, AttendanceStatus.ABSENT_WITH_NOTICE);
+//            var filippasAttendance = AttendanceRegistrationDto.of(filippa, scheduledDate, juan, AttendanceStatus.WORKING_FROM_HOME);
+//            attendanceService.saveAll(List.of(ariesAttendance, basAttendance, celiasAttendance, davidsAttendance, eduardsAttendance, filippasAttendance));
+//
+//            createHistory(java, 90, wubboAsTeacher, juan);
+//            createHistory(cyber, 180, nielsAsTeacher, juan);
+//            createHistory(data, 270, dan, juan);
+//            System.out.println("Students seeded!");
+//        }
     }
 
     private void createHistory(Group group, int days, Teacher teacher, Registrar registrar) {

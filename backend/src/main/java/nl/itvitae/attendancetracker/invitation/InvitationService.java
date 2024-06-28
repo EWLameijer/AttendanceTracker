@@ -3,6 +3,8 @@ package nl.itvitae.attendancetracker.invitation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
+import nl.itvitae.attendancetracker.registrar.ATRole;
+import nl.itvitae.attendancetracker.registrar.RegistrarDto;
 import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,13 @@ public class InvitationService {
         if (registrarRepository.existsByIdentityName(name))
             throw new BadRequestException("There is already a personnel member with this name!");
         removeAllInvitationsToSamePerson(name);
+    }
+
+    public InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
+        var name = registrarDto.name().trim();
+        var email = registrarDto.emailAddress().trim();
+        checkInvitationIsValidAndCleanExpiredInvitations(name, email);
+        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role, email)));
     }
 
     // from https://www.baeldung.com/java-email-validation-regex

@@ -42,7 +42,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route
             path="/worker-management"
             element={
-              <Authorized roles={[Role.SUPER_ADMIN, Role.ADMIN]}>
+              <Authorized roles={[Role.SUPER_ADMIN, Role.ADMIN, Role.PURE_ADMIN]}>
                 <WorkerManagement />
               </Authorized>
             }
