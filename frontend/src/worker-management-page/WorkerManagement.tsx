@@ -276,7 +276,7 @@ const WorkerManagement = () => {
       <br />
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
-      {user.isSuperAdmin() && (
+      {user.isSuperAdmin() || user.isPureAdmin() && (
         <>
           <button onClick={inviteAdmin}>Nodig administrator uit</button>
           <button onClick={inviteSuperAdmin}>
