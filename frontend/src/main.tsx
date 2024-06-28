@@ -11,9 +11,9 @@ import ScheduleView from "./class-management-page/ScheduleView.tsx";
 import HistoryView from "./history-page/HistoryView.tsx";
 import Role from "./-shared/Role.ts";
 import Authorized from "./login-page/Authorized.tsx";
-import PersonnelView from "./worker-management-page/PersonnelView.tsx";
 import RegistrationView from "./registration-page/RegistrationView.tsx";
 import AttendanceManagement from "./attendance-management-page/AttendanceManagement.tsx";
+import WorkerManagement from "./worker-management-page/WorkerManagement.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -43,7 +43,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             path="/worker-management"
             element={
               <Authorized roles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                <PersonnelView />
+                <WorkerManagement />
               </Authorized>
             }
           />

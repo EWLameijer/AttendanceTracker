@@ -12,7 +12,7 @@ interface Invitee extends Registrar {
   hasExpired: boolean;
 }
 
-const PersonnelView = () => {
+const WorkerManagement = () => {
   const user = useContext(UserContext);
 
   const [registrars, setRegistrars] = useState<Registrar[]>([]);
@@ -67,6 +67,11 @@ const PersonnelView = () => {
       alert("Geen naam opgegeven!");
       return;
     }
+    const validName = /^[\p{Alphabetic} -]+$/gu;
+    if (!validName.test(name)) {
+      alert(`Naam '${name}' bevat ongeldige leestekens.`);
+      return;
+    }
     const emailAddress = prompt(`Geef het e-mailadres van ${name}:`)?.trim();
     if (!emailAddress) {
       alert("Geen e-mailadres opgegeven!");
@@ -79,11 +84,7 @@ const PersonnelView = () => {
     inviteRegistrar(name, backendTitle, emailAddress);
   };
 
-  const inviteRegistrar = (
-    name: string,
-    backendTitle: string,
-    emailAddress: string
-  ) => {
+  const inviteRegistrar = (name: string, backendTitle: string) => {
     axios
       .post(
         `${BASE_URL}/invitations/for-${backendTitle}`,
@@ -343,4 +344,4 @@ const PersonnelView = () => {
   );
 };
 
-export default PersonnelView;
+export default WorkerManagement;
