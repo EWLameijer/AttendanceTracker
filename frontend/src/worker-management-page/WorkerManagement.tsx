@@ -60,7 +60,11 @@ const WorkerManagement = () => {
       emailAddress
     );
 
-  const inviteRegistrar = (name: string, backendTitle: string, emailAddress: string) => {
+  const inviteRegistrar = (
+    name: string,
+    backendTitle: string,
+    emailAddress: string
+  ) => {
     axios
       .post(
         `${BASE_URL}/invitations/for-${backendTitle}`,
@@ -83,7 +87,7 @@ const WorkerManagement = () => {
             name,
             role: toMacroCase(backendTitle),
             hasExpired: false,
-            emailAddress
+            emailAddress,
           },
         ]);
       })
@@ -114,8 +118,6 @@ const WorkerManagement = () => {
     }
     inviteRegistrar(name, backendTitle, emailAddress);
   };
-
-
 
   const inviteTeacher = () => invite("docent", "teacher");
 
@@ -276,7 +278,7 @@ const WorkerManagement = () => {
       <br />
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
-      {user.isSuperAdmin() || user.isPureAdmin() && (
+      {(user.isSuperAdmin() || user.isPureAdmin()) && (
         <>
           <button onClick={inviteAdmin}>Nodig administrator uit</button>
           <button onClick={inviteSuperAdmin}>
