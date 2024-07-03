@@ -279,12 +279,10 @@ const ScheduleView = () => {
     <>
       <HomeButton />
       {!teachers.length && (
-        <h2>
-          Er kunnen geen klassen worden gepland als er geen docenten zijn!
-        </h2>
+        <h2>Er kunnen geen lessen worden gepland als er geen docenten zijn!</h2>
       )}
       {!groups.length && (
-        <h2>Er kunnen geen klassen worden gepland als er geen groepen zijn!</h2>
+        <h2>Er kunnen geen lessen worden gepland als er geen groepen zijn!</h2>
       )}
       {teachers.length > 0 && groups.length > 0 && (
         <>
