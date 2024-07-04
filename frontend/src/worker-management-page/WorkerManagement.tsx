@@ -263,7 +263,8 @@ const WorkerManagement = () => {
       });
   };
 
-  const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
+  const superAdminDisable =
+    user.isSuperAdmin() || user.isPureAdmin() ? disableRegistrar : undefined;
 
   const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
 
