@@ -45,16 +45,16 @@ public class Seeder implements CommandLineRunner {
     @Value("${spring.datasource.url}")
     private String databaseUrl;
 
+    private final static String PRODUCTION_POSTGRES_URL = "jdbc:postgresql://psql-db:5432/attendancetracker";
+
     @Override
     public void run(String... args) {
-        if (registrarRepository.count() == 0 && databaseUrl.equals("jdbc:postgresql://psql-db:5432/attendancetracker")) {
-            var registrar = new RegistrarDto(UUID.randomUUID(), "SenS", "support@itvitae.nl",
-                    ATRole.PURE_ADMIN.asSpringSecurityRole());
-            var invitation = invitationService.getInvitationDtoWithCode(registrar, ATRole.PURE_ADMIN);
-            System.out.println(invitation.code());
-            return;
-        }
-        if (studentRepository.count() == 0 && !databaseUrl.equals("jdbc:postgresql://psql-db:5432/attendancetracker")) {
+        if (databaseUrl.equals(PRODUCTION_POSTGRES_URL)) seedProductionIfNeeded();
+        else seedDevelopmentIfNeeded();
+    }
+
+    private void seedDevelopmentIfNeeded() {
+        if (studentRepository.count() == 0) {
             var java = new Group("Java53");
             var cyber = new Group("Cyber52");
             var data = new Group("Data51");
@@ -99,6 +99,15 @@ public class Seeder implements CommandLineRunner {
             createHistory(cyber, 180, nielsAsTeacher, juan);
             createHistory(data, 270, dan, juan);
             System.out.println("Students seeded!");
+        }
+    }
+
+    private void seedProductionIfNeeded() {
+        if (registrarRepository.count() == 0) {
+            var registrar = new RegistrarDto(UUID.randomUUID(), "SenS", "support@itvitae.nl",
+                    ATRole.PURE_ADMIN.asSpringSecurityRole());
+            var invitation = invitationService.getInvitationDtoWithCode(registrar, ATRole.PURE_ADMIN);
+            System.out.println(invitation.code());
         }
     }
 
