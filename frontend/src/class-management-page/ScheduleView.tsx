@@ -272,104 +272,122 @@ const ScheduleView = () => {
     scheduledClassesArray.sort((a, b) =>
       b.dateAsString.localeCompare(a.dateAsString)
     );
+
   return (
     //The purpose of "teachers.length > 0" is to ensure axios has processed the data before it loads the page
-    teachers.length > 0 && (
-      <>
-        <HomeButton />
 
-        <p>Kies een groep:</p>
-        <select onChange={handleGroupChange}>
-          {groups.map((group: Group, index: number) => (
-            <option key={index} value={group.id}>
-              {group.name}
-            </option>
-          ))}
-        </select>
-        <table>
-          <thead>
-            <tr>
-              <th>Voeg nieuwe lessen toe:</th>
-              <th>Verwijder bestaande lessen:</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <form>
-                  <div>
-                    <p>
-                      Kies een begin- en einddatum van de in te voeren periode:
-                    </p>
-                    Begindatum:
-                    <input
-                      type="date"
-                      value={startDateAsString}
-                      onChange={handleStartDateChange}
-                    ></input>
-                    Einddatum:
-                    <input
-                      type="date"
-                      value={endDateAsString}
-                      onChange={handleEndDateChange}
-                    ></input>
-                  </div>
+    <>
+      <HomeButton />
+      {!teachers.length && (
+        <h2>Er kunnen geen lessen worden gepland als er geen docenten zijn!</h2>
+      )}
+      {!groups.length && (
+        <h2>Er kunnen geen lessen worden gepland als er geen groepen zijn!</h2>
+      )}
+      {teachers.length > 0 && groups.length > 0 && (
+        <>
+          <p>Kies een groep:</p>
+          <select onChange={handleGroupChange}>
+            {groups.map((group: Group, index: number) => (
+              <option key={index} value={group.id}>
+                {group.name}
+              </option>
+            ))}
+          </select>
+          <table>
+            <thead>
+              <tr>
+                <th>Voeg nieuwe lessen toe:</th>
+                <th>Verwijder bestaande lessen:</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <form>
+                    <div>
+                      <p>
+                        Kies een begin- en einddatum van de in te voeren
+                        periode:
+                      </p>
+                      Begindatum:
+                      <input
+                        type="date"
+                        value={startDateAsString}
+                        onChange={handleStartDateChange}
+                      ></input>
+                      Einddatum:
+                      <input
+                        type="date"
+                        value={endDateAsString}
+                        onChange={handleEndDateChange}
+                      ></input>
+                    </div>
 
-                  <div>
-                    <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
-                    {createTeacherIdsWeek}
-                  </div>
+                    <div>
+                      <p>Selecteer lesdagen en wie die dag hun leraar is:</p>
+                      {createTeacherIdsWeek}
+                    </div>
 
-                  <div>
-                    <button onClick={generateClasses}>Genereer periode</button>
-                  </div>
+                    <div>
+                      <button onClick={generateClasses}>
+                        Genereer periode
+                      </button>
+                    </div>
 
-                  <hr />
+                    <hr />
 
-                  <div>
-                    <p>
-                      Kies een begin- en einddatum van de uit te sluiten
-                      periode:
-                    </p>
-                    Begindatum:
-                    <input
-                      type="date"
-                      value={excludeStartDateAsString}
-                      onChange={handleExcludeStartDateChange}
-                    ></input>
-                    Einddatum:
-                    <input
-                      type="date"
-                      value={excludeEndDateAsString}
-                      onChange={handleExcludeEndDateChange}
-                    ></input>
-                  </div>
+                    <div>
+                      <p>
+                        Kies een begin- en einddatum van de uit te sluiten
+                        periode:
+                      </p>
+                      Begindatum:
+                      <input
+                        type="date"
+                        value={excludeStartDateAsString}
+                        onChange={handleExcludeStartDateChange}
+                      ></input>
+                      Einddatum:
+                      <input
+                        type="date"
+                        value={excludeEndDateAsString}
+                        onChange={handleExcludeEndDateChange}
+                      ></input>
+                    </div>
 
-                  <div>
-                    <button onClick={excludeClasses}>Verwijder selectie</button>
-                  </div>
+                    <div>
+                      <button onClick={excludeClasses}>
+                        Verwijder selectie
+                      </button>
+                    </div>
 
-                  <div>
-                    <ul className="striping no-bullets">
-                      {showProposedClasses}
-                    </ul>
-                  </div>
+                    <div>
+                      <ul className="striping no-bullets">
+                        {showProposedClasses}
+                      </ul>
+                    </div>
 
-                  <hr />
+                    <hr />
 
-                  <div>
-                    <button onClick={submitClasses}>Sla alle lessen op.</button>
-                  </div>
-                </form>
-              </td>
-              <td>
-                <ul className="striping no-bullets">{showScheduledClasses}</ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </>
-    )
+                    <div>
+                      <button onClick={submitClasses}>
+                        Sla alle lessen op.
+                      </button>
+                    </div>
+                  </form>
+                </td>
+                <td>
+                  <ul className="striping no-bullets">
+                    {showScheduledClasses}
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      )}
+    </>
   );
 };
 export default ScheduleView;

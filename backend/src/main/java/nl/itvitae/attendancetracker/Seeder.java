@@ -6,15 +6,15 @@ import nl.itvitae.attendancetracker.attendance.AttendanceStatus;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
-import nl.itvitae.attendancetracker.registrar.ATRole;
-import nl.itvitae.attendancetracker.registrar.Registrar;
-import nl.itvitae.attendancetracker.registrar.RegistrarService;
+import nl.itvitae.attendancetracker.invitation.InvitationService;
+import nl.itvitae.attendancetracker.registrar.*;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
 import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import nl.itvitae.attendancetracker.student.StudentRepository;
 import nl.itvitae.attendancetracker.teacher.Teacher;
 import nl.itvitae.attendancetracker.workeridentity.WorkerService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -38,8 +39,21 @@ public class Seeder implements CommandLineRunner {
     private final ScheduledClassRepository scheduledClassRepository;
     private final WorkerService workerService;
 
+    private final RegistrarRepository registrarRepository;
+    private final InvitationService invitationService;
+
+    @Value("${spring.datasource.url}")
+    private String databaseUrl;
+
+    private final static String PRODUCTION_POSTGRES_URL = "jdbc:postgresql://psql-db:5432/attendancetracker";
+
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+        if (databaseUrl.equals(PRODUCTION_POSTGRES_URL)) seedProductionIfNeeded();
+        else seedDevelopmentIfNeeded();
+    }
+
+    private void seedDevelopmentIfNeeded() {
         if (studentRepository.count() == 0) {
             var java = new Group("Java53");
             var cyber = new Group("Cyber52");
@@ -57,12 +71,13 @@ public class Seeder implements CommandLineRunner {
             studentRepository.saveAll(List.of(
                     arie, bas, celia, david, eduard, filippa, xerxes, zebedeus
             ));
-            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER);
-            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER);
-            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH);
-            var nouchka = workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN);
+            var wubboAsRegistrar = workerService.saveRegistrar("Wubbo", "Wubbo", ATRole.TEACHER, "wubbo@itvitae.nl");
+            var nielsAsRegistrar = workerService.saveRegistrar("Niels", "Niels", ATRole.TEACHER, "niels@itvitae.nl");
+            var juan = workerService.saveRegistrar("Juan", "Juan", ATRole.COACH, "juan@itvitae.nl");
+            workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN, "nouchka@itvitae.nl");
             var dan = workerService.saveExternalTeacher("Dan");
-            var chantal = workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN);
+            workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN, "chantal@itvitae.nl");
+            workerService.saveRegistrar("Olivier", "Olivier", ATRole.PURE_ADMIN, "olivier@itvitae.nl");
             var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
             var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 
@@ -84,6 +99,15 @@ public class Seeder implements CommandLineRunner {
             createHistory(cyber, 180, nielsAsTeacher, juan);
             createHistory(data, 270, dan, juan);
             System.out.println("Students seeded!");
+        }
+    }
+
+    private void seedProductionIfNeeded() {
+        if (registrarRepository.count() == 0) {
+            var registrar = new RegistrarDto(UUID.randomUUID(), "SenS", "support@itvitae.nl",
+                    ATRole.PURE_ADMIN.asSpringSecurityRole());
+            var invitation = invitationService.getInvitationDtoWithCode(registrar, ATRole.PURE_ADMIN);
+            System.out.println(invitation.code());
         }
     }
 

@@ -10,6 +10,7 @@ import HomeButton from "../-shared/HomeButton";
 
 interface Invitee extends Registrar {
   hasExpired: boolean;
+  emailAddress: string;
 }
 
 const WorkerManagement = () => {
@@ -54,27 +55,20 @@ const WorkerManagement = () => {
 
   const toMacroCase = (text: string) => text.toUpperCase().replace(/-/, "_");
 
-  const invite = (dutchTitle: string, backendTitle: string) => {
-    const name = prompt(
-      `Geef de naam van de ${dutchTitle} om uit te nodigen:`
-    )?.trim();
-    if (!name) {
-      alert("Geen naam opgegeven!");
-      return;
-    }
-    const validName = /^[\p{Alphabetic} -]+$/gu;
-    if (!validName.test(name)) {
-      alert(`Naam '${name}' bevat ongeldige leestekens.`);
-      return;
-    }
-    inviteRegistrar(name, backendTitle);
-  };
+  const isValidEmailAddress = (emailAddress: string) =>
+    /^(?=.{1,64}@)[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/.test(
+      emailAddress
+    );
 
-  const inviteRegistrar = (name: string, backendTitle: string) => {
+  const inviteRegistrar = (
+    name: string,
+    backendTitle: string,
+    emailAddress: string
+  ) => {
     axios
       .post(
         `${BASE_URL}/invitations/for-${backendTitle}`,
-        { name },
+        { name, emailAddress },
         {
           auth: {
             username: user.username,
@@ -93,10 +87,36 @@ const WorkerManagement = () => {
             name,
             role: toMacroCase(backendTitle),
             hasExpired: false,
+            emailAddress,
           },
         ]);
       })
       .catch(() => alert("Deze gebruiker bestaat al!"));
+  };
+
+  const invite = (dutchTitle: string, backendTitle: string) => {
+    const name = prompt(
+      `Geef de naam van de ${dutchTitle} om uit te nodigen:`
+    )?.trim();
+    if (!name) {
+      alert("Geen naam opgegeven!");
+      return;
+    }
+    const validName = /^[\p{Alphabetic} -]+$/gu;
+    if (!validName.test(name)) {
+      alert(`Naam '${name}' bevat ongeldige leestekens.`);
+      return;
+    }
+    const emailAddress = prompt(`Geef het e-mailadres van ${name}:`)?.trim();
+    if (!emailAddress) {
+      alert("Geen e-mailadres opgegeven!");
+      return;
+    }
+    if (!isValidEmailAddress(emailAddress)) {
+      alert(`E-mailadres '${emailAddress}' ongeldig!`);
+      return;
+    }
+    inviteRegistrar(name, backendTitle, emailAddress);
   };
 
   const inviteTeacher = () => invite("docent", "teacher");
@@ -243,22 +263,23 @@ const WorkerManagement = () => {
       });
   };
 
-  const superAdminDisable = user.isSuperAdmin() ? disableRegistrar : undefined;
+  const superAdminDisable =
+    user.isSuperAdmin() || user.isPureAdmin() ? disableRegistrar : undefined;
 
   const toKebabCase = (text: string) => text.toLowerCase().replace(/_/, "-");
 
   const recreateInvitation = (name: string) => {
-    const role = invitees.find((invitee) => invitee.name === name)!.role;
-    inviteRegistrar(name, toKebabCase(role));
+    const invitee = invitees.find((invitee) => invitee.name === name)!;
+    inviteRegistrar(name, toKebabCase(invitee.role), invitee.emailAddress);
   };
 
   return (
     <>
-      <HomeButton />
+      {user.role !== Role.PURE_ADMIN && <HomeButton />}
       <br />
       <button onClick={inviteTeacher}>Nodig docent uit</button>
       <button onClick={inviteCoach}>Nodig studentbegeleider uit</button>
-      {user.isSuperAdmin() && (
+      {(user.isSuperAdmin() || user.isPureAdmin()) && (
         <>
           <button onClick={inviteAdmin}>Nodig administrator uit</button>
           <button onClick={inviteSuperAdmin}>
