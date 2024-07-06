@@ -34,6 +34,13 @@
 
 == Testing
 
+=== Pure-admin
+* kan inloggen
+* kan docenten aanmaken
+* kan studentbegeleiders aanmaken
+* kan administratoren aanmaken
+* kan superadministratoren aanmaken
+
 === Super-admin
 * kan inloggen
 * kan groepen verwijderen

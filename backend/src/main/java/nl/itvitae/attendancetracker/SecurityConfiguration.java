@@ -31,6 +31,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        var teacher = ATRole.TEACHER.name();
         var admin = ATRole.ADMIN.name();
         var coach = ATRole.COACH.name();
         var superAdmin = ATRole.SUPER_ADMIN.name();
@@ -39,22 +40,24 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin, pureAdmin)
-                                .requestMatchers(
-                                        "/lessons/**",
-                                        "/personnel/teachers/**").hasAnyRole(admin, superAdmin, pureAdmin)
-                                .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/invitations/*").permitAll()
+                        requests.requestMatchers("/attendances/**").hasAnyRole(teacher, coach, admin, superAdmin)
+                                .requestMatchers("/groups/**").hasRole(superAdmin)
                                 .requestMatchers(HttpMethod.DELETE, "/invitations/*").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin, pureAdmin)
-                                .requestMatchers(HttpMethod.PATCH, "/personnel/*").hasAnyRole(superAdmin, pureAdmin)
-                                .requestMatchers("/personnel/**", "/teachers", "/lessons/**").hasAnyRole(admin, superAdmin, pureAdmin)
-                                .requestMatchers("/teachers/*", "/groups/**").hasAnyRole(superAdmin, pureAdmin)
+                                .requestMatchers(HttpMethod.GET, "/invitations/*").permitAll() // for registration
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers(HttpMethod.POST,
-                                        "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin, pureAdmin))
+                                        "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin, pureAdmin)
+                                .requestMatchers("/lessons/**").hasRole(superAdmin) // create lessons
+                                .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin, pureAdmin)
+                                .requestMatchers(HttpMethod.PATCH, "/personnel/*").hasAnyRole(superAdmin, pureAdmin)
+                                .requestMatchers("/personnel/login/**").authenticated() // login
+                                .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll() // registration
+                                .requestMatchers("/personnel/teachers/**").hasAnyRole(admin, superAdmin, pureAdmin)
+                                .requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin) // history-view
+                                .requestMatchers("/teachers").hasAnyRole(admin, superAdmin, pureAdmin)
+                                .requestMatchers("/teachers/*").hasAnyRole(superAdmin, pureAdmin))
                 .build();
     }
 
