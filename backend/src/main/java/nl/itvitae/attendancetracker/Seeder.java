@@ -77,7 +77,7 @@ public class Seeder implements CommandLineRunner {
             workerService.saveRegistrar("Nouchka", "Nouchka", ATRole.ADMIN, "nouchka@itvitae.nl");
             var dan = workerService.saveExternalTeacher("Dan");
             workerService.saveRegistrar("Chantal", "Chantal", ATRole.SUPER_ADMIN, "chantal@itvitae.nl");
-            workerService.saveRegistrar("Olivier", "Olivier", ATRole.PURE_ADMIN, "chantal@itvitae.nl");
+            workerService.saveRegistrar("Olivier", "Olivier", ATRole.PURE_ADMIN, "olivier@itvitae.nl");
             var wubboAsTeacher = registrarService.asTeacher(wubboAsRegistrar);
             var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 
