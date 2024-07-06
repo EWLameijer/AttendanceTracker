@@ -1,6 +1,6 @@
 package nl.itvitae.attendancetracker.attendance;
 
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
+import nl.itvitae.attendancetracker.lesson.LessonDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,5 +13,5 @@ public record ScheduledDateDto(
         Optional<LocalDate> previousDate,
         LocalDate currentDate,
         Optional<LocalDate> nextDate,
-        List<ScheduledClassDto> classes) {
+        List<LessonDto> lessons) {
 }

@@ -52,7 +52,7 @@ const GroupEditComponent = ({
   const removeGroupIfPermitted = () => {
     const really = confirm(
       `Wilt u echt '${group.name}' ${
-        group.hasPastClasses ? "archiveren" : "verwijderen"
+        group.hasPastLessons ? "archiveren" : "verwijderen"
       }?`
     );
     if (really) {
@@ -93,7 +93,7 @@ const GroupEditComponent = ({
       </button>
       {isEditing && <button onClick={stopEditing}>Stop met wijzigen</button>}
       <button onClick={removeGroupIfPermitted}>
-        {group.hasPastClasses ? "Archiveer groep" : "Verwijder groep"}
+        {group.hasPastLessons ? "Archiveer groep" : "Verwijder groep"}
       </button>
       <ul>
         {students

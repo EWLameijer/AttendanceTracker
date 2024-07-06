@@ -3,7 +3,7 @@ import {
   Attendance,
   Status,
   translateAttendanceStatus,
-} from "../-shared/Class.ts";
+} from "../-shared/Lesson.ts";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";

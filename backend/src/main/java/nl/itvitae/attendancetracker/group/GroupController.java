@@ -3,7 +3,7 @@ package nl.itvitae.attendancetracker.group;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.NotFoundException;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
+import nl.itvitae.attendancetracker.lesson.LessonRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +21,15 @@ import java.util.stream.Stream;
 public class GroupController {
     private final GroupRepository groupRepository;
 
-    private final ScheduledClassRepository scheduledClassRepository;
+    private final LessonRepository lessonRepository;
 
     @GetMapping
     public Stream<GroupWithHistoryDto> getAll() {
         var today = LocalDate.now();
         return groupRepository.findAllActive().stream().map(group -> {
-                    var hasPastClasses = scheduledClassRepository.findAllByGroup(group).
-                            stream().anyMatch(scheduledClass -> scheduledClass.getDate().isBefore(today));
-                    return GroupWithHistoryDto.of(group, hasPastClasses);
+                    var hasPastLessons = lessonRepository.findAllByGroup(group).
+                            stream().anyMatch(lesson -> lesson.getDate().isBefore(today));
+                    return GroupWithHistoryDto.of(group, hasPastLessons);
                 }
         );
     }
@@ -69,14 +69,14 @@ public class GroupController {
     public ResponseEntity<Void> deleteGroup(@PathVariable UUID id) {
         var groupToDelete = groupRepository.findById(id).orElseThrow();
 
-        var scheduledClassesWithThisGroup = scheduledClassRepository.findAllByGroup(groupToDelete);
-        if (scheduledClassesWithThisGroup.isEmpty()) {
+        var lessonsWithThisGroup = lessonRepository.findAllByGroup(groupToDelete);
+        if (lessonsWithThisGroup.isEmpty()) {
             // You can ONLY remove students (and the group itself) if no scheduled dates are made yet
             // need to convert set to list, else a ConcurrentModificationException occurs
             groupToDelete.getMembers().stream().toList().forEach(Student::removeFromGroup);
             groupRepository.delete(groupToDelete);
         } else {
-            // the group has scheduled classes, so soft-delete it so coaches and teachers can view history
+            // the group has lessons scheduled, so soft-delete it so coaches and teachers can view history
             groupToDelete.setTerminated(true);
             groupRepository.save(groupToDelete);
         }

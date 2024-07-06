@@ -3,7 +3,7 @@ import {
   Attendance,
   Status,
   translateAttendanceStatus,
-} from "../-shared/Class";
+} from "../-shared/Lesson";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
@@ -51,7 +51,7 @@ const HistoryView = () => {
 
   const showAllAttendances = () => setFilteredAttendances(attendances);
 
-  /* ITvitae schedules classes in periods of 12 weeks, which is 84 days. */
+  /* ITvitae schedules lessons in periods of 12 weeks, which is 84 days. */
   const showAttendancesOfPastQuarter = () => {
     const today = new Date();
     const priorDate = new Date(new Date().setDate(today.getDate() - 84));

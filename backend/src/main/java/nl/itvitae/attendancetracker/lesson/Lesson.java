@@ -1,4 +1,4 @@
-package nl.itvitae.attendancetracker.scheduledclass;
+package nl.itvitae.attendancetracker.lesson;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +12,9 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
-public class ScheduledClass {
+// Lesson, could also be called Session or ScheduledClass, basically is 1 scheduled day. Using Lesson here to be
+// compatible with usage in frontend.
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -25,7 +27,7 @@ public class ScheduledClass {
 
     private LocalDate date;
 
-    public ScheduledClass(Group group, Teacher teacher, LocalDate date) {
+    public Lesson(Group group, Teacher teacher, LocalDate date) {
         this.group = group;
         this.teacher = teacher;
         this.date = date;

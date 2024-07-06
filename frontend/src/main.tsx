@@ -7,7 +7,7 @@ import "./index.css";
 import UserContext from "./-shared/UserContext.ts";
 import LoginData from "./-shared/LoginData.ts";
 import Login from "./login-page/Login.tsx";
-import ScheduleView from "./class-management-page/ScheduleView.tsx";
+import LessonManagement from "./lesson-management-page/LessonManagement.tsx";
 import HistoryView from "./history-page/HistoryView.tsx";
 import Role from "./-shared/Role.ts";
 import Authorized from "./login-page/Authorized.tsx";
@@ -42,16 +42,18 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route
             path="/worker-management"
             element={
-              <Authorized roles={[Role.SUPER_ADMIN, Role.ADMIN, Role.PURE_ADMIN]}>
+              <Authorized
+                roles={[Role.SUPER_ADMIN, Role.ADMIN, Role.PURE_ADMIN]}
+              >
                 <WorkerManagement />
               </Authorized>
             }
           />
           <Route
-            path="/class-management"
+            path="/lesson-management"
             element={
               <Authorized roles={[Role.SUPER_ADMIN]}>
-                <ScheduleView />
+                <LessonManagement />
               </Authorized>
             }
           />

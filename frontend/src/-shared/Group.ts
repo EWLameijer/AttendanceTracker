@@ -4,5 +4,5 @@ export interface Group {
   id: string;
   name: string;
   members: Student[];
-  hasPastClasses: boolean;
+  hasPastLessons: boolean;
 }

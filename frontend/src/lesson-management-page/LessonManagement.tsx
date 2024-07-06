@@ -3,12 +3,12 @@ import { useState, useEffect, useContext } from "react";
 import { BASE_URL, toYYYYMMDD } from "../-shared/utils";
 import { Group } from "../-shared/Group";
 import { Teacher } from "../-shared/Teacher";
-import { ScheduledClassDtoWithoutAttendance } from "./ScheduledClassDtoWithoutAttendance";
+import { LessonDtoWithoutAttendance } from "./LessonDtoWithoutAttendance";
 import UserContext from "../-shared/UserContext";
 import TeacherIdsWeek from "./TeacherIdsWeek";
 import HomeButton from "../-shared/HomeButton";
 
-const ScheduleView = () => {
+const LessonManagement = () => {
   const today = toYYYYMMDD(new Date());
   const [groups, setGroups] = useState<Group[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -19,12 +19,12 @@ const ScheduleView = () => {
     useState<string>(today);
   const [excludeEndDateAsString, setExcludeEndDateAsString] =
     useState<string>(today);
-  const [proposedClasses, setProposedClasses] = useState<
-    ScheduledClassDtoWithoutAttendance[]
+  const [proposedLessons, setProposedLessons] = useState<
+    LessonDtoWithoutAttendance[]
   >([]);
   const [teacherIdsWeek, setTeacherIdsWeek] = useState(Array(5).fill(""));
-  const [scheduledClasses, setScheduledClasses] = useState<
-    ScheduledClassDtoWithoutAttendance[]
+  const [scheduledLessons, setScheduledLessons] = useState<
+    LessonDtoWithoutAttendance[]
   >([]);
 
   const weekdays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"];
@@ -66,14 +66,14 @@ const ScheduleView = () => {
   useEffect(() => {
     if (!groupId) return;
     axios
-      .get(`${BASE_URL}/scheduled-classes/${groupId}`, {
+      .get(`${BASE_URL}/lessons/${groupId}`, {
         auth: {
           username: user.username,
           password: user.password,
         },
       })
       .then((response) => {
-        setScheduledClasses(sortDescending(response.data));
+        setScheduledLessons(sortDescending(response.data));
       });
   }, [groupId]);
 
@@ -106,12 +106,12 @@ const ScheduleView = () => {
     />
   ));
 
-  const generateClasses = (event: React.FormEvent) => {
+  const generateLessons = (event: React.FormEvent) => {
     event.preventDefault();
 
     const dayIndex = (date: Date) => date.getDay() - 1;
 
-    const newClasses = [
+    const newLessons = [
       ...dateRangeGenerator(
         new Date(startDateAsString),
         new Date(endDateAsString)
@@ -123,7 +123,7 @@ const ScheduleView = () => {
         teacherId: teacherIdsWeek[dayIndex(date)],
         dateAsString: toYYYYMMDD(date),
       }));
-    setProposedClasses(newClasses);
+    setProposedLessons(newLessons);
   };
 
   const handleExcludeStartDateChange = (
@@ -134,69 +134,72 @@ const ScheduleView = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setExcludeEndDateAsString(event.target.value);
 
-  const excludeClasses = (event: React.FormEvent) => {
+  const excludeLessons = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!proposedClasses.length) {
+    if (!proposedLessons.length) {
       alert("Genereer eerst een periode");
     } else {
       const startOfExcludedPeriod = new Date(excludeStartDateAsString);
       const endOfExcludedPeriod = new Date(excludeEndDateAsString);
 
-      const excludedClassesAsStrings = [
+      const excludedLessonsAsStrings = [
         ...dateRangeGenerator(startOfExcludedPeriod, endOfExcludedPeriod),
       ].map(toYYYYMMDD);
 
-      const remainingClasses = [...proposedClasses].filter(
-        (classDto) => !excludedClassesAsStrings.includes(classDto.dateAsString)
+      const remainingLessons = [...proposedLessons].filter(
+        (lessonDto) =>
+          !excludedLessonsAsStrings.includes(lessonDto.dateAsString)
       );
 
-      setProposedClasses(remainingClasses);
+      setProposedLessons(remainingLessons);
     }
   };
 
-  const deleteMessage = (classDto: ScheduledClassDtoWithoutAttendance) =>
-    getFormattedClass(classDto) + " verwijderen?";
+  const deleteMessage = (lessonDto: LessonDtoWithoutAttendance) =>
+    getFormattedLesson(lessonDto) + " verwijderen?";
 
-  const handleDeleteProposedClass = (
-    proposedClass: ScheduledClassDtoWithoutAttendance
+  const handleDeleteProposedLesson = (
+    proposedLesson: LessonDtoWithoutAttendance
   ) => {
-    if (confirm(deleteMessage(proposedClass))) {
-      const filteredClasses = proposedClasses.filter(
-        (sc) => sc.dateAsString !== proposedClass.dateAsString
+    if (confirm(deleteMessage(proposedLesson))) {
+      const filteredLessons = proposedLessons.filter(
+        (sc) => sc.dateAsString !== proposedLesson.dateAsString
       );
 
-      setProposedClasses(filteredClasses);
+      setProposedLessons(filteredLessons);
     }
   };
 
-  const getFormattedClass = (classDto: ScheduledClassDtoWithoutAttendance) => {
-    const dayAbbreviation = new Date(classDto.dateAsString)
+  const getFormattedLesson = (lessonDto: LessonDtoWithoutAttendance) => {
+    const dayAbbreviation = new Date(lessonDto.dateAsString)
       .toLocaleString("nl-NL", { weekday: "long" })
       .substring(0, 2);
-    const teacherName = teachers.find((x) => x.id === classDto.teacherId)?.name;
+    const teacherName = teachers.find(
+      (x) => x.id === lessonDto.teacherId
+    )?.name;
 
-    return dayAbbreviation + " " + classDto.dateAsString + " " + teacherName;
+    return dayAbbreviation + " " + lessonDto.dateAsString + " " + teacherName;
   };
 
-  const showProposedClasses = proposedClasses.map((value) => (
+  const showProposedLessons = proposedLessons.map((value) => (
     <li key={value.dateAsString}>
-      {getFormattedClass(value)};
+      {getFormattedLesson(value)};
       <button
         value={value.dateAsString}
-        onClick={() => handleDeleteProposedClass(value)}
+        onClick={() => handleDeleteProposedLesson(value)}
       >
         X
       </button>
     </li>
   ));
 
-  const submitClasses = (event: React.FormEvent) => {
+  const submitLessons = (event: React.FormEvent) => {
     event.preventDefault();
 
     axios
-      .post<ScheduledClassDtoWithoutAttendance[]>(
-        `${BASE_URL}/scheduled-classes`,
-        proposedClasses,
+      .post<LessonDtoWithoutAttendance[]>(
+        `${BASE_URL}/lessons`,
+        proposedLessons,
         {
           auth: {
             username: user.username,
@@ -206,15 +209,15 @@ const ScheduleView = () => {
       )
       .then((response) => {
         if (response.status === HttpStatusCode.Created) {
-          const numberOfClasses = response.data.length;
-          const lessonTerm = "les" + (numberOfClasses !== 1 ? "sen" : "");
-          alert(`${numberOfClasses} ${lessonTerm} toegevoegd.`);
+          const numberOfLessons = response.data.length;
+          const lessonTerm = "les" + (numberOfLessons !== 1 ? "sen" : "");
+          alert(`${numberOfLessons} ${lessonTerm} toegevoegd.`);
         }
-        setScheduledClasses(
-          sortDescending([...response.data, ...scheduledClasses])
+        setScheduledLessons(
+          sortDescending([...response.data, ...scheduledLessons])
         );
 
-        setProposedClasses(new Array<ScheduledClassDtoWithoutAttendance>());
+        setProposedLessons(new Array<LessonDtoWithoutAttendance>());
       })
       .catch((error) => {
         if (error.response.status === HttpStatusCode.BadRequest) {
@@ -224,13 +227,13 @@ const ScheduleView = () => {
       });
   };
 
-  const handleDeleteScheduledClass = (
-    scheduledClass: ScheduledClassDtoWithoutAttendance
+  const handleDeleteScheduledLesson = (
+    scheduledLesson: LessonDtoWithoutAttendance
   ) => {
-    if (confirm(deleteMessage(scheduledClass))) {
+    if (confirm(deleteMessage(scheduledLesson))) {
       axios
         .delete(
-          `${BASE_URL}/scheduled-classes/${scheduledClass.groupId}/${scheduledClass.dateAsString}`,
+          `${BASE_URL}/lessons/${scheduledLesson.groupId}/${scheduledLesson.dateAsString}`,
           {
             auth: {
               username: user.username,
@@ -239,27 +242,27 @@ const ScheduleView = () => {
           }
         )
         .then(() => {
-          alert(`${scheduledClass.dateAsString} is verwijderd.`);
+          alert(`${scheduledLesson.dateAsString} is verwijderd.`);
 
-          const filteredClasses = scheduledClasses.filter(
-            (sc) => sc.dateAsString !== scheduledClass.dateAsString
+          const filteredLessons = scheduledLessons.filter(
+            (sc) => sc.dateAsString !== scheduledLesson.dateAsString
           );
 
-          setScheduledClasses(filteredClasses);
+          setScheduledLessons(filteredLessons);
         })
         .catch(() =>
-          alert(`Kan les van ${scheduledClass.dateAsString} niet verwijderen.`)
+          alert(`Kan les van ${scheduledLesson.dateAsString} niet verwijderen.`)
         );
     }
   };
 
-  const showScheduledClasses = scheduledClasses.map((classDto) => (
-    <li key={classDto.dateAsString}>
-      {getFormattedClass(classDto)}
+  const showScheduledLessons = scheduledLessons.map((lessonDto) => (
+    <li key={lessonDto.dateAsString}>
+      {getFormattedLesson(lessonDto)}
       <button
-        value={classDto.dateAsString}
-        onClick={() => handleDeleteScheduledClass(classDto)}
-        hidden={new Date(classDto.dateAsString) <= new Date()}
+        value={lessonDto.dateAsString}
+        onClick={() => handleDeleteScheduledLesson(lessonDto)}
+        hidden={new Date(lessonDto.dateAsString) <= new Date()}
       >
         X
       </button>
@@ -267,9 +270,9 @@ const ScheduleView = () => {
   ));
 
   const sortDescending = (
-    scheduledClassesArray: ScheduledClassDtoWithoutAttendance[]
+    scheduledLessonsArray: LessonDtoWithoutAttendance[]
   ) =>
-    scheduledClassesArray.sort((a, b) =>
+    scheduledLessonsArray.sort((a, b) =>
       b.dateAsString.localeCompare(a.dateAsString)
     );
 
@@ -330,7 +333,7 @@ const ScheduleView = () => {
                     </div>
 
                     <div>
-                      <button onClick={generateClasses}>
+                      <button onClick={generateLessons}>
                         Genereer periode
                       </button>
                     </div>
@@ -357,21 +360,21 @@ const ScheduleView = () => {
                     </div>
 
                     <div>
-                      <button onClick={excludeClasses}>
+                      <button onClick={excludeLessons}>
                         Verwijder selectie
                       </button>
                     </div>
 
                     <div>
                       <ul className="striping no-bullets">
-                        {showProposedClasses}
+                        {showProposedLessons}
                       </ul>
                     </div>
 
                     <hr />
 
                     <div>
-                      <button onClick={submitClasses}>
+                      <button onClick={submitLessons}>
                         Sla alle lessen op.
                       </button>
                     </div>
@@ -379,7 +382,7 @@ const ScheduleView = () => {
                 </td>
                 <td>
                   <ul className="striping no-bullets">
-                    {showScheduledClasses}
+                    {showScheduledLessons}
                   </ul>
                 </td>
               </tr>
@@ -390,4 +393,4 @@ const ScheduleView = () => {
     </>
   );
 };
-export default ScheduleView;
+export default LessonManagement;

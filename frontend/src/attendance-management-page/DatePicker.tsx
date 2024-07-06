@@ -6,7 +6,7 @@ import {
   toYYYYMMDD,
 } from "../-shared/utils";
 import axios from "axios";
-import { Class, addExtraData } from "../-shared/Class";
+import { Lesson, addExtraData } from "../-shared/Lesson";
 import GroupElement from "./GroupElement";
 import UserContext from "../-shared/UserContext";
 
@@ -18,13 +18,13 @@ interface DateSchedule {
   previousDate?: string;
   currentDate: string;
   nextDate?: string;
-  classes: Class[];
+  lessons: Lesson[];
 }
 
 let manuallyEditing = false;
 
 const DatePicker = () => {
-  const [classes, setClasses] = useState<Class[]>([]);
+  const [lessons, setLessons] = useState<Lesson[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
 
@@ -77,14 +77,14 @@ const DatePicker = () => {
         setNextDate(schedule.nextDate);
         lastDate = new Date(Date.parse(schedule.currentDate));
         setDateInPicker(toYYYYMMDD(lastDate));
-        const rawClasses = schedule.classes;
-        for (const rawClass of rawClasses) {
-          const fullFormatAttendances = rawClass.attendances.map((attendance) =>
-            addExtraData(attendance)
+        const rawLessons = schedule.lessons;
+        for (const rawLesson of rawLessons) {
+          const fullFormatAttendances = rawLesson.attendances.map(
+            (attendance) => addExtraData(attendance)
           );
-          rawClass.attendances = fullFormatAttendances;
+          rawLesson.attendances = fullFormatAttendances;
         }
-        setClasses(rawClasses);
+        setLessons(rawLessons);
       });
   }
 
@@ -99,7 +99,7 @@ const DatePicker = () => {
     else loadDate(newDateAsString, true);
   };
 
-  return !classes.length && !previousDate && !nextDate ? (
+  return !lessons.length && !previousDate && !nextDate ? (
     <h3>Geen lessen ingepland in nabij verleden of toekomst!</h3>
   ) : (
     <>
@@ -125,21 +125,21 @@ const DatePicker = () => {
           }
         />
       </h3>
-      {classes.length === 0 ? (
+      {lessons.length === 0 ? (
         <h3>Geen lessen op deze dag</h3>
       ) : user.isTeacher() ? (
         <GroupElement
-          chosenClass={classes[0]}
+          chosenLesson={lessons[0]}
           dateAsString={toYYYYMMDD(lastDate)}
         />
       ) : (
         <ol>
-          {classes
+          {lessons
             .sort((a, b) => a.groupName.localeCompare(b.groupName))
-            .map((currentClass) => (
-              <li key={currentClass.groupName}>
+            .map((currentLesson) => (
+              <li key={currentLesson.groupName}>
                 <GroupElement
-                  chosenClass={currentClass}
+                  chosenLesson={currentLesson}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
               </li>

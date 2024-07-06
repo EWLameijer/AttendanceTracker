@@ -1,28 +1,31 @@
 import axios from "axios";
-import { Attendance, Class, Status, addExtraData } from "../-shared/Class.ts";
+import { Attendance, Lesson, Status, addExtraData } from "../-shared/Lesson.ts";
 import { BASE_URL } from "../-shared/utils.ts";
 import AttendanceDisplay from "./AttendanceDisplay.tsx";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../-shared/UserContext.ts";
 
-const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
-  const [chosenClass, setChosenClass] = useState(props.chosenClass);
-  useEffect(() => setChosenClass(props.chosenClass), [props.chosenClass]);
+const GroupElement = (props: {
+  chosenLesson: Lesson;
+  dateAsString: string;
+}) => {
+  const [chosenLesson, setChosenLesson] = useState(props.chosenLesson);
+  useEffect(() => setChosenLesson(props.chosenLesson), [props.chosenLesson]);
   const user = useContext(UserContext);
 
   const updateAttendances = (updatedAttendances: Attendance[]) => {
-    const newAttendances = [...chosenClass.attendances];
+    const newAttendances = [...chosenLesson.attendances];
     for (const updatedAttendance of updatedAttendances) {
-      const studentIndex = chosenClass.attendances.findIndex(
+      const studentIndex = chosenLesson.attendances.findIndex(
         (attendance) => attendance.studentName === updatedAttendance.studentName
       );
       newAttendances[studentIndex] = updatedAttendance;
     }
-    setChosenClass({ ...chosenClass!, attendances: newAttendances });
+    setChosenLesson({ ...chosenLesson!, attendances: newAttendances });
   };
 
   const isUpdated = (attendance: Attendance) => {
-    const originalAttendance = chosenClass.attendances.find(
+    const originalAttendance = chosenLesson.attendances.find(
       (savedAttendance) =>
         savedAttendance.studentName === attendance.studentName
     )!;
@@ -70,7 +73,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   };
 
   const setAllUnregisteredAsPresent = () => {
-    const newAttendances = chosenClass!.attendances
+    const newAttendances = chosenLesson!.attendances
       .filter(
         (attendance) => attendance.savedStatus === Status.NOT_REGISTERED_YET
       )
@@ -79,15 +82,15 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
   };
 
   const unregisteredAttendancesExist = () =>
-    chosenClass!.attendances.some(
+    chosenLesson!.attendances.some(
       (attendance) => attendance.status === Status.NOT_REGISTERED_YET
     );
 
   return (
     <>
       <h3>
-        {chosenClass.groupName}
-        {user.isTeacher() ? "" : ` (${chosenClass.teacherName})`}
+        {chosenLesson.groupName}
+        {user.isTeacher() ? "" : ` (${chosenLesson.teacherName})`}
       </h3>
       <button
         onClick={setAllUnregisteredAsPresent}
@@ -96,7 +99,7 @@ const GroupElement = (props: { chosenClass: Class; dateAsString: string }) => {
         Zet alle ongeregistreerden op aanwezig
       </button>
       <ol>
-        {chosenClass.attendances
+        {chosenLesson.attendances
           .sort((a, b) => a.studentName.localeCompare(b.studentName))
           .map((attendance) => (
             <AttendanceDisplay
