@@ -55,20 +55,21 @@
 === Super-admin
 * kan inloggen
 * kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
-* kan deelnemers aanmaken (test voor 2 groepen)
+* kan deelnemers aanmaken
 * kan deelnemers verwijderen uit een groep
 * kan les in het verleden voor een groep plannen
 * kan les in de toekomst voor een groep plannen
+* kan toekomstige lessen verwijderen
+* kan verleden-groep archiveren
+* kan toekomst-groep verwijderen
 * kan externe docenten aanmaken
+* kan externe docenten verwijderen
 * kan docenten uitnodigen
 * kan studentbegeleiders uitnodigen
 * kan administratoren uitnodigen
 * kan superadministratoren uitnodigen
 * kan uitnodigingen opnieuw versturen
 * kan uitnodigingen intrekken
-* kan verleden-groep archiveren
-* kan toekomst-groep verwijderen
-* kan toekomstige lessen verwijderen
 * kan aanwezigheid van alle groepen zien
 * kan aanwezigheidsstatus veranderen
 * kan aanwezigheidsnotitie veranderen
