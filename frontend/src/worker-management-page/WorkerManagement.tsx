@@ -173,10 +173,17 @@ const WorkerManagement = () => {
     .sort(byName);
 
   const inviteesForDisplay = invitees
+    .filter(
+      (invitee) =>
+        user.isSuperAdmin() ||
+        invitee.role === Role.TEACHER ||
+        invitee.role === Role.COACH
+    )
     .map((invitee) => ({
       ...invitee,
       role: roleNames[invitee.role],
     }))
+
     .sort(byName);
 
   const disableRegistrar = (id: string) => {

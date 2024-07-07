@@ -49,10 +49,11 @@
 * kan studentbegeleiders uitnodigen
 * kan administratoren uitnodigen
 * kan superadministratoren uitnodigen
+* kan uitnodigingen opnieuw versturen
+* kan uitnodigingen intrekken
 
 === Super-admin
 * kan inloggen
-* kan groepen verwijderen
 * kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
 * kan deelnemers aanmaken (test voor 2 groepen)
 * kan deelnemers verwijderen uit een groep
@@ -63,6 +64,8 @@
 * kan studentbegeleiders uitnodigen
 * kan administratoren uitnodigen
 * kan superadministratoren uitnodigen
+* kan uitnodigingen opnieuw versturen
+* kan uitnodigingen intrekken
 * kan verleden-groep archiveren
 * kan toekomst-groep verwijderen
 * kan toekomstige lessen verwijderen
@@ -77,8 +80,10 @@
 
 === Admin
 * kan inloggen
-* kan docenten aanmaken
-* kan studentbegeleiders aanmaken
+* kan docenten uitnodigen
+* kan studentbegeleiders uitnodigen
+* kan uitnodigingen opnieuw versturen
+* kan uitnodigingen intrekken
 * kan aanwezigheid van alle groepen zien
 * kan aanwezigheidsstatus veranderen
 * kan aanwezigheidsnotitie veranderen
