@@ -285,10 +285,12 @@ const WorkerManagement = () => {
           <button onClick={inviteSuperAdmin}>
             Nodig super-administrator uit
           </button>
-          <button onClick={addExternalTeacher}>
-            Voeg externe docent toe die zich nog niet hoeft te registreren
-          </button>
         </>
+      )}
+      {user.isSuperAdmin() && (
+        <button onClick={addExternalTeacher}>
+          Voeg externe docent toe die zich nog niet hoeft te registreren
+        </button>
       )}
 
       <RegistrarList
@@ -297,23 +299,27 @@ const WorkerManagement = () => {
         disableRegistrar={disableRegistrar}
         changeRole={changeRole}
       />
-      <h3>
-        Externe docenten (die geen aanwezigheid kunnen registreren, maar wel
-        kunnen worden toegekend aan klassen)
-      </h3>
-      <ul>
-        {externalTeachers.map((externalTeacher) => (
-          <li key={externalTeacher.id}>
-            {externalTeacher.name}
-            <button
-              onClick={() => removeFromLessonPlanning(externalTeacher.id)}
-              disabled={!user.isSuperAdmin()}
-            >
-              Verwijderen
-            </button>
-          </li>
-        ))}
-      </ul>
+      {user.isSuperAdmin() && (
+        <>
+          <h3>
+            Externe docenten (die geen aanwezigheid kunnen registreren, maar wel
+            kunnen worden toegekend aan klassen)
+          </h3>
+          <ul>
+            {externalTeachers.map((externalTeacher) => (
+              <li key={externalTeacher.id}>
+                {externalTeacher.name}
+                <button
+                  onClick={() => removeFromLessonPlanning(externalTeacher.id)}
+                  disabled={!user.isSuperAdmin()}
+                >
+                  Verwijderen
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
       <RegistrarList
         title="Studentbegeleiders"
         registrars={coaches}
