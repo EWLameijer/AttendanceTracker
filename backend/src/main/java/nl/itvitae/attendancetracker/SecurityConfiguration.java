@@ -50,11 +50,11 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-admin", "/invitations/for-super-admin").hasAnyRole(superAdmin, pureAdmin)
                                 .requestMatchers("/lessons/**").hasRole(superAdmin) // create lessons
+                                .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll() // registration
+                                .requestMatchers("/personnel/login/**").authenticated() // login
+                                .requestMatchers("/personnel/teachers/**").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers("/personnel/**").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers(HttpMethod.PATCH, "/personnel/*").hasAnyRole(superAdmin, pureAdmin)
-                                .requestMatchers("/personnel/login/**").authenticated() // login
-                                .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll() // registration
-                                .requestMatchers("/personnel/teachers/**").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin) // history-view
                                 .requestMatchers("/teachers").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers("/teachers/*").hasAnyRole(superAdmin, pureAdmin))
