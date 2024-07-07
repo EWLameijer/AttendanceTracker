@@ -176,6 +176,7 @@ const WorkerManagement = () => {
     .filter(
       (invitee) =>
         user.isSuperAdmin() ||
+        user.isPureAdmin() ||
         invitee.role === Role.TEACHER ||
         invitee.role === Role.COACH
     )
