@@ -45,6 +45,9 @@ public class Seeder implements CommandLineRunner {
     @Value("${spring.datasource.url}")
     private String databaseUrl;
 
+    @Value("${at.cors}")
+    private String frontendUrl;
+
     private final static String PRODUCTION_POSTGRES_URL = "jdbc:postgresql://psql-db:5432/attendancetracker";
 
     @Override
@@ -107,7 +110,7 @@ public class Seeder implements CommandLineRunner {
             var registrar = new RegistrarDto(UUID.randomUUID(), "SenS", "support@itvitae.nl",
                     ATRole.PURE_ADMIN.asSpringSecurityRole());
             var invitation = invitationService.getInvitationDtoWithCode(registrar, ATRole.PURE_ADMIN);
-            System.out.println(invitation.code());
+            System.out.println(frontendUrl + "/registration-view/" + invitation.code());
         }
     }
 
