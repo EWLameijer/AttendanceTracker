@@ -79,6 +79,11 @@ public class GroupController {
             // the group has lessons scheduled, so soft-delete it so coaches and teachers can view history
             groupToDelete.setTerminated(true);
             groupRepository.save(groupToDelete);
+
+            // do remove future classes, though
+            var today = LocalDate.now();
+            var futureLessons = lessonsWithThisGroup.stream().filter(lesson -> lesson.getDate().isAfter(today)).toList();
+            lessonRepository.deleteAll(futureLessons);
         }
         return ResponseEntity.noContent().build();
     }
