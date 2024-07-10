@@ -32,7 +32,7 @@ const statusTranslations = new Map<string, string>([
 export const translateAttendanceStatus = (status: string) =>
   statusTranslations.get(status)!;
 
-export interface Class {
+export interface Lesson {
   groupName: string;
   teacherName: string;
   attendances: Attendance[];

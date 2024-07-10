@@ -18,16 +18,16 @@ public class Invitation {
 
     private String name;
 
-    private String email;
+    private String emailAddress;
 
     private final LocalDateTime timeOfCreation = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private ATRole role;
 
-    public Invitation(String name, ATRole role, String email) {
+    public Invitation(String name, ATRole role, String emailAddress) {
         this.name = name;
         this.role = role;
-        this.email = email;
+        this.emailAddress = emailAddress;
     }
 }

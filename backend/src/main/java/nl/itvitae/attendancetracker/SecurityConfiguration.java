@@ -41,7 +41,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers("/students/**").hasAnyRole(admin, coach, superAdmin, pureAdmin)
                                 .requestMatchers(
-                                        "/scheduled-classes/**",
+                                        "/lessons/**",
                                         "/personnel/teachers/**").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers("/attendances/**", "/personnel/login/**").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/personnel/register").permitAll()
@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.DELETE, "/invitations/*").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers(HttpMethod.GET, "/invitations").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers(HttpMethod.PATCH, "/personnel/*").hasAnyRole(superAdmin, pureAdmin)
-                                .requestMatchers("/personnel/**", "/teachers", "/scheduled-classes/**").hasAnyRole(admin, superAdmin, pureAdmin)
+                                .requestMatchers("/personnel/**", "/teachers", "/lessons/**").hasAnyRole(admin, superAdmin, pureAdmin)
                                 .requestMatchers("/teachers/*", "/groups/**").hasAnyRole(superAdmin, pureAdmin)
                                 .requestMatchers(HttpMethod.POST,
                                         "/invitations/for-teacher", "/invitations/for-coach").hasAnyRole(admin, superAdmin, pureAdmin)

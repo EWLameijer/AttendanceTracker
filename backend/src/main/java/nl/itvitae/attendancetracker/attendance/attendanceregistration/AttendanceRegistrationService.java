@@ -3,8 +3,8 @@ package nl.itvitae.attendancetracker.attendance.attendanceregistration;
 import lombok.RequiredArgsConstructor;
 import nl.itvitae.attendancetracker.attendance.AttendanceRepository;
 import nl.itvitae.attendancetracker.group.GroupRepository;
+import nl.itvitae.attendancetracker.lesson.LessonRepository;
 import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class AttendanceRegistrationService {
 
     private final GroupRepository groupRepository;
 
-    private final ScheduledClassRepository scheduledClassRepository;
+    private final LessonRepository lessonRepository;
 
     public void saveAll(List<AttendanceRegistration> attendanceRegistrations) {
         for (AttendanceRegistration attendanceRegistration : attendanceRegistrations) {
@@ -55,7 +55,7 @@ public class AttendanceRegistrationService {
 
         var group = groupRepository.findByMembersContaining(student).orElseThrow(
                 () -> new IllegalArgumentException("Student is not member of a group"));
-        if (!scheduledClassRepository.existsByDateAndGroup(date, group)) {
+        if (!lessonRepository.existsByDateAndGroup(date, group)) {
             throw new IllegalArgumentException("Student does not follow lessons on this date");
         }
         return new AttendanceRegistrationEntities(student, registrar, date);

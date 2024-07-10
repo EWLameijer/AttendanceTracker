@@ -16,7 +16,7 @@ const AttendanceManagement = () => {
             <button onClick={() => navigate("/group-management")}>
               Wijzig groepen
             </button>
-            <button onClick={() => navigate("/class-management")}>
+            <button onClick={() => navigate("/lesson-management")}>
               Plan lessen
             </button>
           </>

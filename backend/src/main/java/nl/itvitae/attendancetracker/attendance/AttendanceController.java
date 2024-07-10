@@ -6,13 +6,13 @@ import nl.itvitae.attendancetracker.BadRequestException;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistration;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationDto;
 import nl.itvitae.attendancetracker.attendance.attendanceregistration.AttendanceRegistrationRepository;
+import nl.itvitae.attendancetracker.lesson.Lesson;
+import nl.itvitae.attendancetracker.lesson.LessonDto;
+import nl.itvitae.attendancetracker.lesson.LessonRepository;
 import nl.itvitae.attendancetracker.registrar.ATRole;
 import nl.itvitae.attendancetracker.registrar.Registrar;
 import nl.itvitae.attendancetracker.registrar.RegistrarRepository;
 import nl.itvitae.attendancetracker.registrar.RegistrarService;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassDto;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +40,7 @@ public class AttendanceController {
 
     private final AttendanceVersionService attendanceVersionService;
 
-    private final ScheduledClassRepository scheduledClassRepository;
+    private final LessonRepository lessonRepository;
 
     private final RegistrarService registrarService;
 
@@ -79,11 +79,11 @@ public class AttendanceController {
         var chosenDate = parseLocalDateOrThrow(dateAsString);
         var registrar = registrarRepository.findByIdentityNameIgnoringCase(nameOfRegistrar)
                 .orElseThrow(() -> new IllegalArgumentException("Personnel with this name not found!"));
-        var classes = findClassesByDateAndRegistrar(chosenDate, registrar);
+        var lessons = findLessonsByDateAndRegistrar(chosenDate, registrar);
         var attendances = findAttendancesByDateAndRegistrar(chosenDate, registrar);
         // if the requested day does not have a schedule and the match need not be exact,
         // return the most recent lesson date instead
-        if (classes.isEmpty() && !dateShouldBeExact) {
+        if (lessons.isEmpty() && !dateShouldBeExact) {
             chosenDate = findPreviousDate(LocalDate.now(), registrar).
                     orElseGet(() -> findNextDate(LocalDate.now(), registrar).
                             orElseThrow(() -> new BadRequestException("No nearby lesson date!")));
@@ -92,8 +92,8 @@ public class AttendanceController {
         var previousDate = findPreviousDate(chosenDate, registrar);
         var nextDate = findNextDate(chosenDate, registrar);
         var attendanceVersion = attendanceVersionService.getTimeOfLatestUpdate();
-        var scheduledclassDtos = getScheduledClassDtos(chosenDate, attendances, registrar);
-        return new ScheduledDateDto(attendanceVersion, previousDate, chosenDate, nextDate, scheduledclassDtos);
+        var lessonDtos = getLessonDtos(chosenDate, attendances, registrar);
+        return new ScheduledDateDto(attendanceVersion, previousDate, chosenDate, nextDate, lessonDtos);
     }
 
     private List<AttendanceRegistration> findAttendancesByDateAndRegistrar(LocalDate date, Registrar registrar) {
@@ -102,9 +102,9 @@ public class AttendanceController {
 
         // otherwise: find by teacher
         var teacher = registrarService.asTeacher(registrar);
-        var possibleScheduledClass = scheduledClassRepository.findByDateAndTeacher(date, teacher);
-        if (possibleScheduledClass.isEmpty()) return List.of();
-        var students = possibleScheduledClass.get().getGroup().getMembers();
+        var possibleLesson = lessonRepository.findByDateAndTeacher(date, teacher);
+        if (possibleLesson.isEmpty()) return List.of();
+        var students = possibleLesson.get().getGroup().getMembers();
 
         // there may be a better way, to get attendances by group. However, I do not see that now, and
         // our database is likely small enough to make the extra attendances fetched not problematic.
@@ -129,26 +129,26 @@ public class AttendanceController {
         final int maxDaysToInvestigate = 5 * 7;
         for (int numberOfDays = 1; numberOfDays < maxDaysToInvestigate; numberOfDays++) {
             var dateToInvestigate = originalDate.plusDays((long) dayDirection * numberOfDays);
-            var classes = findClassesByDateAndRegistrar(dateToInvestigate, registrar);
-            if (!classes.isEmpty()) return Optional.of(dateToInvestigate);
+            var lessons = findLessonsByDateAndRegistrar(dateToInvestigate, registrar);
+            if (!lessons.isEmpty()) return Optional.of(dateToInvestigate);
         }
         return Optional.empty();
     }
 
-    private List<ScheduledClass> findClassesByDateAndRegistrar(LocalDate dateToInvestigate, Registrar registrar) {
+    private List<Lesson> findLessonsByDateAndRegistrar(LocalDate dateToInvestigate, Registrar registrar) {
         return registrar.getRole() == ATRole.TEACHER ?
-                scheduledClassRepository.findByDateAndTeacher(dateToInvestigate, registrarService.asTeacher(registrar)).stream().toList() :
-                scheduledClassRepository.findAllByDate(dateToInvestigate);
+                lessonRepository.findByDateAndTeacher(dateToInvestigate, registrarService.asTeacher(registrar)).stream().toList() :
+                lessonRepository.findAllByDate(dateToInvestigate);
     }
 
-    private ArrayList<ScheduledClassDto> getScheduledClassDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Registrar registrar) {
-        var classes = findClassesByDateAndRegistrar(date, registrar);
+    private ArrayList<LessonDto> getLessonDtos(LocalDate date, List<AttendanceRegistration> attendanceRegistrations, Registrar registrar) {
+        var lessons = findLessonsByDateAndRegistrar(date, registrar);
         var readableAttendances = attendanceRegistrations.stream().map(AttendanceRegistrationDto::from).toList();
 
-        var classDtos = new ArrayList<ScheduledClassDto>();
-        for (ScheduledClass scheduledClass : classes)
-            classDtos.add(scheduledClassDtoFor(scheduledClass, readableAttendances, date));
-        return classDtos;
+        var lessonDtos = new ArrayList<LessonDto>();
+        for (Lesson lesson : lessons)
+            lessonDtos.add(lessonDtoFor(lesson, readableAttendances, date));
+        return lessonDtos;
     }
 
     @GetMapping("by-date/{dateAsString}")
@@ -161,8 +161,8 @@ public class AttendanceController {
         return getDateDtoForDateAndRegistrar(dateAsString, principal.getName(), true);
     }
 
-    private static ScheduledClassDto scheduledClassDtoFor(ScheduledClass chosenClass, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {
-        var group = chosenClass.getGroup();
+    private static LessonDto lessonDtoFor(Lesson chosenLesson, List<AttendanceRegistrationDto> readableAttendances, LocalDate date) {
+        var group = chosenLesson.getGroup();
         var groupName = group.getName();
         var groupAttendances = new ArrayList<AttendanceRegistrationDto>();
         for (Student student : group.getMembers()) {
@@ -173,7 +173,7 @@ public class AttendanceController {
                             .max(Comparator.comparing(AttendanceRegistrationDto::timeOfRegistration))
                             .orElse(new AttendanceRegistrationDto(null, studentName, null, "NOT_REGISTERED_YET", null, null, null)));
         }
-        var teacherName = chosenClass.getTeacher().getIdentity().getName();
-        return new ScheduledClassDto(groupName, teacherName, date.toString(), groupAttendances);
+        var teacherName = chosenLesson.getTeacher().getIdentity().getName();
+        return new LessonDto(groupName, teacherName, date.toString(), groupAttendances);
     }
 }

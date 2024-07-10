@@ -51,7 +51,7 @@ public class RegistrarController {
         var possibleInvitation = invitationRepository.findById(registration.invitationId());
         if (possibleInvitation.isEmpty()) return ResponseEntity.notFound().build();
         var invitation = possibleInvitation.get();
-        workerService.saveRegistrar(invitation.getName(), registration.password(), invitation.getRole(), invitation.getEmail());
+        workerService.saveRegistrar(invitation.getName(), registration.password(), invitation.getRole(), invitation.getEmailAddress());
         invitationRepository.deleteById(registration.invitationId());
         return registrarRepository.findByIdentityNameIgnoringCase(invitation.getName()).map(RegistrarDto::from).map(ResponseEntity::ok).orElseThrow();
     }

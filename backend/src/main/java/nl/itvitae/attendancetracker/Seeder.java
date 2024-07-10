@@ -7,9 +7,9 @@ import nl.itvitae.attendancetracker.attendance.attendanceregistration.Attendance
 import nl.itvitae.attendancetracker.group.Group;
 import nl.itvitae.attendancetracker.group.GroupRepository;
 import nl.itvitae.attendancetracker.invitation.InvitationService;
+import nl.itvitae.attendancetracker.lesson.Lesson;
+import nl.itvitae.attendancetracker.lesson.LessonRepository;
 import nl.itvitae.attendancetracker.registrar.*;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClass;
-import nl.itvitae.attendancetracker.scheduledclass.ScheduledClassRepository;
 import nl.itvitae.attendancetracker.student.Student;
 import nl.itvitae.attendancetracker.student.StudentRepository;
 import nl.itvitae.attendancetracker.teacher.Teacher;
@@ -36,7 +36,7 @@ public class Seeder implements CommandLineRunner {
 
     private final RegistrarService registrarService;
 
-    private final ScheduledClassRepository scheduledClassRepository;
+    private final LessonRepository lessonRepository;
     private final WorkerService workerService;
 
     private final RegistrarRepository registrarRepository;
@@ -82,10 +82,10 @@ public class Seeder implements CommandLineRunner {
             var nielsAsTeacher = registrarService.asTeacher(nielsAsRegistrar);
 
             var scheduledDate = LocalDate.now();
-            var javaClass = new ScheduledClass(java, wubboAsTeacher, scheduledDate);
-            var cyberClass = new ScheduledClass(cyber, nielsAsTeacher, scheduledDate);
-            var dataClass = new ScheduledClass(data, dan, scheduledDate);
-            scheduledClassRepository.saveAll(List.of(javaClass, cyberClass, dataClass));
+            var javaLesson = new Lesson(java, wubboAsTeacher, scheduledDate);
+            var cyberLesson = new Lesson(cyber, nielsAsTeacher, scheduledDate);
+            var dataLesson = new Lesson(data, dan, scheduledDate);
+            lessonRepository.saveAll(List.of(javaLesson, cyberLesson, dataLesson));
 
             var ariesAttendance = AttendanceRegistrationDto.of(arie, scheduledDate, juan, AttendanceStatus.SICK);
             var basAttendance = AttendanceRegistrationDto.of(bas, scheduledDate, wubboAsRegistrar, AttendanceStatus.LATE, "10:30 (trein)");
@@ -120,7 +120,7 @@ public class Seeder implements CommandLineRunner {
         for (int day = 1; day < days; day++) {
             var dateToAssess = today.minusDays(day);
             if (isStudyDay(dateToAssess.getDayOfWeek())) {
-                scheduledClassRepository.save(new ScheduledClass(group, teacher, dateToAssess));
+                lessonRepository.save(new Lesson(group, teacher, dateToAssess));
                 for (Student student : group.getMembers()) {
                     AttendanceRegistrationDto currentAttendance = getNewAttendance(student, dateToAssess, registrar, nextDaysPerformance.get(student));
                     nextDaysPerformance.put(student, currentAttendance);

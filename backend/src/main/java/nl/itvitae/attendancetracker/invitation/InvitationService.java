@@ -31,9 +31,9 @@ public class InvitationService {
 
     public InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
         var name = registrarDto.name().trim();
-        var email = registrarDto.emailAddress().trim();
-        checkInvitationIsValidAndCleanExpiredInvitations(name, email);
-        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role, email)));
+        var emailAddress = registrarDto.emailAddress().trim();
+        checkInvitationIsValidAndCleanExpiredInvitations(name, emailAddress);
+        return InvitationDtoWithCode.from(invitationRepository.save(new Invitation(name, role, emailAddress)));
     }
 
     // from https://www.baeldung.com/java-email-validation-regex
