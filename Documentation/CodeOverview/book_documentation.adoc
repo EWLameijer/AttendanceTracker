@@ -4,7 +4,7 @@
 == Ubiquitous Language
 - *attendance*: a student being present (or belatedly present) or absent on a lesson.
 - *group*: a group of students following a course at ITVitae, for example Java55
-- *lesson*: a session scheduled for a group, on a day, with a teacher. There is only one lesson per day, and the lesson can have only one teacher. A teacher cannot teach two lessons on a day.
+- *lesson*: a session scheduled for a group, on a day, with a teacher. A group has only one lesson per day, and the lesson can have only one teacher. Similary, a teacher can only give one lesson per day (and can therefore not have two groups on the same day). Of course, there can be multiple lessons on one day, as there are usually multiple groups.
 - *student*: someone following a course at ITVitae. Must be a member of a group
 - *registrar*: someone who can register an attendance. Note: registrar is basically an authorized user; there are 'pure admins' who cannot register attendances and are still part of the registrar table
 - *teacher*: someone who can be scheduled to give a lesson.
