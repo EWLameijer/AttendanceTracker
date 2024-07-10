@@ -19,7 +19,6 @@ public class InvitationService {
 
     private final RegistrarRepository registrarRepository;
 
-    @Transactional
     public void checkInvitationIsValidAndCleanExpiredInvitations(String name, String emailAddress) {
         if (name.isEmpty()) throw new BadRequestException("Name should not be blank!");
         if (!isValidEmailAddress(emailAddress)) throw new BadRequestException("Email address is invalid!");
@@ -29,6 +28,7 @@ public class InvitationService {
         removeAllInvitationsToSamePerson(name);
     }
 
+    @Transactional
     public InvitationDtoWithCode getInvitationDtoWithCode(RegistrarDto registrarDto, ATRole role) {
         var name = registrarDto.name().trim();
         var emailAddress = registrarDto.emailAddress().trim();

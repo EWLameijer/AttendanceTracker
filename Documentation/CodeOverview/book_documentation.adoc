@@ -1,6 +1,15 @@
 = Documentation
 :toc:
 
+== Ubiquitous Language
+- *attendance*: a student being present (or belatedly present) or absent on a lesson.
+- *group*: a group of students following a course at ITVitae, for example Java55
+- *lesson*: a session scheduled for a group, on a day, with a teacher. A group has only one lesson per day, and the lesson can have only one teacher. Similary, a teacher can only give one lesson per day (and can therefore not have two groups on the same day). Of course, there can be multiple lessons on one day, as there are usually multiple groups.
+- *student*: someone following a course at ITVitae. Must be a member of a group
+- *registrar*: someone who can register an attendance. Note: registrar is basically an authorized user; there are 'pure admins' who cannot register attendances and are still part of the registrar table
+- *teacher*: someone who can be scheduled to give a lesson.
+
+
 == Backend
 
 == Frontend:
@@ -34,38 +43,59 @@
 
 == Testing
 
+=== For testing
+docker compose -f docker-compose-test.yml up --build -d
+
+=== Pure-admin
+* kan inloggen
+* kan docenten uitnodigen
+* kan studentbegeleiders uitnodigen
+* kan administratoren uitnodigen
+* kan superadministratoren uitnodigen
+* kan uitnodigingen opnieuw versturen
+* kan uitnodigingen intrekken
+
 === Super-admin
 * kan inloggen
-* kan groepen verwijderen
 * kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
-* kan deelnemers aanmaken (test voor 2 groepen)
+* kan deelnemers aanmaken
 * kan deelnemers verwijderen uit een groep
 * kan les in het verleden voor een groep plannen
 * kan les in de toekomst voor een groep plannen
-* kan externe docenten aanmaken
-* kan docenten aanmaken
-* kan studentbegeleiders aanmaken
-* kan administratoren aanmaken
-* kan superadministratoren aanmaken
+* kan toekomstige lessen verwijderen
 * kan verleden-groep archiveren
 * kan toekomst-groep verwijderen
-* kan lessen plannen
-* kan toekomstige lessen verwijderen
+* kan externe docenten aanmaken
+* kan externe docenten verwijderen
+* kan docenten uitnodigen
+* kan studentbegeleiders uitnodigen
+* kan administratoren uitnodigen
+* kan superadministratoren uitnodigen
+* kan uitnodigingen opnieuw versturen
+* kan uitnodigingen intrekken
 * kan aanwezigheid van alle groepen zien
 * kan aanwezigheidsstatus veranderen
 * kan aanwezigheidsnotitie veranderen
 * kan vooruit en achteruit in attendances
+* kan naar datum van attendance gaan via datuminvoer (klikken)
+* kan naar datum van attendance gaan via datuminvoer (typen)
 * kan geschiedenis van student zien
+* kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
 === Admin
 * kan inloggen
-* kan docenten aanmaken
-* kan studentbegeleiders aanmaken
+* kan docenten uitnodigen
+* kan studentbegeleiders uitnodigen
+* kan uitnodigingen opnieuw versturen
+* kan uitnodigingen intrekken
 * kan aanwezigheid van alle groepen zien
 * kan aanwezigheidsstatus veranderen
 * kan aanwezigheidsnotitie veranderen
 * kan vooruit en achteruit in attendances
+* kan naar datum van attendance gaan via datuminvoer (klikken)
+* kan naar datum van attendance gaan via datuminvoer (typen)
 * kan geschiedenis van student zien
+* kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
 === Coach
 * kan inloggen
@@ -73,7 +103,10 @@
 * kan aanwezigheidsstatus veranderen
 * kan aanwezigheidsnotitie veranderen
 * kan vooruit en achteruit in attendances
+* kan naar datum van attendance gaan via datuminvoer (klikken)
+* kan naar datum van attendance gaan via datuminvoer (typen)
 * kan geschiedenis van student zien
+* kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
 === Teacher
 * kan inloggen
@@ -81,7 +114,13 @@
 * kan aanwezigheidsstatus veranderen
 * kan aanwezigheidsnotitie veranderen
 * kan vooruit en achteruit in attendances
-* kan alle ongeregistreerde attendances op aanwezig zetten
+* kan naar datum van attendance gaan via datuminvoer (klikken)
+* kan naar datum van attendance gaan via datuminvoer (typen)
+* kan alle ongeregistreerde attendances van een groep op aanwezig zetten
+
+=== Uitgenodigde
+* kan een paswoord opgeven
+* kan inloggen
 
 == Role of the components
 * Getting all attendances in all groups at a certain date: DatePicker
