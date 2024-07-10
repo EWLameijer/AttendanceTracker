@@ -183,7 +183,7 @@ const LessonManagement = () => {
 
   const showProposedLessons = proposedLessons.map((value) => (
     <li key={value.dateAsString}>
-      {getFormattedLesson(value)};
+      {getFormattedLesson(value)}
       <button
         value={value.dateAsString}
         onClick={() => handleDeleteProposedLesson(value)}
