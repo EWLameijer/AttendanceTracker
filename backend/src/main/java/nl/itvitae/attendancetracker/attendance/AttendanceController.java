@@ -48,11 +48,14 @@ public class AttendanceController {
     public List<AttendanceRegistrationDto> getByStudent(@PathVariable UUID studentId) {
         var attendanceRegistrations = attendanceRegistrationRepository.findByAttendanceStudentId(studentId);
         var attendances = attendanceRegistrations.stream().map(AttendanceRegistration::getAttendance).distinct();
+        var today = LocalDate.now();
         return attendances.map(
                         attendance -> attendanceRegistrations.stream()
                                 .filter(attendanceRegistration -> attendanceRegistration.getAttendance() == attendance)
                                 .max(Comparator.comparing(AttendanceRegistration::getDateTime)))
-                .flatMap(Optional::stream).map(AttendanceRegistrationDto::from).toList();
+                .flatMap(Optional::stream)
+                .filter(attendanceRegistration -> !attendanceRegistration.getAttendance().getDate().isAfter(today))
+                .map(AttendanceRegistrationDto::from).toList();
     }
 
     @PostMapping

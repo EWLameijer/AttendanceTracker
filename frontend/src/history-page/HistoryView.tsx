@@ -114,7 +114,11 @@ const HistoryView = () => {
 
       <p>
         Vanaf:
-        <input type="date" onChange={showAttendancesFromDateOnwards}></input>
+        <input
+          type="date"
+          onChange={showAttendancesFromDateOnwards}
+          max={toYYYYMMDD(new Date())}
+        ></input>
       </p>
 
       <button onClick={showAllAttendances}>Toon alles</button>
