@@ -23,6 +23,7 @@ const MemberEditComponent = (props: {
         )
         .then(() => {
           props.remove(props.member.id);
+          alert("");
         });
     }
   };
