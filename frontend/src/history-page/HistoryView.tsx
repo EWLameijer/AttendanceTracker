@@ -114,7 +114,11 @@ const HistoryView = () => {
 
       <p>
         Vanaf:
-        <input type="date" onChange={showAttendancesFromDateOnwards}></input>
+        <input
+          type="date"
+          onChange={showAttendancesFromDateOnwards}
+          max={toYYYYMMDD(new Date())}
+        ></input>
       </p>
 
       <button onClick={showAllAttendances}>Toon alles</button>
@@ -123,7 +127,14 @@ const HistoryView = () => {
         Toon laatste 12 weken
       </button>
 
-      {[...categories.entries()].map((entry) => display(entry[0], entry[1]))}
+      {filteredAttendances.length ? (
+        [...categories.entries()].map((entry) => display(entry[0], entry[1]))
+      ) : (
+        <h3>
+          Voor deze student zijn in deze periode geen aanwezigheden
+          geregistreerd.
+        </h3>
+      )}
 
       <ol className="striping">
         {filteredAttendances
