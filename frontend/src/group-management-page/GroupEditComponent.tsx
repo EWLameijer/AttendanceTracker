@@ -102,7 +102,7 @@ const GroupEditComponent = ({
             <MemberEditComponent
               key={member.name}
               member={member}
-              remove={removeStudent}
+              removeMember={removeStudent}
             />
           ))}
       </ul>

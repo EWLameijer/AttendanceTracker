@@ -4,33 +4,36 @@ import { BASE_URL } from "../-shared/utils";
 import UserContext from "../-shared/UserContext";
 import { useContext } from "react";
 
-const MemberEditComponent = (props: {
+const MemberEditComponent = ({
+  member,
+  removeMember,
+}: {
   member: Student;
-  remove: (id: string) => void;
+  removeMember: (id: string) => void;
 }) => {
   const user = useContext(UserContext);
 
   const remove = () => {
     const confirmation = confirm(
-      `Wilt u echt ${props.member.name} uit de groep verwijderen?`
+      `Wilt u echt ${member.name} uit de groep verwijderen?`
     );
     if (confirmation) {
       axios
         .patch(
           `${BASE_URL}/students`,
-          { id: props.member.id, groupId: "" },
+          { id: member.id, groupId: "" },
           { auth: { username: user.username, password: user.password } }
         )
         .then(() => {
-          props.remove(props.member.id);
-          alert("");
+          removeMember(member.id);
+          alert(`${member.name} verwijderd.`);
         });
     }
   };
 
   return (
     <li>
-      {props.member.name}
+      {member.name}
       <button onClick={remove}>Verwijder</button>
     </li>
   );
