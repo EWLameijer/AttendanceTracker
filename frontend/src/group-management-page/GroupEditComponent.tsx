@@ -57,6 +57,11 @@ const GroupEditComponent = ({
     );
     if (really) {
       remove(group.id);
+      alert(
+        `Groep '${group.name}' ${
+          group.hasPastLessons ? "gearchiveerd" : "verwijderd"
+        }.`
+      );
     }
   };
 
@@ -102,7 +107,7 @@ const GroupEditComponent = ({
             <MemberEditComponent
               key={member.name}
               member={member}
-              remove={removeStudent}
+              removeMember={removeStudent}
             />
           ))}
       </ul>

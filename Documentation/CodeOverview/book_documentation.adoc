@@ -126,3 +126,50 @@ docker compose -f docker-compose-test.yml up --build -d
 * Getting all attendances in all groups at a certain date: DatePicker
    ** Getting all attendances in _one_ group at a certain date: GroupElement
      *** Getting the attendance of one person at a certain date: AttendanceDisplay
+
+== Ideas for further enhancements
+
+=== Aesthetics
+Add styling/css
+
+=== Communication with users
+- Add catch for 500 status to axios
+
+=== Efficiency
+0.33 (2 euros/6 hours) Get websocket demo working (#2)
+
+=== User error prevention
+- ensure new personnel/teachers are tested using IgnoreCase (no Wim WIM, wim as different persons)
+- Reconsider removing someone from group
+- Prevent duplicate emailaddresses?
+
+== Features
+On Hold (see comment) - Allow teachers to see other groups
+NtH Add export to Excel feature (#142)
+?Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous
+- Earlier error correction genereer periode
+Ideally: allow to email invitations
+Info on who invited someone?
+Allow registrations to send e-mails #132
+
+
+=== Maintainability
+? Add book-type documentation (Consider making "book-type" documentation for new contributors, like on p812 of Code Complete 2)
+- Update ERD (#144)
+- Create build pipeline for deployment (for bugfixes and such)
+- Clean up frontend structure (and backend structure)
+- Eliminate the current UUID PKs from teacher and registrar, using the FK to WorkerIdentity as PK
+- get the teachers from the teachers/ endpoint instead of the personnel/teachers endpoint
+- Find out a way to reduce the duplication in authorization headers in the frontend
+- rename personnel to registrar throughout (to be more consistent)
+- Add Ubiquitous Language (lessons etc.)
+- Spike: compare automated testing frameworks
+- Do some error-checking of SWC
+
+=== Questions for others
+- Ask Chantal if past classes should be allowed to be scheduled #139
+- Ask Niels: Create new AT channel
+
+=== Security
+0 Check all endpoints for correct authentication // I think already done to a sufficient degree
+
