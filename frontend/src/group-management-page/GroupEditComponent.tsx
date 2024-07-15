@@ -57,6 +57,11 @@ const GroupEditComponent = ({
     );
     if (really) {
       remove(group.id);
+      alert(
+        `Groep '${group.name}' ${
+          group.hasPastLessons ? "gearchiveerd" : "verwijderd"
+        }.`
+      );
     }
   };
 
