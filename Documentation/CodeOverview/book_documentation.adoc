@@ -139,17 +139,17 @@ Add styling/css
 0.33 (2 euros/6 hours) Get websocket demo working (#2)
 
 === User error prevention
-- ensure new personnel/teachers are tested using IgnoreCase (no Wim WIM, wim as different persons)
+- ensure new personnel/teachers are tested using IgnoreCase (no Wim WIM, wim as different persons) -30 min, 5 euro value = 10 euro/h
 - Reconsider removing someone from group
-- Prevent duplicate emailaddresses?
+- Prevent duplicate emailaddresses? 30 min, 20 euro value = 40 euro.h
 
 == Features
 On Hold (see comment) - Allow teachers to see other groups
-NtH Add export to Excel feature (#142)
-?Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous
-- Earlier error correction genereer periode
-Ideally: allow to email invitations
-Info on who invited someone?
+NtH Add export to Excel feature (#142) / will need input on how specificially
+?Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous => 1.5h/100 euro = 66 euro/h
+- Earlier error correction genereer periode 2h/50 euro = 25 euro/h
+Ideally: allow to email invitations 2h/200 euro = 100 euro/h
+Info on who invited someone? 30 min/5 euro
 Allow registrations to send e-mails #132
 
 
@@ -160,17 +160,28 @@ Allow registrations to send e-mails #132
 - Clean up frontend structure (and backend structure)
 - Eliminate the current UUID PKs from teacher and registrar, using the FK to WorkerIdentity as PK
 - get the teachers from the teachers/ endpoint instead of the personnel/teachers endpoint
-- Find out a way to reduce the duplication in authorization headers in the frontend
-- rename personnel to registrar throughout (to be more consistent)
+    20 min/40 euro = 120 euro/h
+- Find out a way to reduce the duplication in authorization headers in the frontend 50 min/ 80 euro = 90 euro/h
+- rename personnel to registrar throughout (to be more consistent) 20 min/50 euro = 150 euro/h
 - Add Ubiquitous Language (lessons etc.)
-- Spike: compare automated testing frameworks
-- Do some error-checking of SWC
+- Spike: compare automated testing frameworks 120 min: 500 euro = 250 euro/h
+- Do some error-checking of SWC 25 min/ 60 euro = 120 e/h
 - Integration test for student presence bug
 
 === Questions for others
-- Ask Chantal if past classes should be allowed to be scheduled #139
-- Ask Niels: Create new AT channel
+- Ask Chantal if past classes should be allowed to be scheduled #139 /Asked via Teams 2024-07-16
+- Ask Niels: Create new AT channel / no, he just wants email
 
 === Security
 0 Check all endpoints for correct authentication // I think already done to a sufficient degree
+
+
+- Over 200:
+ ** Spike: compare automated testing frameworks 120 min: 500 euro = 250 euro/h
+
+- 100-200
+ **  Do some error-checking of SWC 25 min/ 60 euro = 120 e/h
+  ** rename personnel to registrar throughout (to be more consistent) 20 min/50 euro = 150 euro/h
+  ** get the teachers from the teachers/ endpoint instead of the personnel/teachers endpoint  20 min/40 euro = 120 euro/h
+ ** allow to email invitations 2h/200 euro = 100 euro/h
 
