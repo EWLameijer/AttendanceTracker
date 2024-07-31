@@ -165,6 +165,7 @@ Allow registrations to send e-mails #132
 - Add Ubiquitous Language (lessons etc.)
 - Spike: compare automated testing frameworks
 - Do some error-checking of SWC
+- Integration test for student presence bug
 
 === Questions for others
 - Ask Chantal if past classes should be allowed to be scheduled #139
