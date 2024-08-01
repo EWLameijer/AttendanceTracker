@@ -251,6 +251,7 @@ Shutting the containers down _and_ removing the database (obviously, don't do th
 
 === Efficiency
 - For efficiency, implement websockets, perhaps even WebTransport instead of the current 'heartbeat' algorithm that polls the server every second (datePicker.tsx: `const heartbeat = setInterval(latestUpdateChecker, 1000);`).  (#2)
+- Check if Dockerfiles are good. We likely should not use `CMD ["npm", "run", "dev"]` for the frontend Dockerfile, for example.
 
 === Features
 - On Hold (see comment) - Allow teachers to see other groups
