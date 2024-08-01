@@ -56,7 +56,7 @@ Folder structure:
 * Teacher: can register attendances in his/her own classes
 * Coach: can register attendances in all classes (which is necessary as not all teachers are employees of ITvitae), and see the attendance history of all students
 * Admin: can do everything that a coach can, but can also invite teachers and coaches
-* SuperAdmin: can do everything that an admin can, but can also create groups and lessons, and promote people to admin or SuperAdmin.
+* SuperAdmin: can do everything that an Admin can, but can also create groups and lessons, and promote people to Admin or SuperAdmin.
 * PureAdmin: role for Service and Support, to bootstrap the Attendance Tracker and invite the SuperAdmin who can then do the rest of the tasks.
 
 == Frontend
@@ -72,7 +72,7 @@ Other roles will see all students and all groups, and also access the history pa
 The history page (titled "Aanwezigheidsgeschiedenis van [StudentName]", folder `history-page`) shows the attendance of an individual student over time, with statistics on how often the student was present, absent, sick, and so on.
 
 === The Worker Management Page
-The worker management page (folder `worker-management-page`) allows admins, SuperAdmins and PureAdmins to invite, and uninvite staff in various roles; different roles have different privileges: Admins can invite Coaches and Teachers, PureAdmins can do more, SuperAdmins (as they must also be able to plan lessons) can also add external teachers.
+The worker management page (folder `worker-management-page`) allows Admins, SuperAdmins and PureAdmins to invite, and uninvite staff in various roles; different roles have different privileges: Admins can invite Coaches and Teachers, PureAdmins can do more, SuperAdmins (as they must also be able to plan lessons) can also add external teachers.
 
 === The Group Management Page
 The group management page (folder `group-management-page`) allows a SuperAdmin to create and delete or archive groups; also students can be added to or removed from groups.
@@ -84,7 +84,7 @@ The lesson management page (folder `lesson-management-page`) allows a SuperAdmin
 == Frontend: Required endpoints
 
 === Group-management-page
-    * Access only for Super-admins
+    * Access only for SuperAdmins
     * required endpoints:
         ** groups GET
         ** groups POST
@@ -99,14 +99,14 @@ The lesson management page (folder `lesson-management-page`) allows a SuperAdmin
 
 === Worker-management-page
 
-    * Access only for Admins, PureAdmins and Super-admins
+    * Access only for Admins, PureAdmins and SuperAdmins
     * requires:
         ** personnel GET // get all registrars
         ** personnel/teachers GET // get all teachers
         ** personnel/{id} DELETE // remove a registrar
         ** invitations GET // get all current invitations (without id!)
         ** invitations/for-ROLE POST // send an invitation
-           *** NOTE: only super-admins should be able to create new admins and super-admins
+           *** NOTE: only SuperAdmins and PureAdmins should be able to create new Admins and SuperAdmins
         ** teachers POST // create external teacher
         ** teachers/{id} DELETE // remove an external teacher
 
@@ -126,7 +126,7 @@ The structure of the backend should not be very surprising; we've used vertical 
 Possibly the only 'weird' things are
 - using basic authentication instead of JWT authentication - this was mainly because I found this easier/faster to implement, and the extra security may not be worth it as this is only used internally.
 
-- the WorkerIdentity entity: the WorkerIdentity exists because there should not be duplicate names between users and external teachers; hiring a teacher named "Chantal" would be confusing at the moment. Of course, preventing duplicates could have worked in other ways, I just prefer to let databases handle uniqueness-checking instead of letting handwritten code do it, as databases have had their bugs removed for dozens of years already...
+- the WorkerIdentity entity: the WorkerIdentity exists because there should not be duplicate names between users and external teachers; hiring a teacher named "Chantal" would be confusing at the moment. Of course, preventing duplicates could have been achieved in other ways, I just prefer to let databases handle uniqueness-checking instead of letting handwritten code do it, as databases have had their bugs removed for dozens of years already...
 
 
 == Testing
@@ -163,7 +163,7 @@ Shutting the containers down _and_ removing the database (obviously, don't do th
 
 === Test by role
 
-==== Pure-admin
+==== PureAdmin
 * kan inloggen
 * kan docenten uitnodigen
 * kan studentbegeleiders uitnodigen
@@ -172,7 +172,7 @@ Shutting the containers down _and_ removing the database (obviously, don't do th
 * kan uitnodigingen opnieuw versturen
 * kan uitnodigingen intrekken
 
-==== Super-admin
+==== SuperAdmin
 * kan inloggen
 * kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
 * kan deelnemers aanmaken
