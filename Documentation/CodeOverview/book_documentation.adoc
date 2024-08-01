@@ -112,9 +112,9 @@ The lesson management page (folder `lesson-management-page`) allows a SuperAdmin
 
 == Frontend: Role of selected components
 * The page showing all attendances on a day, including the option (for privileged users) to manage groups, lessons or workers: AttendanceManagement
-** Picking a date to show attendances for, and showing the attendances themselves: DisplayAttendancesOnDate
-*** Getting all attendances in _one_ group at a certain date: DisplayGroup
-**** Getting the attendance of one person at a certain date: EditAttendance
+    ** Picking a date to show attendances for, and showing the attendances themselves: DisplayAttendancesOnDate
+        *** Getting all attendances in _one_ group at a certain date: DisplayGroup
+            **** Getting the attendance of one person at a certain date: EditAttendance
 
 === Frontend: miscellaneous notes
 - the structure of the frontend is basically one folder per different page, and one folder for shared components (that are used by more than one page)
@@ -254,15 +254,15 @@ Shutting the containers down _and_ removing the database (obviously, don't do th
 
 === Features
 - On Hold (see comment) - Allow teachers to see other groups
-- NtH Add export to Excel feature (#142) / will need input on how specificially
-- Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous =>
+- NtH Add export to Excel feature (#142) / will need input on how specifically
+- Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous
 - Earlier error correction genereer periode (check database before 'sla alle lessen op')
 - Ideally: allow to email invitations (currently one has to copy-paste a link)
-- Add informantion on who invited someone?
+- Add information on who invited someone?
 - Perhaps allow password reset?
 
 === Maintainability
-- Add book-type documentation (Consider making "book-type" documentation for new contributors, like on p812 of Code Complete 2)
+- Add book-type documentation (Consider making "book-type" documentation for new contributors, like on p812 of Code Complete, 2nd edition)
 - Keep ERD updated
 - Create build pipeline for deployment (for bugfixes and such)
 - Clean up frontend structure (and backend structure)
@@ -276,7 +276,7 @@ Shutting the containers down _and_ removing the database (obviously, don't do th
 - Create integration test to check if a student's attendance can be modified correctly (used to be regression error)
 
 === Questions for others
-- Ask Chantal if past classes should be allowed to be scheduled #139 /Asked via Teams 2024-07-16
+- Ask Chantal if past classes should be allowed to be scheduled #139 /Asked via Teams 2024-07-16, but have not received an answer as of 2024-08-01
 - Ask Niels: Create new AT channel / no, he just wants email
 
 === Security
