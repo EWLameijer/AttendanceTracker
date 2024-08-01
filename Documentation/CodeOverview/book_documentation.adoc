@@ -56,7 +56,7 @@ Folder structure:
 * Teacher: can register attendances in his/her own classes
 * Coach: can register attendances in all classes (which is necessary as not all teachers are employees of ITvitae), and see the attendance history of all students
 * Admin: can do everything that a coach can, but can also invite teachers and coaches
-* SuperAdmin: can do everything that an admin can, but can also create groups and lessons, and promote people to admin or superadmin.
+* SuperAdmin: can do everything that an admin can, but can also create groups and lessons, and promote people to admin or SuperAdmin.
 * PureAdmin: role for Service and Support, to bootstrap the Attendance Tracker and invite the SuperAdmin who can then do the rest of the tasks.
 
 == Frontend
