@@ -3,19 +3,88 @@
 
 == Ubiquitous Language
 - *attendance*: a student being present (or belatedly present) or absent on a lesson.
+- *attendance registration*: a registration of an attendance. In the end, a student can have only one attendance on a day, but registrations should be able to be changed (which happens quite often, a student may be absent and later turn out to have asked for a holiday a few weeks ago), and having the history of a student registered should provide some protection against hackers or, in the future, allow undo operations.
+- *external teacher*: a teacher who can be scheduled to give lessons, but cannot fill in attendances (the coaches/studentbegeleiders should do so in their stead)
 - *group*: a group of students following a course at ITVitae, for example Java55
-- *lesson*: a session scheduled for a group, on a day, with a teacher. A group has only one lesson per day, and the lesson can have only one teacher. Similary, a teacher can only give one lesson per day (and can therefore not have two groups on the same day). Of course, there can be multiple lessons on one day, as there are usually multiple groups.
+- *lesson*: a session scheduled for a group, on a day, with a teacher. A group has only one lesson per day, and the lesson can have only one teacher. Similarly, a teacher can only give one lesson per day (and can therefore not have two groups on the same day). Of course, there can be multiple lessons on one day, as there are usually multiple groups.
 - *student*: someone following a course at ITVitae. Must be a member of a group
 - *registrar*: someone who can register an attendance. Note: registrar is basically an authorized user; there are 'pure admins' who cannot register attendances and are still part of the registrar table
 - *teacher*: someone who can be scheduled to give a lesson.
 
+== Maintenance
 
-== Backend
+Ideally, do every month (see ADR008) the following:
 
-== Frontend:
+. Navigate to the root directory of your project and ensure it contains a package.json file: cd /path/to/project.
+. In your project root directory, run the update command: `npm update`.
+. To test the update, run the `npm outdated command`. There should not be any output (or at least, output in which the current version is lower than the wanted version.)
+
+If you cannot update the packages for some reason, or the update command gives weird output like
+
+[source]
+----
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE package: 'app@1.0.0',
+npm WARN EBADENGINE required: { node: '16.0.0' },
+npm WARN EBADENGINE current: { node: 'v16.10.0', npm: '7.24.0' }
+npm
+----
+
+then create a new React/vite project in another directory of your system, and install the packages required for React/Vite and then those for react-router-dom and axios, (`npm install vite@latest` ; `npm create vite@latest` ; `cd frontend`; `npm i`; `npm i react-router-dom`; `npm i axios)`. Then copy the resulting package.json to the Attendance Tracker frontend directory, and again run `npm i` there.
+
+When this code is approved and merged, create an issue in the Scrum board for the next month containing this text, and let it also mention to repeat it the following month(s).
+
+== Folder structure
+
+=== Layout of project
+Repository:
+https://github.com/EWLameijer/AttendanceTracker
+
+Scrum-board:
+https://github.com/users/EWLameijer/projects/5
+
+Folder structure:
+
+* Documentation
+    ** ADR: Architectural Decision Records: the _why_ of some of the major technical choices (which also may give insights when to change a choice)
+    ** CodeOverview: contains the ERD, instructions on how to automatically create an updated ERD, and this document.
+    ** UX: contains conversations with prospective users on what they wanted/needed/wished for
+* backend: the backend
+* frontend: the frontend
+
+== User roles
+* Teacher: can register attendances in his/her own classes
+* Coach: can register attendances in all classes (which is necessary as not all teachers are employees of ITvitae), and see the attendance history of all students
+* Admin: can do everything that a coach can, but can also invite teachers and coaches
+* SuperAdmin: can do everything that an Admin can, but can also create groups and lessons, and promote people to Admin or SuperAdmin.
+* PureAdmin: role for Service and Support, to bootstrap the Attendance Tracker and invite the SuperAdmin who can then do the rest of the tasks.
+
+== Frontend
+
+=== First page: the Login-page
+A user will generally first encounter the login-page (folder `login-page`). On logging in, most users (except the PureAdmin) will be redirected to the attendance management page. PureAdmins will be redirected to the only page they can see, the worker management page.
+
+=== The Attendance Management Page
+For teachers, the attendance management page (folder `attendance-management-page`) is the only page they can access, they can also only see their own groups.
+Other roles will see all students and all groups, and also access the history page. Admins and SuperAdmins can also access the worker-management page, and SuperAdmins, finally, can also access the group management page and lesson management page.
+
+=== The History Page
+The history page (titled "Aanwezigheidsgeschiedenis van [StudentName]", folder `history-page`) shows the attendance of an individual student over time, with statistics on how often the student was present, absent, sick, and so on.
+
+=== The Worker Management Page
+The worker management page (folder `worker-management-page`) allows Admins, SuperAdmins and PureAdmins to invite, and uninvite staff in various roles; different roles have different privileges: Admins can invite Coaches and Teachers, PureAdmins can do more, SuperAdmins (as they must also be able to plan lessons) can also add external teachers.
+
+=== The Group Management Page
+The group management page (folder `group-management-page`) allows a SuperAdmin to create and delete or archive groups; also students can be added to or removed from groups.
+
+=== The Lesson Management Page
+The lesson management page (folder `lesson-management-page`) allows a SuperAdmin to plan lessons for a group.
+
+
+== Frontend: Required endpoints
 
 === Group-management-page
-    * Access only for Super-admins
+    * Access only for SuperAdmins
     * required endpoints:
         ** groups GET
         ** groups POST
@@ -30,23 +99,71 @@
 
 === Worker-management-page
 
-    * Access only for to Admins and Super-admins
+    * Access only for Admins, PureAdmins and SuperAdmins
     * requires:
         ** personnel GET // get all registrars
         ** personnel/teachers GET // get all teachers
         ** personnel/{id} DELETE // remove a registrar
         ** invitations GET // get all current invitations (without id!)
         ** invitations/for-ROLE POST // send an invitation
-           *** NOTE: only super-admins should be able to create new admins and super-admins
+           *** NOTE: only SuperAdmins and PureAdmins should be able to create new Admins and SuperAdmins
         ** teachers POST // create external teacher
         ** teachers/{id} DELETE // remove an external teacher
 
+== Frontend: Role of selected components
+* The page showing all attendances on a day, including the option (for privileged users) to manage groups, lessons or workers: AttendanceManagement
+    ** Picking a date to show attendances for, and showing the attendances themselves: DisplayAttendancesOnDate
+        *** Getting all attendances in _one_ group at a certain date: DisplayGroup
+            **** Getting the attendance of one person at a certain date: EditAttendance
+
+=== Frontend: miscellaneous notes
+- the structure of the frontend is basically one folder per different page, and one folder for shared components (that are used by more than one page)
+- possibly the only 'weird' thing is the name of the shared folder; I named it `-shared` instead of simply `shared` to make it easier to find (on top of the list of folders instead of somewhere in the middle). Another character might have worked just as well, though...
+
+== Backend
+The structure of the backend should not be very surprising; we've used vertical slicing with a rather standard Spring structure with entities, repositories, controllers and sometimes a service.
+
+Possibly the only 'weird' things are
+- using basic authentication instead of JWT authentication - this was mainly because I found this easier/faster to implement, and the extra security may not be worth it as this is only used internally.
+
+- the WorkerIdentity entity: the WorkerIdentity exists because there should not be duplicate names between users and external teachers; hiring a teacher named "Chantal" would be confusing at the moment. Of course, preventing duplicates could have been achieved in other ways, I just prefer to let databases handle uniqueness-checking instead of letting handwritten code do it, as databases have had their bugs removed for dozens of years already...
+
+
 == Testing
 
-=== For testing
-docker compose -f docker-compose-test.yml up --build -d
+=== For testing with Docker
 
-=== Pure-admin
+(Re)creating the database
+
+`docker volume create attendancetracker`
+
+(Re)creating the docker containers
+
+Go to the backend directory
+
+`docker build -t ewlameijer/attendancetracker-backend .`
+
+Go to the frontend directory
+
+`docker build -t ewlameijer/attendancetracker-frontend .`
+
+Starting up the containers:
+
+Go to the AttendanceTracker main directory.
+
+`docker compose -f docker-compose-test.yml up --build -d`
+
+Shutting the containers down:
+
+`docker compose down`
+
+Shutting the containers down _and_ removing the database (obviously, don't do this in production):
+
+`docker compose down --volumes`
+
+=== Test by role
+
+==== PureAdmin
 * kan inloggen
 * kan docenten uitnodigen
 * kan studentbegeleiders uitnodigen
@@ -55,7 +172,7 @@ docker compose -f docker-compose-test.yml up --build -d
 * kan uitnodigingen opnieuw versturen
 * kan uitnodigingen intrekken
 
-=== Super-admin
+==== SuperAdmin
 * kan inloggen
 * kan groep aanmaken (test met 2 groepen, voor 1 plan je les in verleden)
 * kan deelnemers aanmaken
@@ -82,7 +199,7 @@ docker compose -f docker-compose-test.yml up --build -d
 * kan geschiedenis van student zien
 * kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
-=== Admin
+==== Admin
 * kan inloggen
 * kan docenten uitnodigen
 * kan studentbegeleiders uitnodigen
@@ -97,7 +214,7 @@ docker compose -f docker-compose-test.yml up --build -d
 * kan geschiedenis van student zien
 * kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
-=== Coach
+==== Coach
 * kan inloggen
 * kan aanwezigheid van alle groepen zien
 * kan aanwezigheidsstatus veranderen
@@ -108,7 +225,7 @@ docker compose -f docker-compose-test.yml up --build -d
 * kan geschiedenis van student zien
 * kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
-=== Teacher
+==== Teacher
 * kan inloggen
 * kan (voorlopig) alleen aanwezigheid op eigen lessen zien
 * kan aanwezigheidsstatus veranderen
@@ -118,59 +235,55 @@ docker compose -f docker-compose-test.yml up --build -d
 * kan naar datum van attendance gaan via datuminvoer (typen)
 * kan alle ongeregistreerde attendances van een groep op aanwezig zetten
 
-=== Uitgenodigde
+==== Uitgenodigde
 * kan een paswoord opgeven
 * kan inloggen
 
-== Role of the components
-* Getting all attendances in all groups at a certain date: DatePicker
-   ** Getting all attendances in _one_ group at a certain date: GroupElement
-     *** Getting the attendance of one person at a certain date: AttendanceDisplay
+
 
 == Ideas for further enhancements
 
 === Aesthetics
-Add styling/css
+- Add styling/css
 
 === Communication with users
-- Add catch for 500 status to axios
+- Add catch for 500 status to axios so that users get a clear message when the server is down.
 
 === Efficiency
-0.33 (2 euros/6 hours) Get websocket demo working (#2)
+- For efficiency, implement websockets, perhaps even WebTransport instead of the current 'heartbeat' algorithm that polls the server every second (datePicker.tsx: `const heartbeat = setInterval(latestUpdateChecker, 1000);`).  (#2)
 
-=== User error prevention
-- ensure new personnel/teachers are tested using IgnoreCase (no Wim WIM, wim as different persons)
-- Reconsider removing someone from group
-- Prevent duplicate emailaddresses?
-
-== Features
-On Hold (see comment) - Allow teachers to see other groups
-NtH Add export to Excel feature (#142)
-?Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous
-- Earlier error correction genereer periode
-Ideally: allow to email invitations
-Info on who invited someone?
-Allow registrations to send e-mails #132
-
+=== Features
+- On Hold (see comment) - Allow teachers to see other groups
+- NtH Add export to Excel feature (#142) / will need input on how specifically
+- Get rid of some sessionschedule buttons / Disable generate button if no days selected / Make "genereer periode" superfluous
+- Earlier error correction genereer periode (check database before 'sla alle lessen op')
+- Ideally: allow to email invitations (currently one has to copy-paste a link)
+- Add information on who invited someone?
+- Perhaps allow password reset?
 
 === Maintainability
-? Add book-type documentation (Consider making "book-type" documentation for new contributors, like on p812 of Code Complete 2)
-- Update ERD (#144)
+- Add book-type documentation (Consider making "book-type" documentation for new contributors, like on p812 of Code Complete, 2nd edition)
+- Keep ERD updated
 - Create build pipeline for deployment (for bugfixes and such)
 - Clean up frontend structure (and backend structure)
 - Eliminate the current UUID PKs from teacher and registrar, using the FK to WorkerIdentity as PK
 - get the teachers from the teachers/ endpoint instead of the personnel/teachers endpoint
 - Find out a way to reduce the duplication in authorization headers in the frontend
 - rename personnel to registrar throughout (to be more consistent)
-- Add Ubiquitous Language (lessons etc.)
+- Keep Ubiquitous Language updated
 - Spike: compare automated testing frameworks
-- Do some error-checking of SWC
-- Integration test for student presence bug
+- Possibly check if something can be done about errors reported by the Visual Studio Code terminal (is it a bug in SWC? Do dependencies need to be updated better?)
+- Create integration test to check if a student's attendance can be modified correctly (used to be regression error)
 
 === Questions for others
-- Ask Chantal if past classes should be allowed to be scheduled #139
-- Ask Niels: Create new AT channel
+- Ask Chantal if past classes should be allowed to be scheduled #139 /Asked via Teams 2024-07-16, but have not received an answer as of 2024-08-01
+- Ask Niels: Create new AT channel / no, he just wants email
 
 === Security
-0 Check all endpoints for correct authentication // I think already done to a sufficient degree
+- Change basic authentication to something with JWT
+- use HTTPS instead of HTTP
 
+=== User error prevention
+- ensure new personnel/teachers are tested using IgnoreCase (no Wim WIM, wim as different persons)
+- Reconsider removing someone from group: it happens with some regularity that someone stops their course (or is removed). Filling in that person's further attendances would be useless then. At the moment, removing a person from a group also makes their attendances invisible; this would usually be good enough as our business with them has ended, but it could be that someone wants to see their data for communication or statistics. This would be a question for Chantal and the coaches.
+- Prevent duplicate email addresses?

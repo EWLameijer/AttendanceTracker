@@ -11,7 +11,7 @@ import UserContext from "../-shared/UserContext.ts";
 
 let currentTimer: number | undefined = undefined;
 
-const AttendanceDisplay = (props: {
+const EditAttendance = (props: {
   attendance: Attendance;
   saveIfModified: (attendance: Attendance) => void;
 }) => {
@@ -143,4 +143,4 @@ const AttendanceDisplay = (props: {
   );
 };
 
-export default AttendanceDisplay;
+export default EditAttendance;

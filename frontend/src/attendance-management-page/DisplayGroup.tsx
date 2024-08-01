@@ -1,11 +1,11 @@
 import axios from "axios";
 import { Attendance, Lesson, Status, addExtraData } from "../-shared/Lesson.ts";
 import { BASE_URL } from "../-shared/utils.ts";
-import AttendanceDisplay from "./AttendanceDisplay.tsx";
+import EditAttendance from "./EditAttendance.tsx";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../-shared/UserContext.ts";
 
-const GroupElement = (props: {
+const DisplayGroup = (props: {
   chosenLesson: Lesson;
   dateAsString: string;
 }) => {
@@ -102,7 +102,7 @@ const GroupElement = (props: {
         {chosenLesson.attendances
           .sort((a, b) => a.studentName.localeCompare(b.studentName))
           .map((attendance) => (
-            <AttendanceDisplay
+            <EditAttendance
               key={attendance.studentName}
               attendance={attendance}
               saveIfModified={(attendance) =>
@@ -115,4 +115,4 @@ const GroupElement = (props: {
   );
 };
 
-export default GroupElement;
+export default DisplayGroup;

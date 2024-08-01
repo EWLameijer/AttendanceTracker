@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import DatePicker from "./DatePicker";
+import DisplayAttendancesOnDate from "./DisplayAttendancesOnDate";
 import UserContext from "../-shared/UserContext";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +27,7 @@ const AttendanceManagement = () => {
           </button>
         )}
       </>
-      <DatePicker />
+      <DisplayAttendancesOnDate />
     </>
   );
 };

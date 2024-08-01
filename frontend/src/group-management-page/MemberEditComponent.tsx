@@ -4,7 +4,7 @@ import { BASE_URL } from "../-shared/utils";
 import UserContext from "../-shared/UserContext";
 import { useContext } from "react";
 
-const MemberEditComponent = ({
+const EditMember = ({
   member,
   removeMember,
 }: {
@@ -39,4 +39,4 @@ const MemberEditComponent = ({
   );
 };
 
-export default MemberEditComponent;
+export default EditMember;
