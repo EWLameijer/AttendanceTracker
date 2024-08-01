@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { Group } from "../-shared/Group";
-import MemberEditComponent from "./MemberEditComponent";
+import EditMember from "./MemberEditComponent";
 import axios from "axios";
 import { BASE_URL } from "../-shared/utils";
 import UserContext from "../-shared/UserContext";
 
-const GroupEditComponent = ({
+const EditGroup = ({
   group,
   remove,
   changeName,
@@ -104,7 +104,7 @@ const GroupEditComponent = ({
         {students
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((member) => (
-            <MemberEditComponent
+            <EditMember
               key={member.name}
               member={member}
               removeMember={removeStudent}
@@ -123,4 +123,4 @@ const GroupEditComponent = ({
   );
 };
 
-export default GroupEditComponent;
+export default EditGroup;

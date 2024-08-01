@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useContext } from "react";
-import GroupEditComponent from "./GroupEditComponent";
+import EditGroup from "./EditGroup";
 import { Group } from "../-shared/Group";
 import { BASE_URL } from "../-shared/utils";
 import AddGroup from "./AddGroup";
@@ -93,7 +93,7 @@ const AdminView = () => {
         {groups
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((group) => (
-            <GroupEditComponent
+            <EditGroup
               key={group.name}
               group={group}
               remove={removeGroup}

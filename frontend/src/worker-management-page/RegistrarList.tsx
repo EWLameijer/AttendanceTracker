@@ -4,6 +4,7 @@ import UserContext from "../-shared/UserContext";
 import Role from "../-shared/Role";
 import roleNames from "./roleNames";
 
+// Show a list of registrars (so a list of teachers, a list of coaches, a list of admins, or a list of superadmins)
 const RegistrarList = (props: {
   title: string;
   registrars: Registrar[];

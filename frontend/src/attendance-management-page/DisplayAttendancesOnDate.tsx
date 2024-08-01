@@ -7,7 +7,7 @@ import {
 } from "../-shared/utils";
 import axios from "axios";
 import { Lesson, addExtraData } from "../-shared/Lesson";
-import GroupElement from "./GroupElement";
+import DisplayGroup from "./DisplayGroup";
 import UserContext from "../-shared/UserContext";
 
 // there may be a better way than this... But state is not sufficient, as useState resets the date to today whenever I return from another page, like history
@@ -23,7 +23,7 @@ interface DateSchedule {
 
 let manuallyEditing = false;
 
-const DatePicker = () => {
+const DisplayAttendancesOnDate = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [previousDate, setPreviousDate] = useState<string | undefined>();
   const [nextDate, setNextDate] = useState<string | undefined>();
@@ -128,7 +128,7 @@ const DatePicker = () => {
       {lessons.length === 0 ? (
         <h3>Geen lessen op deze dag</h3>
       ) : user.isTeacher() ? (
-        <GroupElement
+        <DisplayGroup
           chosenLesson={lessons[0]}
           dateAsString={toYYYYMMDD(lastDate)}
         />
@@ -138,7 +138,7 @@ const DatePicker = () => {
             .sort((a, b) => a.groupName.localeCompare(b.groupName))
             .map((currentLesson) => (
               <li key={currentLesson.groupName}>
-                <GroupElement
+                <DisplayGroup
                   chosenLesson={currentLesson}
                   dateAsString={toYYYYMMDD(lastDate)}
                 />
@@ -150,4 +150,4 @@ const DatePicker = () => {
   );
 };
 
-export default DatePicker;
+export default DisplayAttendancesOnDate;
