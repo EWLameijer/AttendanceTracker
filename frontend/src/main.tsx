@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminView from "./group-management-page/GroupManagement.tsx";
 
-import "./index.css";
 import UserContext from "./-shared/UserContext.ts";
 import LoginData from "./-shared/LoginData.ts";
 import Login from "./login-page/Login.tsx";

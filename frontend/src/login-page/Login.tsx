@@ -23,7 +23,7 @@ const Login = () => {
       .then((response) => {
         const role = response.data.role;
         user.update(loginData.username, loginData.password, role);
-        if (role === Role.PURE_ADMIN) navigate("/worker-management")
+        if (role === Role.PURE_ADMIN) navigate("/worker-management");
         else navigate("/attendance-management");
       })
       .catch(() => alert("Gebruikersnaam/wachtwoord-combinatie onbekend!"));
